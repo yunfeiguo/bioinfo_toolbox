@@ -1,0 +1,37 @@
+class Solution: 
+    # @param S, T: Two string.
+    # @return: Count the number of distinct subsequences
+    def numDistinct(self, S, T):
+        # write your code here
+        #the problem is actually
+        #finding number of distinct subsequences of S that are
+        #equal to T
+        #distinct here means different combinations of operations
+        #first show O(n^2) space solution
+        n = len(S)
+        m = len(T)
+        if m > n or n == 0:
+            return(0)
+        o = [] #solution for S[0..i-1] to T[0..j-1]
+        for i in range(n+1): 
+            o.append([])
+            for j in range(m+1):
+                if i == 0:
+                    if j == 0:
+                        o[i].append(1)
+                    else:
+                        o[i].append(0)
+                elif j == 0:
+                    o[i].append(1)
+                else:
+                    if T[j-1] == S[i-1]:
+                    #o[i-1][j]: solution that doesn't involve S[i-1]
+                    #o[i-1][j-1]: count for solutions that involve both T[j-1] and S[i-1]
+                        oIJ = o[i-1][j] + o[i-1][j-1]
+                    else:
+                        oIJ = o[i-1][j]
+                    o[i].append(oIJ)
+        #print(o)
+        return(o[-1][-1])
+#x = Solution()
+#print(x.numDistinct("bbb","bb"))

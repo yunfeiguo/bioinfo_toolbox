@@ -1,0 +1,52 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+
+die "Usage: $0 list_file contig_fasta_file output_prefix\n" if @ARGV!=3;
+my ($list_file,$contig_file,$out_file)=@ARGV;
+$out_file .= '.fasta';
+die "$out_file exists!\n" if -e $out_file;
+#extraction list
+open LIST,"< $list_file" or die "Cannot open $list_file: $!\n";
+my @targets;
+while (<LIST>) {
+	chomp;
+	push @targets,$_;
+}
+close LIST;
+die "No list in $list_file\n" if !@targets;
+#extraction
+open CONTIG,"< $contig_file" or die "Cannot open $contig_file: $!\n";
+my %contigs;
+my $input_start=0;
+my $name;
+while(<CONTIG>) {
+	chomp(my $line=$_);
+	if ($line=~/^>/) {
+		$input_start=0;
+		$name=undef;
+		for (@targets) {
+			if ( $line =~ /$_/) {
+				if (defined $name) {
+					print "WARNING:multiple matching rows (here:$_) detected in extraction list. All matching contigs will be extracted\n";
+				} else {
+					$name=$line;
+					$input_start=1;
+				}
+			}
+		}
+		next;
+	}
+
+	$contigs{$name} .= $line if $input_start;
+}
+close CONTIG;
+print "output to $out_file\n";
+open OUT,"> $out_file" or die "cannot write to $out_file:$!";
+my $count=0;
+for (keys %contigs) {
+	print OUT "$_\n$contigs{$_}\n";
+	$count++;
+}
+print "$count contigs extracted to $out_file.\nExtraction complete.\n";

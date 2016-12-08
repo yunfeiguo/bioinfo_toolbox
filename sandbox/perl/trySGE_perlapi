@@ -1,0 +1,26 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+use Schedule::SGE;
+
+my $sge=Schedule::SGE->new(
+	-mailto=>'guoyunfei1989@gmail.com',
+	-executable=>
+	{
+	qsub=>'/opt/gridengine/bin/linux-x64/qsub', 
+	qstat=>'/opt/gridengine/bin/linux-x64/qstat',
+	}, 
+	-verbose=>1, );
+
+my $command = "date";
+$sge->command($command);
+
+my $pid=$sge->execute();
+my $stats;
+until ($stats->[0]) {
+    sleep(1);
+    $stats=$sge->brief_job_stats($pid);
+}
+
+print "Stats\n", join "\t", @$stats, "\n";

@@ -1,0 +1,14 @@
+#$ -V
+#$ -cwd
+#$ -M guoyunfei1989@gmail.com
+#$ -m ea
+#$ -l h_vmem=5G
+
+#father exome coverage
+~kaiwang/usr/kgenome/trunk/bin/cal_exome_enrichment.pl F/father.recal.bam ~kaiwang/project/seqlib/targetregion/hg19_Agilentv2TR.txt > F/father.enrich.metrics
+
+#mother exome coverage
+~kaiwang/usr/kgenome/trunk/bin/cal_exome_enrichment.pl M/mother.recal.bam ~kaiwang/project/seqlib/targetregion/hg19_Agilentv2TR.txt > M/mother.enrich.metrics
+
+#son exome coverage
+~kaiwang/usr/kgenome/trunk/bin/cal_exome_enrichment.pl S/son.recal.bam ~kaiwang/project/seqlib/targetregion/hg19_Agilentv2TR.txt > S/son.enrich.metrics

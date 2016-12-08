@@ -1,0 +1,94 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+
+die "Usage: $0 <buildver> <database dir> <1.avinput 2.avinput ...>\n" unless @ARGV > 2;
+
+warn <<DOC;
+********************************************************************
+This program reports genes associated with all kinds of variants (i-
+ntergenic, exonc, splicing etc.).
+'Y' means the corresponding gene is associated with at least one va-
+riant in that file.
+For intergenic variants, only genes within 10kb will be reported.
+Variants with unknown gene annotation will be ignored.
+********************************************************************
+DOC
+
+my $intergenic_dist_limit=10_000;
+my $buildver=shift @ARGV;
+my $dir=shift @ARGV;
+my @unlink;
+
+#these are the placeholders used in this script
+my $placeholder1="NONE";
+my $placeholder2="UNKNOWN";
+
+#global vars
+my %variant_func_files;
+my %gene_exist; #key is gene, value is array reference, array contains existence of gene in each file
+
+#generate *.variant_function files with annotate_variation.pl
+
+for my $file(@ARGV)
+{
+    my $out="$file.variant_function";
+    my @cmd=("annotate_variation.pl","-buildver",$buildver,$file,$dir); #do not trust user input, skip SHELL interpretation
+    warn "Executing @cmd\n";
+    !system(@cmd) or die "Running 'annotate_variation.pl' failed\n";
+    die "Cannot find $out!\n" unless -f $out;
+    $variant_func_files{$file}=$out;
+    push @unlink,$out,"$file.exonic_variant_function","$file.log";
+}
+
+#count genes in each *.variant_function file
+for my $i(0 .. $#ARGV)
+{
+    my $file=$ARGV[$i];
+    open IN,'<',$variant_func_files{$file} or die "cannot read $variant_func_files{$file}\n";
+    while(<IN>)
+    {
+	my @gene;
+	my @field=split; #by default, split tab-delimited fields in $_
+	$field[1] =~ s/,$//;
+	if ($field[0]=~/intergenic/i)
+	{
+	    #example:intergenic gene1(dist=100),gene2(dist=200)
+	    $field[1]=~/^(\w+)\(dist=(\d+|NONE)\),(\w+)\(dist=(\d+|NONE)\)/ or warn "Illegal line: @field\n";
+	    push @gene,$1 if ($2 ne 'NONE' and $2<$intergenic_dist_limit);
+	    push @gene,$3 if ($4 ne 'NONE' and $4<$intergenic_dist_limit);
+	} else
+	{
+	    $field[1] =~ s/\([^\(\)]+\)//g;         #handle situations such as splicing        EMG1(NM_006331:exon1:c.125+1T>GC,NM_006331:exon2:c.126-1T>GC)
+
+	    push @gene,(split /,|;/,$field[1]);
+	}
+	for my $item(@gene)
+	{
+	    $gene_exist{$item} = [map {'N'} @ARGV] unless defined $gene_exist{$item};
+	    $gene_exist{$item}[$i]='Y';
+	}
+
+    }
+}
+
+
+#output
+#expected output
+=head
+gene	1.avinput	2.avinput	3.avinput
+MYC	Y	N	Y
+CD41	N	Y	Y
+PKLR	Y	Y	Y
+=cut
+
+print join("\t","GENE",@ARGV),"\n"; #header
+for my $gene (sort keys %gene_exist)
+{
+    next if ($gene eq 'NONE' or $gene eq 'UNKNOWN');
+    print join("\t",$gene,@{$gene_exist{$gene}} ),"\n";
+}
+
+#clean
+#warn "Cleaning...\n" and unlink @unlink if @unlink

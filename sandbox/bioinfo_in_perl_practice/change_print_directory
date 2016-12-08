@@ -1,0 +1,15 @@
+#!/usr/bin/env perl
+
+use warnings;
+use strict;
+
+print "enter a directory name (default is your home directory): \n";
+chomp(my $dir=<STDIN>);
+if ($dir=~/\s+/) {
+	chdir or die "$!\n";
+} else {
+	chdir $dir or die "$!\n";
+}
+for (sort glob '* .*') {
+	print "$_\n";
+}

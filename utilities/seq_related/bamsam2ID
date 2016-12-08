@@ -1,0 +1,40 @@
+#!/usr/bin/env perl
+
+use warnings;
+use strict;
+
+die "Usage: $0 1.bam 2.bam 1.sam ...\n" unless @ARGV;
+warn "Generating softlinks: \'sample_SampleID.bam\' or \'sample_SampleID.sam\'\n";
+warn "Assuming one sample per file\n";
+
+for my $in_file(@ARGV) 
+{
+    my $suffix;
+    my $sm; 
+    my $out_file;
+
+    if ($in_file=~/\.(bam|sam)$/i) 
+    {
+	$suffix=$1;
+    } else 
+    { die "Unknown file type\n" }
+    
+    if ($suffix=~/bam/i) 
+    {
+	open IN,"samtools view -H $in_file |" 
+	    or die "Failed to find samtools\n";
+    } else 
+    {
+	open IN,"< $in_file" or die "Failed to open $in_file\n";
+    }
+
+    while(<IN>)
+    {
+	$sm=$1 and last if (/^\@RG/i && /SM:(.*?)(\t|$)/i);
+    }
+    close IN;
+    warn "Failed to find sample ID in $in_file, skip it...\n" and last unless $sm;
+    $out_file="sample_$sm.$suffix";
+    symlink $in_file,$out_file;
+    warn "$out_file created\n";
+}

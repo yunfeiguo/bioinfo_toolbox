@@ -1,0 +1,36 @@
+public class Solution {
+    public List<List<Integer>> threeSum(int[] nums) {
+        //brute force version
+        //iterate over all possible triplets
+        //assume nums.length >= 3
+        List<List<Integer>> ret = new LinkedList<List<Integer>>();
+        Arrays.sort(nums);//sort arrays for binary search
+        for(int i = 0; i < nums.length; i++) {
+            for(int j = i + 1; j < nums.length; j++) {
+                int target = -(nums[i] + nums[j]);
+                //look for target between j + 1 and end
+                //using binary search
+                int lo = j + 1;
+                int hi = nums.length - 1;
+                while (lo <= hi) {
+                    int mid = lo + (hi - lo)/2;
+                    if(nums[mid] == target) {
+                        //found another solution
+                        List<Integer> e = new LinkedList<Integer>();
+                        e.add(nums[i]);
+                        e.add(nums[j]);
+                        e.add(nums[mid]);
+                        Collections.sort(e);
+                        ret.add(e);
+                        break;
+                    } else if (nums[mid] > target) {
+                        hi = mid - 1;
+                    } else {
+                        lo = mid + 1;
+                    }
+                }
+            }
+        }
+        return(ret);
+    }
+}

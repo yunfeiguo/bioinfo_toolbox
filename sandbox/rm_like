@@ -1,0 +1,83 @@
+#!/usr/bin/env perl
+
+use warnings;
+use strict;
+use Pod::Usage;
+use Getopt::Long;
+use File::Path qw/remove_tree/;
+
+my ($verbose, $recursive, $help);
+
+GetOptions('verbose|v' => \$verbose, 'recursive|r'=>\$recursive, 'help|h'=>\$help) or pod2usage ({-verbose => 0, -exitval => 2, -output => \*STDERR}); #however, all arguments inside pod2usage can be omitted
+	
+$help and pod2usage ({-verbose=>1, -exitval=>1, -output=>\*STDOUT}); #default output filehandle is STDERR unless the exit value is less than 2
+@ARGV or pod2usage ({-verbose=>0, -exitval=>2, -output=>\*STDERR}); #this is invoked by an error, so better go to STDERR
+
+if ($verbose) {
+	for (@ARGV) {
+		if ($recursive) {
+			if (-d) {
+				remove_tree ($_,{verbose => 1}) or die "cannot remove $_: $!\n";
+			} else {
+				print "unlink $_\n";
+				unlink or die "cannot remove $_: $!\n";
+			}
+		} else {
+			print "unlink $_\n";
+			unless (unlink) {
+				die "cannot remove $_: $!\n";
+				print "This is a directory, please specify '-r' in options.\n" if -d;
+			}	
+		}
+	}
+} else {
+	for (@ARGV) {
+		if ($recursive) {
+			if (-d) {
+				remove_tree ($_) or die "cannot remove $_: $!\n";
+			} else {
+				unlink or die "cannot remove '$_': $!\n";
+			}
+		} else {
+			unless (unlink) {
+				print "This is a directory, please specify '-r' in options.\n" if -d;
+				die "cannot remove '$_': $!\n";
+			}	
+		}
+	}
+}
+
+#the blank between each tag is mandatory!!!
+__END__
+
+=head1 NAME
+
+rm_like - an rm-like program
+
+=head1 SYNOPSIS
+
+rm_like [options] [file ...]
+
+ Options:
+	-h, -help		print help information
+	-r, -recursive		delete directories
+
+=head1 OPTIONS
+
+=over 8
+
+=item B<-help>
+
+Print a brief help message and exits
+
+=item B<-recursive>
+
+remove directories and their contents recursively
+
+=back
+
+=head1 DESCRIPTION
+
+B<This program> will delete the user-specified input file(s) and directories
+
+=cut

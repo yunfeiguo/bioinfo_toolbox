@@ -1,0 +1,26 @@
+public class Solution {
+	public ArrayList<Long> productExcludeItself(ArrayList<Integer> A) {
+		ArrayList<Long> ret = new ArrayList<Long>();
+		if (A == null || A.size() == 0) {
+			return ret; //assume return empty list for empty input
+		}
+		int n = A.size();
+		long cumProd = 1; //be careful about casting
+		//scan from the start
+		for (int i = 0; i < n - 1; i++) {
+			cumProd *= A.get(i);
+			ret.add(cumProd);
+		}
+		//take care of last element
+		ret.add(cumProd);
+		cumProd = 1; //reset cumulative product for reverse scanning
+		//scan from the end
+		for (int i = n - 1; i >= 1; i--) {
+			ret.set(i, cumProd * ret.get(i - 1));
+			cumProd *= A.get(i);
+		}
+		//take care of first element
+		ret.set(0, cumProd);
+		return ret;
+	}
+}

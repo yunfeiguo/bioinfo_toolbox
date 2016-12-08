@@ -1,0 +1,15 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use Proc::ProcessTable;
+
+print "Mem usage: ",&mem_use,"\n";
+
+sub mem_use {
+my $t=new Proc::ProcessTable;
+for my $got(@{$t->table}) {
+next if not $got->pid eq $$;
+return $got->size;
+}
+}

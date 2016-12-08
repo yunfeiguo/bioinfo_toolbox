@@ -1,0 +1,13 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+
+my $exists = 0;
+for (@ARGV) {
+    $exists =1 and last if -f or -l;
+}
+if($exists) {
+    exec("cp @ARGV");
+} else {
+    exit 0;
+}

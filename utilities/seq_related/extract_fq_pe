@@ -1,0 +1,102 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use File::Basename qw/basename/;
+
+die "Usage: $0 <int> <pe1.fq> <pe2.fq>\n".
+"Extract INT paired reads from two FASTQ files\n" unless @ARGV==3;
+
+my $n=shift @ARGV;
+my $r=0; #return reads #
+my %read1;
+my %read2;
+my %index;
+my ($fq1,$fq2)=@ARGV;
+my $fq1out="sub_".basename($fq1);
+my $fq2out="sub_".basename($fq2);
+my $pattern1=' 1:';
+my $pattern2=' 2:';
+
+warn "Assume 4 lines per read, first line is read ID\n";
+warn "Read IDs with '$pattern1' are 1st pair, with '$pattern2' are 2nd pair\n";
+
+open IN,"<",$fq1 or die "can't open $fq1: $!\n";
+
+{
+    my $count=0;
+    while(<IN>)
+    {
+	last if $count==$n;
+	if (/^@/)
+	{
+	    my $id=$_;
+	    #modify this line for appropriate read ID format
+	    $id=~s%$pattern1%$pattern2% or die "Unrecognized read ID: $_\n";
+	    ################################################
+	    $index{$id}=0;
+	    $read1{$id}=$_;
+	    $_=<IN>;
+	    $read1{$id}.=$_;
+	    $_=<IN>;
+	    $read1{$id}.=$_;
+	    $_=<IN>;
+	    $read1{$id}.=$_;
+	    $count++;
+	}
+    }
+    close IN;
+}
+
+
+{
+    my $count=0;
+    open IN,"<",$fq2 or die "can't open $fq2: $!\n";
+
+    while(<IN>)
+    {
+	last if $count==$n;
+	if (/^@/)
+	{
+	    my $id=$_;
+	    if (defined $index{$id})
+	    {
+		$index{$id}=1;
+		$read2{$id}=$_;
+		$read2{$id}.=<IN>;
+		$read2{$id}.=<IN>;
+		$read2{$id}.=<IN>;
+		$count++;
+	    }else
+	    {
+		$_=<IN>;
+		$_=<IN>;
+		$_=<IN>;
+	    }
+
+	}
+    }
+    close IN;
+}
+
+#output
+open OUT,">",$fq1out or die "can't create $fq1out: $!\n";
+
+for my $id (keys %index)
+{
+    print OUT $read1{$id} and $r++ if $index{$id};
+}
+
+close OUT;
+
+open OUT,">",$fq2out or die "can't create $fq2out: $!\n";
+
+for my $id (keys %index)
+{
+    print OUT $read2{$id} if $index{$id};
+}
+
+close OUT;
+
+warn "Requested $n paired reads, found $r\n";
+warn "Output: $fq1out and $fq2out\n";

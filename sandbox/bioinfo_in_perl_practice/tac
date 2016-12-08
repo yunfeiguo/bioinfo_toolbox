@@ -1,0 +1,15 @@
+#!/usr/bin/env perl
+
+use warnings;
+use strict;
+
+##first method
+#my @tmp;
+#while (<>) {
+#unshift @tmp,$_;
+#}
+#print @tmp;
+
+#second method
+my @lines=<>;
+print reverse @lines;

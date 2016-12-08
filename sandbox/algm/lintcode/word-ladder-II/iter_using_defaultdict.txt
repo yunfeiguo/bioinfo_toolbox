@@ -1,0 +1,40 @@
+class Solution:
+    # @param start, a string
+    # @param end, a string
+    # @param dict, a set of string
+    # @return a list of lists of string
+    def findLadders(self, start, end, dict):
+        # write your code here
+        #use BFS
+        if (not start) or (not end):
+            return([])
+        if start == end:
+            return([[start,end]])
+        from collections import defaultdict 
+        dict.add(end)
+        parent = defaultdict(list)
+        toVisit = [start]
+        import string
+        while toVisit and not (end in parent):
+            newLvl = defaultdict(list)
+            for i in toVisit:
+                for j in range(len(i)):
+                    for c in string.lowercase:
+                        new = i[:j]+c+i[j+1:]
+                        if new in dict and (not new in parent):
+                            #add element if they haven't been seen so far
+                            newLvl[new].append(i)
+            toVisit = newLvl.keys()
+            parent.update(newLvl)
+        #construct path
+        ret = [[end]]
+        while not start in ret[-1]:
+            nxtPath = []
+            for i in range(len(ret)):
+                for j in parent[ret[i][-1]]:
+                    nxtPath.append(ret[i]+[j])
+            ret = nxtPath
+        for j in range(len(ret)):
+            ret[j].reverse()
+        return(ret)
+

@@ -1,0 +1,49 @@
+class MyQueue:
+
+    def __init__(self):
+        #stack1 as LIFO
+        #stack2 as FIFO
+        self.stack1 = []
+        self.stack2 = []
+        
+    def push(self, element):
+        # write your code here
+        # push onto the LIFO stack
+        self.stack1.append(element)
+    def top(self):
+        # write your code here
+        # return the top element
+        if self.empty():
+            return(None)
+        if len(self.stack2) == 0:
+            self._move()
+        return(self.stack2[-1])
+    def pop(self):
+        # write your code here
+        # pop and return the top element
+        if self.empty():
+            return(None)
+        if len(self.stack2) == 0:
+            self._move()
+        return(self.stack2.pop())
+            
+    def empty(self):
+        return(len(self.stack1) == 0 and len(self.stack2) == 0)
+        
+    def _move(self):
+        #move elements from stack1 to stack2
+        while len(self.stack1) > 0:
+            self.stack2.append(self.stack1.pop())
+        #print(len(self.stack2))
+'''        
+x = MyQueue()
+x.push(1)
+x.push(2)
+x.push(3)
+x.push(4)
+x.push(5)
+x.pop()
+x.pop()
+x.push(6)
+#print(x.top())
+'''

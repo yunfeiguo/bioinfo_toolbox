@@ -1,0 +1,761 @@
+#!/usr/bin/env perl
+
+use warnings;
+use strict;
+#use diagnostics;
+
+#my ($pi,$radius)=(3.1415926,undef);
+#print "Please enter the radius (must be positive): \n";
+#chomp ($radius=<STDIN>);
+#if ($radius < 0) {
+#	print "Circumstance is 0.\n";
+#	print "Invalid radius value, please enter a positive number!\n";
+#} else {
+#print "Circumstance is ".2*$pi*$radius,"\n";
+#}
+#
+#print "Please enter two numbers:\n";
+#my ($num1,$num2);
+#chomp($num1=<STDIN>,$num2=<STDIN>);
+#print "The multiplication of these two numbers is ".$num1*$num2,"\n";
+#
+#print "Enter a string:\n";
+#chomp(my $string=<STDIN>);
+#print "Enter repeat time:\n";
+#chomp(my $No_rep=<STDIN>);
+#if ($No_rep<0) {
+#	print "Invalid repeat time!\n";
+#} else {
+#	print $string x$No_rep,"\n";
+#}
+#
+#my @array=(1..20);
+#my @reverse=reverse @array;
+#my @sort= sort ("big","allie","jim","mary");
+#print "@array\n@reverse\n@sort\n";
+#
+#sub sum {
+#	state @numbers;
+#	push @numbers, @_;
+#	foreach my $num(@_) {
+#
+#		print "welcome sailor No.$num.\n";
+#	}
+#	print "we now have @numbers sailors.\n";
+#}
+#&sum(4,5);
+#
+#sub sum {
+#	my $sum=0;
+#	foreach (@_) {
+#		$sum +=$_;
+#	}
+#	return $sum;
+#}
+#sub average {
+#	my $avg=&sum(@_)/@_;
+#}
+#sub above_avg {
+#	my $avg=&average(@_);
+#	foreach my $element(@_) {
+#		print "$element\n" if ($element > $avg)
+#	}
+#}
+#&above_avg(1..20);
+#
+#while (defined(my $line=<>)) {
+#	chomp($line);
+#	print "READING: $line\n";
+#}
+#
+#my $format="%20s\n";
+#my @guests=qw/Jim Tom Jerry/;
+#
+#print "The format is \n>>",$format x @guests,"<<\n";
+#print "Hello, your guests are:\n";
+#printf $format x @guests,@guests;
+#
+#warn "You're opening the Pandora box!\n";
+#unless (open MYARG, "< /etc/passwd") { die "open file failure:$!" }
+#unless (open OUT, "> test4.txt") { die "open file failure:$!"}
+#select OUT;
+#while (defined (my $line=<MYARG>)) {
+#	chomp($line);
+#	print "READING:$line\n";
+#}
+#$|=1;
+#select STDOUT;
+#print "This line should be displayed on the screen!\n";
+#	
+#my $format="%20s";
+#my $ruler="1234567890";
+#
+#print "Please enter position:\n";
+#chomp (my $pos=<STDIN>);
+#$format="%${pos}s\n";
+#print $ruler x ($pos/10+1),"\n";
+#while (<>) {
+#	chomp;
+#      printf $format,$_;
+#}
+#
+#my @AoA;
+#my ($x,$y,$z);
+#for $x(1 .. 10) {
+#	for $y (1 .. 10) {
+#		for $z (1 .. 10) {
+#			$AoA[$x][$y][$z]=$x+$y*$z;
+#		}
+#	}
+#}
+#print $AoA[1][2][3],"\n";
+#print @AoA,"\n";
+#my @AoA2;
+#
+#my @array = qw<1 2 3>;
+#$AoA2[0]=[@array];
+#@array= qw<you and me>;
+#$AoA2[1]=[@array];
+#
+#for my $i (0..1) {
+#	for my $j (0..2) {
+#		print "${$AoA2[$i]}[$j]\n";
+#}
+#}
+#
+#my @array2;
+#chomp (my $input=<STDIN>);
+#@array2= split /,/, $input;#chomp has not to be in the same as 'split', but I don't understand. 
+#print "@array2\n";
+
+##how to generate and access array of arrays
+#my @AoA;
+#while (<>) {
+#	chomp;
+#	push @AoA,[split //];
+#}
+#print "$AoA[0][1]\n";
+#print "print whole thing with refs\n";
+#for my $aref(@AoA) {
+#	print "\t [@{$aref}],\n";
+#}
+#print "print whole thing with indices\n";
+#for my $i (0..$#AoA) {
+#	print "\t [@{$AoA[$i]}],\n";
+#}
+#print "print whole thing one at a time\n";
+#for my $i (0..$#AoA) {
+#	for my $j (0..$#{$AoA[$i]}) {
+#		#print "elt $i $j is $AoA[$i][$j]\n";
+#		print "elt $i $j is @AoA->[$i][$j]\n";
+#	}
+#}
+#
+##how to generate a hash of arrays
+#my %HoA=(
+#	flitstones => ["you", "me"],
+#	george => ["he","his"],
+#	jim => ["yes",'no'],
+#);
+##how to read hash of arrays from file
+##format flintstones: fred barney wilma dino
+#while (<>) {
+#	chomp;
+#	next unless s/^(.*?):\s*//;
+#	$HoA{$1}=[split / /];
+#}
+##format flintstones: fred barney wilma dino
+##while (my $line=<>) {
+##	chomp $line;
+##	my ($who,$rest) = split /:\s*/,$line,2;
+##	my @fields= split ' ', $rest;
+##	$HoA{$who}=[@fields];
+##}
+#print "accessing single element\n";
+#print "$HoA{yunfei}[1]\n";
+#
+#how to generate array of hashes
+#format NAME=Yunfei AGE=23
+#my @AoH;
+#while (<>) {
+#	chomp;
+#	my $hash_ref={};
+#	for my $field (split / /) {
+#		my($key,$value) = split /=/,$field,2;
+#		$hash_ref->{$key}=$value;
+#	}
+#	push @AoH,$hash_ref;
+#}
+#print "print the whole thing with refs\n";
+#for my $href (@AoH) {
+#	while ( my ($key,$value)=(each %$href)) {
+#		print "$key=$value\n";
+#	}
+#}
+#
+#my @lines;
+#while (<>) {
+#	chomp;
+#	m{(?:fred) and (?<friend_name>wilma|jim) and \g{friend_name}} and push @lines,$+{friend_name};
+#}
+#print "@lines\n";
+
+#while(<>) {
+#	chomp;
+#	if (/\b(?<name>\w*a)\b(?<after>.{0,5})/) {
+#		print "Matched $+{name} and after $+{after}: |$`<$&>$'|\n";
+#	} else {
+#		print "No match: |$_|\n";
+#	}
+#}
+
+##delete runs of spaces
+#$string =~ s#/\s+/ /g;
+
+##matching in array context
+#$string="Oh, my God!";
+#my @words= ($string =~ m/\b\w+\b/g);
+#print "@words###\n";
+#my @matches= ($string =~ m/(O.*), (m.*) (.*)!/);
+#print "@matches###\n";
+#my %hash= ($string=~ m/(\w+) (\w+)/g);
+#print keys %hash,"\@",values %hash,"\n";
+
+##multiple line matching
+#$_="Wilma has come here.\nWhen did you come?\n";
+#print "Found it!\n" if (/^When/m);
+
+##combine multiple lines into a single line
+#my $filename="test.txt";
+#open FILE, $filename or die "Cannot open $filename: $!";
+#my $lines=join '', <FILE>;
+#$lines=~ s/^/$filename: /mg;
+#print "$lines\n";
+
+##$^I usage
+#$^I=".bak";
+#while (<>) {
+#	chomp;
+#	s/(^#!)/#Copyright 2011-2012 Yunfei Guo\n$1/;
+#	print;
+#	print "\n";
+#}
+
+##switch-like statement
+#my $grade='C';
+#SWITCH: for ($grade) {
+#	/^$/ and die "not a grade!";
+#	/A/i and do {
+#		print "Congrats, you aced it!\n";
+#		last SWITCH;
+#	};
+#	/B/i and do {
+#		print "You got a B, fight on!\n";
+#		last SWITCH;
+#	};	
+#	/C/i and do {
+#		print "You are okay.\n";
+#		last SWITCH;
+#	};
+#	/D/i and do {
+#		print "Be careful next time!\n";
+#		last SWITCH;
+#	};
+#	/E/i and do {
+#		print "You almost failed it!\n";
+#		last SWITCH;
+#	};
+#	/F/i and do {
+#		print "Game Over\n";
+#		last SWITCH;
+#	};
+#	#default
+#	warn "Unknown grade";
+#}
+
+##switch-like statement
+##please also consider to use hashes
+#my $grade='A';
+#for ($grade) {
+#	if (/^$/) {		die "not a grade!";}
+#
+#	elsif (/A/i) {		print "Congrats, you aced it!\n";}
+#
+#	elsif (/B/i) {		print "You got a B, fight on!\n";}
+#
+#	elsif (/C/i) {		print "You are okay.\n";}
+#
+#	elsif (/D/i) {		print "Be careful next time!\n";}
+#
+#	elsif (/E/i) {		print "You almost failed it!\n";}
+#
+#	elsif (/F/i) {		print "Game Over\n";}
+#
+#	#default
+#	else { warn "Unknown value!\n";}
+#}
+
+##hash counting
+#my @people=qw/xiaolu zhuo xin lei/;
+#my %count;
+#$count{"xiaolu"}++;
+#foreach (@people) {
+#	print "I have seen you before!\n" if ($count{$_}++);
+#}
+#
+#while (my ($name,$count)=each (%count)) {
+#	print "$name;$count\n";
+#}
+
+##last usage example
+#while (<>) {
+#	if (/END/i) {
+#		last;
+#	} else {
+#		my @tmp=split;
+#		print scalar @tmp,"\ncontinue\n";
+#	}
+#}
+#print "Game Over\n";
+
+##next usage example
+#my $total;
+#my $valid;
+#my %count;
+#while (<>) {
+#	chomp;
+#	for (split) {
+#		$total++;
+#		next if /[^\w\-\']/;
+#		$valid++;
+#		$count{$_}++;
+#		##next go here directly
+#	}
+#}
+#print "total strings: $total\ntotal valid words: $valid\n";
+#for my $word (sort (keys %count)) {
+#	print "$word\t\t$count{$word}\n";
+#}
+
+##redo usage example
+#my @words=qw%good morning yes sir%;
+#
+#for my $test(@words) {
+#	print "please enter $test:\n";
+#	chomp(my $answer=<STDIN>);
+#		if ($answer =~ /$test/) {
+#			print "correct!\n";
+#		} else {
+#			redo;
+#		}
+#}
+
+##tag usage example
+#LINE: while (<>) {
+#	print "test1\n";
+#	foreach (split) {
+#		if (/END/i) {
+#			print "test4\n";
+#			redo LINE;
+#		}
+#		print "processing $_\n";
+#	}
+#	print "test2\n";
+#}
+#print "test3\n";
+
+##?: usage example
+#print "What's your shirt size?\n";
+#chomp(my $size=<STDIN>);
+#my $size_category = 
+#	$size =~ /^s$/i ? 'small':
+#	$size =~ /^m$/i ? 'medium':
+#	$size =~ /^l$/i ? 'large':
+#			'other sizes'; #default
+#print "Your size: $size_category\n";
+
+##use 5.010
+#for ((0,1,undef,"","0","undef","yes")) {
+#print "trying <<$_>>:\n";
+#defined $_ ? print "it is defined\n" : print "it is NOT defined\n";
+#my $name= $_ || "No last name";
+#print "|| result: $name\n";
+#$name=$_ // "No last name";
+#print "// result: $name\n";
+#}
+#
+#my $x=1;
+#my ($m,$n)=(2,3);
+##$m<$n ? $m=$x : $n=$x;
+#($m<$n) && ($m=$x);
+#print "\$m:$m;\$n:$n\n";
+
+#guessing game
+#NOTICE: when using ternery conditional operator, use parentheses to avoid misinterpretation!
+#
+#print "Now let's play a guessing game!\n";
+#my $target=int (1+rand 100);
+#print "Please enter a number between 1 to 100 or enter quit or exit to stop:\n";
+#my $test;
+#print "Enter test mode? (Y/N)";
+#chomp($test=<STDIN>);
+#($test=~ /^(y|yes)$/i) ? print STDERR  "Test Mode: $target\n":
+#($test=~ /^(n|no)$/i) ? print "":
+#			print "Invalid option!\n";
+#while (<>) {
+#	chomp;
+#	if (/^\d+$/) {
+#		($_ == $target) ? (print "You win $target bucks!\n" and last) :
+#		($_ > $target)  ? print "Too high, try again:\n" : 
+#				print "Too low, try again:\n";
+#	} else {
+#		(/^(quit|exit|\s+)$/) ? last:
+#						(print "Invalid value! Try again.\n" and next); #default
+#	}
+#}
+#print "Game Over\n";
+
+#use File::Basename qw/basename/; 
+#use File::Spec;
+#my $name="/home/yunfeiguo/scripts/test.txt";
+#my $basename=basename $name;
+#my $dirname= File::Basename::dirname $name;
+#print "$basename;$dirname\n";
+#$basename =~ s/^/not/;
+#my $new_name=File::Spec->catfile($dirname,$basename); #avoid portability issues
+#print "$new_name\n";
+#print "nulldevice:",File::Spec->devnull,"\n";
+#rename($name,$new_name) or die "Can't rename $name to $new_name: $!";
+
+#use Module::CoreList;
+#my %modules=%{$Module::CoreList::version{5.008}};
+#for (sort keys %modules) {
+#	print "$_, $modules{$_}\n";
+#}	
+
+#file tests
+##check if a file already exists
+#my $filename='test.txt';
+#warn "Oops! A file called '$filename' already exists.\n" if -e $filename;
+##check how long ago a file was modified
+#$filename='grep_like';
+#print ((-M $filename),"\n");
+#warn "$filename looks pretty old.\n" if -M $filename > 1;
+##check if file is big and old
+#$filename='/home/yunfeiguo/projects/data/s4.2.fastq';
+#warn "big and old!\n" if -A $filename and -s $filename > 100_000
+
+##multiple file tests
+#my $filename="test.txt";
+#print "it is readable and writable\n" if (-r $filename and -w _);
+#(-x _) ? print "'$filename' is executable\n" : print "'$filename' is NOT executable\n";
+#my @stat_output=stat $filename;
+#print "@stat_output\n";
+#my @time= localtime 1343687788;
+#print "@time\n";
+
+##rwx file tests
+#sub file_test {
+#	my $filename= pop @_;
+#	my @return;
+#	#exist?
+#	push @return, (-e $filename ? 'Y':'N');
+#	#readable?
+#	push @return, (-r $filename ? 'Y':'N');
+#	#writable?
+#	push @return, (-w $filename ? 'Y':'N');
+#	#executable?
+#	push @return, (-x $filename ? 'Y':'N');
+#	
+#	return @return;
+#}
+#while (<>) {
+#	chomp;
+#	print "Exist?	Readable?	Writable?	Executable?\n";
+#	print join ("\t",&file_test($_)),"\n";
+#}
+#	
+
+#my $file_name;
+#my $file_mod_day;
+#while (<>) {
+#	chomp;
+#	if ((-M $_) > $file_mod_day) {
+#		$file_mod_day= (-M _);
+#		$file_name=$_;
+#	}
+#	if ($_ eq '') {
+#		die "Usage: $0 file_name\n";
+#	}
+#}
+#print "oldest file: $file_name;days after last modification: $file_mod_day\n";
+#if (-w -r -e $file_name) {
+#	print "'$file_name' is readable, writable\n";
+#}
+
+##change working directory; globbing; directory handle
+#chdir "/home/yunfeiguo/perl5/lib/perl5" or die "Cannot change directory to '\\': $!";
+#print "Found *.pm!\n" if (-e glob ("*.pm"));
+#print glob ("*.pm"),"\n";
+#
+#my @filenames=glob ("*.pm H*");
+#print "@filenames \n";
+#
+#my $dir="/home/yunfeiguo/perl5/lib/perl5";
+#my @filenames=<$dir/*.pm $dir/Y*>;
+#print "@filenames\n";
+#
+#my $file="test.txt";
+#my $cwd="/home/yunfeiguo/perl5/lib/perl5";
+#open FILE, "< $file" or die "Cannot open $file: $!";
+#opendir CWD, $cwd or die "Cannot open $cwd: $!";
+#my @lines= readline FILE;
+#my @filenames= sort readdir CWD;
+#print "\@lines: @lines\n";
+#print "\@filenames: @filenames\n";
+#my @full_name;
+#for (readdir CWD) {
+#	next if /^\./; #skip files with '.' at the beginning of name
+#	next unless /\.pm$/; #choose only files ending with '.pm' in name
+#	$_="$cwd/$_";
+#	push @full_name,"$_\n";
+#}
+#print "\@full_name:",sort @full_name,"\n";
+#close FILE;
+#closedir CWD;
+#
+##the code below demonstrates that 'readline' is a one-time function ('readdir' is similar)
+#my @array1;
+#my @array2;
+#open FILE,"< test.txt" or die "$!";
+#@array1=readline FILE;
+#@array2=readline FILE;
+#print "\@array1: @array1\n";
+#print "\@array2: @array2\n";
+
+##traverse the entire directory and do something
+#use File::Find qw/find/;
+#
+#my $dir="/home/yunfeiguo/scripts";
+#find (\&debug, $dir);
+#sub debug {
+#	print "find a directory: $File::Find::name\n" if -d;
+#}
+#
+##a shorter version
+#use File::Find;
+#my $dir="/home/yunfeiguo/scripts";
+#find ({wanted => sub {print "find a directory: $File::Find::name\n" if -d}, no_chdir => 1},$dir); #note: find takes arguments as hashes
+
+##list the 20 largest files in your home directory
+#use File::Find;
+#
+#(@ARGV == 1) or die "Usage: $0 [search_directory]\n";
+#my %large_files;
+#my $dir= pop @ARGV;
+#find ( sub {	$large_files{$File::Find::name} = -s if -f}, $dir);
+#
+#my @sorted= sort {$large_files{$b} <=> $large_files{$a}} keys %large_files;
+#splice @sorted,20 if @sorted > 20;
+#for (@sorted) {
+#	printf "%10d %s\n",$large_files{$_},$_;
+#}
+
+##delete files
+#my $dir="/home/yunfeiguo/scripts/test/nucleo_bomb";
+##chdir $dir or die "$!\n";
+#opendir WD, $dir or die "$!\n";
+#for (readdir WD) {
+#	unlink "$dir/$_" or die "cannot remove $_: $!\n" unless /^\./;
+#}
+
+##rename *.old files by *.new files
+#my $dir = "/home/yunfeiguo/scripts/test";
+#chdir $dir or die "cannot enter $dir: $!\n";
+#for (glob "*.old") {
+#	my ($new_name = $_) =~ s/\.old$/.new/;
+#	print "\$new_name: $new_name\n";
+#	if (-e $new_name) {
+#		print "Can't rename $new_name: it exists!\n";
+#	} else {
+#		rename $_,$new_name or warn "Can't rename $_: $!\n";
+#	}
+#}
+#
+
+##create hard links
+#my $dir="/home/yunfeiguo/scripts";
+#my $file="test.txt";
+#link "$dir/$file", "$dir/$file.hard" or die "can't create hard link for $dir/$file: $!\n";
+#symlink "$dir","scripts_dir.soft" or die "can't create soft link for $dir: $!\n";
+#print readlink "scripts_dir.soft","\n";
+#
+##manipulate a directory
+#my $dir='/home/yunfeiguo/scripts/test';
+#mkdir $dir, 0700 or warn "Can't create $dir: $!";
+#rmdir $dir or warn "Can't remove $dir: $!\n";
+#for( glob "$dir/*") {
+#	print $_,"\n";
+#	unlink $_ or rmdir $_ or die "Can't delete $_: $!\n";
+#}
+#rmdir $dir or warn "Can't remove $dir: $!\n";
+
+##create a scratch directory and a scratch file then delete them
+##a potential problem here is if there is subdirectories, unlink will fail and so does rmdir
+##use File::Path::remove_tree to solve this problem
+#my $temp_dir="/tmp/scratch_$$";
+#print "before creating $temp_dir\n";
+#print `ls /tmp`;
+#mkdir $temp_dir,0700 or die "cannot create $temp_dir: $!\n";
+#my $temp_file="$temp_dir/test" unless -e "$temp_dir/test";
+#open FILE,"> $temp_file" or die "cannot create file $temp_file: $!\n";
+#print FILE "Good morning!\n";
+#print `cat $temp_file`;
+#unlink glob "$temp_dir/*" or die "cannot remove $temp_dir/*: $!\n";
+#rmdir $temp_dir or die "cannot remove $temp_dir: $!\n";
+#print "!!!!after removing $temp_dir\n";
+#print `ls /tmp`;
+#
+#use File::Path qw/remove_tree/;
+#my $temp_dir="/tmp/scratch_$$";
+#mkdir $temp_dir,0700 or die "cannot create $temp_dir: $!\n";
+#my $temp_file="$temp_dir/test" unless -e "$temp_dir/test";
+#open FILE,"> $temp_file" or die "cannot create file $temp_file: $!\n";
+#print FILE "Good morning!\n";
+#print `cat $temp_file`;
+#mkdir "$temp_dir/sub", 0000 or die "cannot create sub directory under $temp_dir :$!\n";
+#print "before removing $temp_dir\n";
+#print `ls /tmp`;
+##remove_tree ("$temp_dir", {keep_root => 1}) or die "$!\n";
+#print "!!!!after removing $temp_dir\n";
+#print `ls /tmp`;
+#
+##change file permission
+#chmod oct("0700"), "test.txt" or die "$!\n";
+#chmod "0700", "test.txt" or die "$!\n"; #without oct(), "0700" will be converted to decimal number 700 by default
+#
+##change ownership
+#defined (my $user= getpwnam "kaiwang") or die "bad user:$!\n";
+#defined (my $group= getgrnam "wanglab") or die "bad group:$!\n";
+#chown $user,$group, glob "test*" or die "unable to change ownership to $user and $group: $!\n";
+
+##change time stamp
+#print time,"\n";
+#my $now=time;
+#printf "32bit_time:%-32b\n",$now;
+#my $future=2147483641;
+#printf "32bit_time:%-32b\n",$future;
+#utime $future, $now, "test.txt" or die "cannot change time stamp: $!\n";
+
+##index, rindex
+#my $string="Hello, world";
+#my $sub="ld";
+#print index ($string,$sub),"\n";
+#print index ($string,'l'),"\n";
+#print rindex ($string,'l'),"\n";
+#print index ($string,'l',11),"\n";
+#print rindex ($string, 'l',9),"\n";
+#print rindex ($string, $sub) ,"\n";
+
+#upload, change working directory, use grep, use glob
+#use Cwd;
+#
+#my ($base, $exe)=('/home/yunfeiguo/projects/auto_ngs_analysis/Downloads','gatk2');
+#chdir($base);
+#while (1) {
+#	print "Please upload $exe package with suffix tar.bz2 to $base directory.\nPress ENTER when you have done so.\n";
+#	my $tmp=<STDIN>;
+#	my ($file)= grep {-f $_} <GenomeAnalysisTK-2*tar.bz2>;
+#	last if (-f $file);
+#}
+#
+
+#capture system command stdout and stderr in a platform-independent manner
+#use IO::CaptureOutput qw/capture/;
+#
+#my ($stdout,$stderr);
+#
+#capture sub {
+#        system('find . -name "test*" -print');
+#} => \$stdout, \$stderr;
+#open FILE,">> report.txt";
+#print FILE $stdout,$stderr;
+#close FILE;
+
+##use process as a filehandle
+#open FIND,"find -atime +90 -size +10 -print|" or die "fork:$!";
+#while(<FIND>) {
+#	        chomp;
+#		        print "Found $_!\n";
+#		}
+#
+
+##fork1
+#defined (my $pid=fork) or die "Cannot fork: $!";
+#unless ($pid) {
+#	exec "date";
+#	die "cannot exec date: $!";
+#}
+#waitpid($pid,0);
+
+##fork2
+#defined (my $pid=fork);
+#if ($pid ==0) {
+#	print "Child\n";
+#	sleep 1;
+#	print "Child2\n";
+#	exit(0);
+#} elsif (not defined $pid) {
+#	print "unable to fork: $!";
+#} else {
+#	print "Parent\n";
+#}
+
+##fork3
+#my $num=10;
+#my @childs;
+#for (1..$num) {
+#	my $pid=fork;
+#	if ($pid) {
+#		print "parent\n";
+#		push @childs,$pid; #so parent knows PID of every child
+#	} elsif ($pid==0) {
+#		print "child\n"; #for child, pid is forever 0
+#		sleep 5;
+#		exit(0);
+#	} else {
+#		warn "no resources for forking\n";
+#	}
+#	print "last in for\n";
+#}
+#print "after for\n";
+#
+#for (@childs) {
+#	print "this is child $_\n";
+#	waitpid($_,0);
+#}
+
+##detect whether a process is dead
+#defined (my $pid=fork) or die "cannot fork: $!"; #you have to use defined(), since for child process, $pid=fork always returns 0
+#if ($pid) {
+#	unless (kill 0,$pid) {
+#	warn "$pid has gone\n";
+#}
+#} else {
+#	sleep 10;
+#}
+
+#signal handling
+sub cleanup {
+	print "begin cleanup...\n";
+}
+sub int_handler {
+	&cleanup;
+	print "Interrupted, exiting ...\n";
+	sleep 1;
+	print "i'm still alive, HAHA!\n";
+	sleep;
+}
+$SIG{'INT'}='int_handler'; #& is not necessary
+sleep 100;
+

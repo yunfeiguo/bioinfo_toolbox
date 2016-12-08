@@ -1,0 +1,9 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+
+open FH,'>',"try.bin" or die "failed to open: $!\n";
+binmode(FH) or die "failed to set to binmode: $!\n";
+print FH pack("b*",'11111111');
+close FH;

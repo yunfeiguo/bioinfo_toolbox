@@ -1,0 +1,13 @@
+class Solution:
+    # @param {string} s
+    # @param {string} t
+    # @return {boolean}
+    def isAnagram(self, s, t):
+        if len(s) != len(t):
+            return(False)
+        elif len(s) == 0:
+            return(True)
+        else:
+            #s t have equal len
+            #and they have >0 length
+            return(sorted(s) == sorted(t))

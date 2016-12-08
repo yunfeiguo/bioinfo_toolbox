@@ -1,0 +1,82 @@
+/*not pass*/
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+public class Solution {
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        if(p == q) return(p);
+        if(p == null) return(q);
+        if(q == null) return(p);
+        if(root == null) return(null);
+        if(root == p || root == q) return(root);
+        TreeNodeWithParent[] x = linkParent(root, p, q);
+        TreeNodeWithParent newRoot = x[0];
+        TreeNodeWithParent newP = x[1];
+        TreeNodeWithParent newQ = x[2];
+        Stack<TreeNodeWithParent> pParent = new LinkedList<TreeNodeWithParent>();
+        Stack<TreeNodeWithParent> qParent = new LinkedList<TreeNodeWithParent>();
+        while(newP != newRoot) {
+            pParent.push(newP);
+            newP = newP.parent;
+        }
+        while(newQ != newRoot) {
+            qParent.push(newQ);
+            newQ = newQ.parent;
+        }
+        pParent.push(newRoot);
+        qParent.push(newRoot);
+        TreeNodeWithParent ret = null;
+        while(true) {
+            TreeNodeWithParent x = pParent.pop();
+            TreeNodeWithParent y = qParent.pop();
+            if(x != y) {
+                return(ret);
+            } else {
+                prev = x;
+            }
+        }
+        
+        
+    }
+    public TreeNodeWithParent linkParent(TreeNode root, TreeNode p, TreeNode q) {
+        if(root == null) return(null);
+        Stack<TreeNode> s = new Stack<TreeNode>();
+        TreeNodeWithParent newRoot = new TreeNodeWithParent();
+        TreeNodeWithParent newP;
+        TreeNodeWithParent newQ;
+        newRoot.left = root.left;
+        newRoot.right = root.right;
+        s.push(newRoot);
+        while(!s.isEmpty()) {
+            TreeNodeWithParent cur = s.pop();
+            if(cur.right != null) {
+                TreeNodeWithParent newRight = new TreeNodeWithParent();
+                newRight.left = cur.right.left;
+                newRight.right = cur.right.right;
+                newRight.parent = cur;
+                s.push(newRight);
+                if (cur.right == p) newP = newRight;
+                if (cur.right == q) newQ = newRight;
+            }
+            if(cur.left != null) {
+                TreeNodeWithParent newLeft = new TreeNodeWithParent();
+                newLeft.left = cur.left.left;
+                newLeft.right = cur.left.right;
+                newLeft.parent = cur;
+                s.push(newLeft);
+                if (cur.left == p) newP = newLeft;
+                if (cur.left == q) newQ = newLeft;
+            }
+        }
+        return(new TreeNodeWithParent{newRoot, newP, newQ});
+    }
+    private class TreeNodeWithParent extends TreeNode {
+        TreeNodeWithParent parent;
+    }
+}

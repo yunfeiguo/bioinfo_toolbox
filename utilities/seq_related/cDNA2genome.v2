@@ -1,0 +1,290 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+use File::Spec;
+
+warn "NOTICE: this program converts cDNA coordinates to genomic coordinates.\n";
+warn "NOTICE: assume no transcript name in cDNA file.\n";
+warn "NOTICE: assume cDNA contains UTR regions.\n";
+my $wd="/home/yunfeiguo/projects/data/haiying_enzyme_compare/cDNA2genome";
+#my $cDNA_file=File::Spec->catfile($wd,"PGM_positive_control_result.txt");
+my $cDNA_file="try.txt";
+my $refGeneDB="/home/yunfeiguo/Downloads/annovar/humandb/hg19_refGene.txt";
+my $bed=File::Spec->catfile($wd,"..","haiying_capture2.bed");
+my $get_seq="/home/yunfeiguo/scripts/seq_related/getFastaSeq";
+my $ref="/home/yunfeiguo/projects/seqmule_parallel/database/human_g1k_v37.fasta";
+my $gene="BRCA1,BRCA2";
+#example input
+#chr13   397     54.16   c.1114A>C       c.1114A>C       ▒▒
+#example refGene line, from UCSC genome browser
+#738     NM_033196       chr19   -       20115226        20150277        20116813        20150154        4       20115226,20133812,20135058,20150151,    20118084,20133908,20135185,20150277,   0       ZNF682  cmpl    cmpl    1,1,0,0,
+
+my %transcript=&read_refgene($refGeneDB,$bed); #chromosome name 1,2,3,...,X,Y,MT
+&input2output($cDNA_file,\%transcript);
+
+
+sub read_refgene
+{
+    #read transcript info from refGene database
+    #transcripts outside BED file are ignored
+    my $refgene=shift;
+    my $bed=shift;
+    my %return;
+    my %region=&read_bed($bed);
+
+    warn "NOTICE: Begin reading refGene database, transcripts whose CDS is outside BED file will be ignored.\n";
+    open DB,'<',$refgene or die "Failed to read $refgene: $!\n";
+    while(<DB>)
+    {
+	s/[\r\n]+$//;
+	my @f=split /\t/,$_,-1;
+	@f==16 or die "16 fields expected at line $. of $refgene: $_\n";
+	my $chr=$f[2];
+	$chr=~s/^chr//;
+	next unless defined $region{$chr};
+
+	my ($txstart,$txend)=@f[4,5];
+	$txstart; #0-based start
+
+	$return{$chr}=[] unless defined $return{$chr};
+	for my $i(@{$region{$chr}})
+	{
+	    my ($start,$end)=@$i;
+	    if ($txend<$start+1 or $txstart+1>$end)
+	    {
+		next;
+	    } else
+	    {
+		#use 0-based start
+		push @{$return{$chr}},{id=>$f[1],strand=>$f[3],txstart=>$f[6],txend=>$f[7],exonstart=>$f[9],exonend=>$f[10],gene=>$f[12]};
+	    }
+	}
+    }
+    close DB;
+
+    return %return;
+}
+
+sub read_bed
+{
+    my $bed=shift;
+    my %return;
+
+    open IN,"<",$bed or die "Failed to read $bed: $!\n";
+    while(<IN>)
+    {
+	s/[\r\n]+$//;
+	my @f=split /\t/,$_,-1;
+	@f>=3 or die "At least 3 fields expected at line $. of $bed\n";
+	my $chr=$f[0];
+	$chr=~s/^chr//;
+	$return{$chr}=[] unless defined $return{$chr};
+
+	push @{$return{$chr}},[$f[1],$f[2]]; #use 0-based start
+    }
+    close IN;
+    return %return;
+}
+
+sub input2output
+{
+    #read input
+    #do conversion
+    #output (as an additional column at the end)
+    my $input=shift;
+    my %transcript=%{shift @_};
+
+    open IN,'<',$input or die "Failed to read $input: $!\n";
+    while(<IN>)
+    {
+	s/[\r\n]+$//;
+	my @f=split /\t/,$_,-1;
+	my $chr=$f[0];
+	$chr=~s/^chr//;
+	my ($cDNA_coord)= $f[3]=~/c\.(\d+)/ or next;
+	my @genome_coord=&do_convert($cDNA_coord,$transcript{$chr},$chr);
+
+	print join ("\t",@f,@genome_coord),"\n";
+    }
+    close IN;
+    warn "Done.\n";
+}
+
+sub do_convert
+{
+    #convert cDNA coordinate to genomic coordinate
+    my $cDNA_coord=shift;
+    my @transcript=@{shift @_};
+    my $chr=shift;
+    my @return;
+
+    for my $i(@transcript)
+    {
+	#all positions are 1-based
+	my ($id,$strand,$txstart,$txend,$exonstart,$exonend,$gene)=@$i{'id','strand','txstart','txend','exonstart','exonend','gene'};
+	$exonstart=~s/,+$//;
+	$exonend=~s/,+$//;
+	my @exonstart=split /,/,$exonstart;
+	my @exonend=split /,/,$exonend;
+	my $genome_coord;
+
+	#all start coordinate is 0-based!!!
+	#warn "CDS end smaller than start for $id\n" and next if $cdsend<$cdsstart+1;
+	#warn "Exon end smaller than start for $id\n" and next if grep { $exonend[$_]<$exonstart[$_]+1 } (0..$#exonstart);
+	#warn "Unequal number of exon starts and ends for $id\n" and next if @exonstart != @exonend;
+	#warn "CDS is out of exons for $id\n" and next unless $cdsstart>=$exonstart[0] and $cdsend<=$exonend[$#exonend];
+
+	next if $txend<$txstart+1;
+	next if grep { $exonend[$_]<$exonstart[$_]+1 } (0..$#exonstart);
+	next if @exonstart != @exonend;
+	#no need for the following restriction
+	#next unless $txstart>=$exonstart[0] and $txend<=$exonend[$#exonend];
+
+	my $remain=$cDNA_coord;
+	my $tx_flag=0;
+	#warn "ID: $id\n";
+	#warn "exonstart number",scalar @exonstart,"\n";
+	#warn "strand $strand\n";
+
+	if ($strand eq '+')
+	{
+	    if ($txstart<$exonstart[0])
+	    {
+		$tx_flag=1;
+		if ($remain>$exonstart[0]-$txstart)
+		{
+		    $remain=$remain-($exonstart[0]-$txstart);
+		} else
+		{
+		    $genome_coord=$txstart+$remain;
+		    warn "cDNA coordinate larger than TX end.\n" if $genome_coord>$txend;
+		}
+	    } 
+	    PLUSEXONLOOP: for my $j(0..$#exonstart)
+	    {
+		#warn "plus strand";
+		#warn "cds start: $cdsstart";
+		#warn "exon start/end",$exonstart[$j],"   ",$exonend[$j];
+		if ($txstart>=$exonstart[$j] && $txstart+1<=$exonend[$j])
+		{
+		    #tx begins within this exon
+		    $tx_flag=1;
+		    if ($remain>$exonend[$j]-$txstart)
+		    {
+			$remain=$remain-($exonend[$j]-$txstart);
+		    } else
+		    {
+			$genome_coord=$txstart+$remain;
+			warn "cDNA coordinate larger than TX end.\n" if $genome_coord>$txend;
+			last PLUSEXONLOOP;
+		    }
+		} elsif ($j>=1 && $txstart+1>$exonend[$j-1] && $txstart<$exonstart[$j])
+		{
+		    #tx begins inside an intron prior to this exon
+		    $tx_flag=1;
+		    if ($remain>$exonend[$j]-$exonstart[$j])
+		    {
+			$remain=$remain-($exonend[$j]-$exonstart[$j]);
+		    } else
+		    {
+			$genome_coord=$exonstart[$j]+$remain;
+			warn "cDNA coordinate larger than TX end.\n" if $genome_coord>$txend;
+			last PLUSEXONLOOP;
+		    }
+		} elsif ($tx_flag)
+		{
+		    if ($remain>$exonend[$j]-$exonstart[$j])
+		    {
+			$remain=$remain-($exonend[$j]-$exonstart[$j]);
+		    } else
+		    {
+			$genome_coord=$exonstart[$j]+$remain;
+			warn "cDNA coordinate larger than TX end.\n" if $genome_coord>$txend;
+			last PLUSEXONLOOP;
+		    }
+		}elsif ($j == $#exonstart)
+		{
+		    #tx doesn't begin in any intron or exon
+		    die "ERROR: TX starts outside of any exon/intron";
+		}
+		#warn "remain: $remain";
+	    }
+	} elsif ($strand eq '-')
+	{
+	    if ($txend>$exonend[$#exonend])
+	    {
+		$tx_flag=1;
+		if ($remain>$txend-$exonend[$#exonend]+1)
+		{
+		    $remain=$remain-($txend-$exonend[$#exonend]+1);
+		} else
+		{
+		    $genome_coord=$txend-$remain+1;
+		    warn "cDNA coordinate smaller than TX start.\n" if $genome_coord-1<$txstart;
+		}
+	    } 
+	    MINUSEXONLOOP: for my $j( reverse(0..$#exonstart) )
+	    {
+		#warn "plus strand";
+		#warn "cds start: $cdsstart";
+		#warn "exon start/end",$exonstart[$j],"   ",$exonend[$j];
+		if ($txend-1>=$exonstart[$j] && $txend<=$exonend[$j])
+		{
+		    #tx begins within this exon
+		    $tx_flag=1;
+		    if ($remain>$txend-$exonstart[$j])
+		    {
+			$remain=$remain-($txend-$exonstart[$j]);
+		    } else
+		    {
+			$genome_coord=$txend-$remain+1;
+			warn "cDNA coordinate smaller than TX start.\n" if $genome_coord-1<$txstart;
+			last MINUSEXONLOOP;
+		    }
+		} elsif ($j<$#exonstart && $txend-1<$exonstart[$j+1] && $txend>$exonend[$j])
+		{
+		    #tx begins inside an intron prior to this exon
+		    $tx_flag=1;
+		    if ($remain>$exonend[$j]-$exonstart[$j])
+		    {
+			$remain=$remain-($exonend[$j]-$exonstart[$j]);
+		    } else
+		    {
+			$genome_coord=$txend-$remain+1;
+			warn "cDNA coordinate smaller than TX start.\n" if $genome_coord-1<$txstart;
+			last MINUSEXONLOOP;
+		    }
+		} elsif ($tx_flag)
+		{
+		    if ($remain>$exonend[$j]-$exonstart[$j])
+		    {
+			$remain=$remain-($exonend[$j]-$exonstart[$j]);
+		    } else
+		    {
+			$genome_coord=$txend-$remain+1;
+			warn "cDNA coordinate smaller than TX start.\n" if $genome_coord-1<$txstart;
+			last MINUSEXONLOOP;
+		    }
+		}elsif ($j == 0)
+		{
+		    #tx doesn't begin in any intron or exon
+		    die "ERROR: TX starts outside of any exon/intron";
+		}
+		#warn "remain: $remain";
+	    }
+	} else
+	{
+	    die "Unrecognized strand: $strand\n";
+	}
+
+	if ($genome_coord)
+	{
+	    my $ref_allele=`$get_seq $ref $chr:$genome_coord-$genome_coord | grep -v '>'`;
+	    chomp $ref_allele;
+	    push @return,"$id:gene($gene):strand($strand):$genome_coord:$ref_allele(on + strand)";
+	}
+    }
+
+    return @return;
+}

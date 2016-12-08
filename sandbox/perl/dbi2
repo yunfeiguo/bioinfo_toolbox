@@ -1,0 +1,26 @@
+#!/usr/bin/perl
+
+use strict;
+use DBI;
+
+my $dbh = DBI->connect(          
+    "dbi:SQLite:dbname=people.db", 
+    "",                         
+    "",                          
+    { RaiseError => 1 },         
+) or die $DBI::errstr;
+
+my $id = 3;
+my $sth = $dbh->prepare( "SELECT * FROM people WHERE id = ?" ) or die;  
+$sth->execute($id) or die;
+
+my $ret = $sth->fetch();
+
+foreach my $row (@$ret) {
+    print "$row ";
+} 
+
+print "\n";
+
+$sth->finish();
+$dbh->disconnect();

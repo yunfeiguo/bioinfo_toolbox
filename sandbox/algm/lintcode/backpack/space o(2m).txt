@@ -1,0 +1,29 @@
+class Solution:
+    # @param m: An integer m denotes the size of a backpack
+    # @param A: Given n items with size A[i]
+    # @return: The maximum size
+    def backPack(self, m, A):
+        # write your code here
+        n = len(A)
+        if m == 0 or n == 0:
+            return(0)
+        o = [0]*(m+1) #store solution for A[0...i-1] and backpack of size j
+        preO = [0]*(m+1)
+        minA = min(A) #start point for j
+        if minA > m:
+            return(0) #all As larger than m
+	#some optimization is done to reduce
+	#iterations 
+	#python iterations are really slow
+        for i in xrange(1,n+1):
+            preO = o[:]
+            o[0] = 0
+            endPoint = min(sum(A[0:i]),m)+1 #end point for j
+            for j in xrange(minA,endPoint):
+                if j >= A[i-1]:
+                    #backpack can fit this item
+                    o[j] = max(preO[j-A[i-1]]+A[i-1],preO[j])
+                else:
+                    o[j] = preO[j]
+            o[endPoint:] =  [o[endPoint-1]]*(m-endPoint+1)
+        return(o[-1])
