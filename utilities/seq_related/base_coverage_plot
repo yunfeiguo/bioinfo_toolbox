@@ -1,0 +1,28 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+
+use File::Which qw/which/;
+
+die "Usage: $0 capture_stat1 capture_stat2 ...\n" if @ARGV < 1;
+my $r=which ('Rscript');
+
+for (@ARGV)
+{
+my $source='/tmp/coverage_plot.script';
+open SCRIPT, "> $source" or die "Failed to create $source: $!\n";
+my $code="
+x=read.table(\"$_\",skip=2,sep=\" \")
+coverage=subset(x,select=c(3,9))
+names(coverage)=c(\"Coverage\",\"Cumulative fraction\")
+pdf(\"$_.pdf\")
+plot(coverage,log=\'x\',pch=20,col=\'blue\',xlim=rev(range(coverage[[1]])))
+dev.off()
+";
+print SCRIPT $code;
+close SCRIPT;
+system ("Rscript --vanilla $source");
+warn "Failed to plot $_" and next if $?;
+warn "$_.pdf generated\n";
+}

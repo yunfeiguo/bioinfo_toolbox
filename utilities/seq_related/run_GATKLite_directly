@@ -1,0 +1,100 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+use File::Spec;
+use lib File::Spec->catdir("/home/yunfeiguo/projects/seqmule_working/lib");
+use SeqMule::Parallel;
+use SeqMule::Utils;
+
+die "Usage: $0 <1.bam 2.bam ...>\n" unless @ARGV>=1;
+
+my $tmpdir="/tmp";
+my $java="java";
+my $java_mem="1750m";
+my $gatk="/home/yunfeiguo/projects/seqmule_working/exe/gatklite/GenomeAnalysisTKLite.jar";
+my $java_opt = "$java -Xmx$java_mem  -Djava.io.tmpdir=$tmpdir -jar $gatk ";
+my $ref = "/home/jackding/jack/index/bx.contig.fa";
+my $nt = 12;
+my @cmd;
+my $picard = "/home/yunfeiguo/projects/seqmule_working/exe/picard/AddOrReplaceReadGroups.jar";
+my %options;
+$options{snpfilters} = "QDFilter,QD<2.0;FSFilter,FS>60.0;MQFilter,MQ<40.0;HaploFilter,HaplotypeScore>13.0;MaqQualRankSumFilter,MappingQualityRankSum<-12.5;ReadPosFilter,ReadPosRankSum<-8.0";
+$options{indelfilters} = "QDFilter,QD<2.0;ReadPosFilter,ReadPosRankSum<-20.0;FSFilter,FS>200.0";
+
+for my $i(@ARGV)
+{
+	my $prefix = $i;
+	$prefix =~ s/\.bam$// or die "*.bam expected!\n";
+	my $newbam = "$prefix.withRG.bam";
+	my $vcf = "$prefix.vcf";
+	my $snp = "$prefix.snp.vcf";
+	my $snp_filter = "$prefix.snp.filter.vcf";
+	my $indel = "$prefix.indel.vcf";
+	my $indel_filter = "$prefix.indel.filter.vcf";
+	my $vcf_filter = "$prefix.filter.vcf";
+
+	{#add @RG header and index
+		push @cmd,"$java -Xmx$java_mem -jar $picard INPUT=$i OUTPUT=$newbam SORT_ORDER=coordinate RGID=$prefix RGLB=LIBRARY RGPL=ILLUMINA RGPU=UNKNOWN RGSM=$prefix";
+		push @cmd,"samtools index $newbam";
+		$i=$newbam;
+	}
+	{
+#call variants
+		my $cmd;
+		$cmd.="$java_opt -T UnifiedGenotyper -R $ref -I $i ";
+
+		$cmd.=" -nt $nt" if $nt > 1;
+
+		$cmd.=" -o $vcf";
+		push @cmd,$cmd;
+	}
+	{#split variants
+		push @cmd, "$java_opt -T SelectVariants -R $ref --variant $vcf -o $indel -selectType INDEL ";
+
+		push @cmd,"$java_opt -T SelectVariants -R $ref --variant $vcf -o $snp -selectType SNP ";
+	}
+	{
+#filter snps
+		my $cmd;
+		$cmd.="$java_opt -T VariantFiltration -R $ref --variant $snp";
+		if ($options{snpfilters})
+		{
+			for my $filter(split ';',$options{snpfilters})
+			{
+				my ($filtername,$filterexp)=split ',',$filter;
+				if ($filtername && $filterexp)
+				{
+					$cmd.=" --filterExpression '$filterexp' --filterName $filtername";#single quote is necessary
+				}
+			}
+		}
+		$cmd.=" -o $snp_filter";
+		push @cmd,$cmd;
+	}
+	{
+#filter indel
+		my $cmd;
+
+		$cmd.="$java_opt -T VariantFiltration -R $ref --variant $indel";
+#$cmd.=" --clusterWindowSize $options{clusterWindowSize}" if $options{clusterWindowSize};
+		if ($options{indelfilters})
+		{
+			for my $filter(split ';',$options{indelfilters})
+			{
+				my ($filtername,$filterexp)=split ',',$filter;
+				if ($filtername && $filterexp)
+				{
+					$cmd.=" --filterName $filtername --filterExpression '$filterexp' "; #single quote is necessary
+				}
+			}
+		}
+
+		$cmd.=" -o $indel_filter";
+		push @cmd,$cmd;
+	}
+
+	push @cmd,"$java_opt -T CombineVariants -R $ref --variant $snp_filter --variant $indel_filter -o $vcf_filter ";
+}
+my $script=&SeqMule::Parallel::genTempScript(@cmd);
+exec $script;

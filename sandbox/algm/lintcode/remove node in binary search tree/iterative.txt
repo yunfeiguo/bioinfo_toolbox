@@ -1,0 +1,69 @@
+"""
+Definition of TreeNode:
+class TreeNode:
+    def __init__(self, val):
+        self.val = val
+        self.left, self.right = None, None
+"""
+class Solution:
+    """
+    @param root: The root of the binary search tree.
+    @param value: Remove the node with given value.
+    @return: The root of the binary search tree after removal.
+    """    
+    def removeNode(self, root, value):
+        # write your code here
+        #first we locate the node
+        #then remove it
+        cur = root
+        if not root:
+            return(None)
+        dummy = TreeNode(root.val+1)
+        dummy.left = root
+        parent = dummy
+        cur = root
+        while cur:
+            if cur.val > value:
+                parent = cur
+                cur = cur.left
+            elif cur.val < value:
+                parent = cur
+                cur = cur.right
+            else:
+                #we found the node
+                cur = doRemoval(cur)
+                if value > parent.val:
+                    parent.right = cur
+                else:
+                    parent.left = cur
+        return(dummy.left)
+def doRemoval(root):
+    #remove root node
+    #reconstruct the BST
+    #if there is only one child
+    #just return the child
+    if root.left and not root.right:
+        return(root.left)
+    elif root.right and not root.left:
+        return(root.right)
+    elif root.left == None and root.right == None:
+        #no child
+        return(None)
+    else:
+    #if there are two children
+    #find the min in the right subtree
+    #make it the new root
+    #delete the original link
+        parent = root
+        cur = root.right
+        while cur.left:
+            parent = cur
+            cur = cur.left
+        cur.left = root.left
+        if parent == root: #this happens when root.right has no left child
+            cur.left = root.left
+        else:
+            parent.left = None
+            cur.right = root.right
+        return(cur)
+                

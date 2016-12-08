@@ -1,0 +1,25 @@
+class Solution:
+    """
+    @param triangle: a list of lists of integers.
+    @return: An integer, minimum path sum.
+    """
+    def minimumTotal(self, triangle):
+        # write your code here
+        o = []
+        n = len(triangle)
+        for i in range(n): #row
+            o.append([])
+            if i == 0:
+                o[i].append(triangle[i][0])
+                continue
+            m = len(triangle[i])
+            for j in range(m): #col
+                if j == 0:
+                    o[i].append(o[i-1][j] + triangle[i][j])
+                elif j == m - 1:
+                    o[i].append(o[i-1][-1] + triangle[i][j])
+                else:
+                    o[i].append(min(o[i-1][j-1],o[i-1][j])+triangle[i][j])
+        return(min(o[-1]))
+
+                    

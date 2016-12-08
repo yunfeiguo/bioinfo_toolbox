@@ -1,0 +1,9 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+
+#reference of hash
+my $hashref={'you'=>1,'me'=>2};
+
+print $$hashref{'you'},${$hashref}{'you'},${$hashref->{'you'}},"\n";

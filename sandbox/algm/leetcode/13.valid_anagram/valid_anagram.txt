@@ -1,0 +1,30 @@
+class Solution:
+    # @param {string} s
+    # @param {string} t
+    # @return {boolean}
+    def isAnagram(self, s, t):
+        assert type(s) is str
+        assert type(t) is str
+        if len(s) != len(t):
+            return(False)
+        elif len(s) == 0:
+            return(True)
+        else:
+            #s t have equal len
+            #and they have >0 length
+            count={}
+            for i in s:
+                if i in count:
+                    count[i] += 1
+                else:
+                    count[i] = 1
+            for i in t:
+                if i in count:
+                    count[i] -= 1
+                else:
+                    #char in t doesn't appear in t
+                    return(False)
+            for i in count:
+                if count[i] > 0:
+                    return(False)
+            return(True)

@@ -1,0 +1,25 @@
+#!/usr/bin/env python
+
+def monthlyPayment (balance, apr, months,tolerance):
+ '''
+ calculate fixed monthly payment in whole 10 dollars
+ '''
+ lo=0
+ hi=balance
+ while True:
+  pay=0.5*(lo+hi)
+  newBalance=balance
+  for i in range (months):
+   unpaidBalance=newBalance-pay
+   newBalance=unpaidBalance*(1+apr/12)
+  if abs(unpaidBalance)< tolerance:
+      break
+  else:
+      if unpaidBalance>0:
+   	lo=pay
+      else:
+        hi=pay
+ print ("Lowest payment: %s" % round(pay,2))
+
+monthlyPayment(999999,0.18,12,0.0001)
+

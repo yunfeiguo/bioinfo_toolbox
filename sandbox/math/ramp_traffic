@@ -1,0 +1,83 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+
+use Math::Random qw/random_poisson/;
+use Getopt::Long qw/GetOptions/;
+use Pod::Usage qw/pod2usage/;
+
+my ($dep_rate,$com_rate,$q_len,$time,$cycle,$repeat,$help);
+
+GetOptions(
+    'd:f'	=>	\$dep_rate,
+    'a:f'	=>	\$com_rate,
+    'q:i'	=>	\$q_len,
+    't:f'	=>	\$time,
+    'c:i'	=>	\$cycle,
+    'r:i'	=>	\$repeat,
+    'help|h'	=>	\$help
+) or pod2usage;
+$help and pod2usage;
+
+=head1 NAME
+
+
+Simulation of ramp traffic jam. Queue model: M/D/1.
+
+=head1 SYNOPSIS
+
+ramp_traffic <options>
+
+	-d		departure rate
+	-a		arrival rate
+	-q		initial queue length
+	-t		time point of interest
+	-c		number of cycles (if -t is set, no need to set -c)
+	-r		repeats for probability estimation
+	-h,--help	help message
+
+=cut
+
+#initial assignment
+$dep_rate=$dep_rate || 2;
+my $interval=1/$dep_rate;
+$com_rate=$com_rate || 2;
+$q_len=$q_len || 0;
+$time=$time || $interval*10;
+
+$cycle=$cycle || int($time/$interval); 
+#queueing status doesn't change during an interval
+
+
+die "Positive number for queue length\n" if $q_len<0;
+warn "
+Rate unit: cars/min
+Time unit: min
+Departure rate: $dep_rate
+Arrival rate: $com_rate
+Interval: $interval
+Initial queue length: $q_len
+Cycles of simulation: $cycle
+Repeats (for probability estimation): $repeat
+\n";
+
+my ($come,$go,$diff,$q,$jam_count);
+
+$jam_count=0;
+for (1..$repeat)
+{
+    $q=$q_len;
+    for (1..$cycle) 
+    {
+	$come=random_poisson(1,$com_rate*$interval);
+	$go=$dep_rate*$interval;
+	$diff=$go-$come;
+	$q=$q-$diff;
+	$q=0 if $q<0;
+    }
+    print "Cars in queue after ",$cycle*$interval," minutes : ",$q,"\n";
+    $jam_count++ if $q>0;
+}
+my $prob=$jam_count/$repeat;
+print "Probability of waiting in queue at time ",$time," min estimated by $repeat simulations: $prob\n";

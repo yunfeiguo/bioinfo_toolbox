@@ -1,0 +1,65 @@
+#!/usr/bin/env perl
+
+die "Usage: fastq2fasta <1.fastq 2.fastq ...>\n" unless @ARGV>=1;
+use strict;
+use warnings;
+
+for (@ARGV)
+{
+	my $outfile=$_;
+	if (/\.fastq$|\.fq$/)
+	{
+	$outfile=~s/\.fastq$|\.fq$/.fasta/;
+	&fq2fa($_,$outfile);
+	} elsif (/\.fastq\.gz$|\.fq\.gz$/)
+	{
+	$outfile=~s/\.fastq\.gz$|\.fq\.gz$/.fasta/;
+	&gunzip_fq2fa($_,$outfile);
+	} else
+	{
+	die ".fastq .fq .fastq.gz .fq.gz file required\n";
+	}
+
+	warn "NOTICE: $outfile done.\n";
+}
+
+sub fq2fa
+{
+	my $in=shift;
+	my $out=shift;
+
+	open IN,'<',$in or die "Failed to read $in: $!\n";
+	open OUT,'>',$out or die "Failed to write to $out: $!\n";
+	while(<IN>)
+	{
+		if (/^@(.*)/)
+		{
+		print OUT ">$1\n";
+		print OUT $_=<IN>;
+		$_=<IN>; #skip + line
+		$_=<IN>; #skip quality line
+		}
+	}
+	close IN;
+	close OUT;
+}
+sub gunzip_fq2fa
+{
+	my $in=shift;
+	my $out=shift;
+
+	open IN,'-|',"gunzip -c $in" or die "Failed to read $in: $!\n";
+	open OUT,'>',$out or die "Failed to write to $out: $!\n";
+	while(<IN>)
+	{
+		if (/^@(.*)/)
+		{
+		print OUT ">$1\n";
+		print OUT $_=<IN>;
+		$_=<IN>; #skip + line
+		$_=<IN>; #skip quality line
+		}
+	}
+	close IN;
+	close OUT;
+}

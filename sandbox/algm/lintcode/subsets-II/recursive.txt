@@ -1,0 +1,21 @@
+class Solution:
+    """
+    @param S: A set of numbers.
+    @return: A list of lists. All valid subsets.
+    """
+    def subsetsWithDup(self, S):
+        # write your code here
+        #recursive solution
+        ret = []
+        path = []
+        S.sort()
+        dfs(ret,path,S,0)
+        return(ret)
+def dfs(ret, path, S, begin):
+    ret.append(path[:])
+    for i in range(begin,len(S)):
+        if i == begin or S[i] != S[i-1]: #check duplicate; only works for sorted array
+            path.append(S[i])
+            dfs(ret,path,S,i+1)
+            path.pop()
+    return(None)

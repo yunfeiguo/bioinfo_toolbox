@@ -1,0 +1,41 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+public class Solution {
+    public List<List<Integer>> pathSum(TreeNode root, int sum) {
+        List<List<Integer>> ret = pathSumReverse(root, sum);
+        for(List<Integer> i : ret) {
+            /*for(int j : i) {
+                System.out.print(i+" ");
+            }
+            System.out.println();
+            */
+            Collections.reverse(i);
+        }
+        return(ret);
+    }
+    public List<List<Integer>> pathSumReverse(TreeNode root, int sum) {
+        List<List<Integer>> ret = new LinkedList<List<Integer>>();//here you convert a LinkedList with List<Integer> as elements to a List with List<Integer> as elements. You CANNOT convert a LinkedList with LinkedList<Integer> as elements to a List with List<Integer> as elements
+        if(root == null) return(ret);
+        if(root.val == sum && root.left == null && root.right == null) {
+            List<Integer> path = new LinkedList<Integer>();
+            path.add(root.val);
+            ret.add(path);
+        } else {
+        for(List<Integer> i : pathSumReverse(root.left, sum - root.val)) {
+            i.add(root.val);
+            ret.add(i);
+        }
+        for(List<Integer> i : pathSumReverse(root.right, sum - root.val)) {
+            i.add(root.val);
+            ret.add(i);
+        } }
+        return(ret);
+    }
+}

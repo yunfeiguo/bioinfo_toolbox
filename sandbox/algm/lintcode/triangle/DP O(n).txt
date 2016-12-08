@@ -1,0 +1,23 @@
+class Solution:
+    """
+    @param triangle: a list of lists of integers.
+    @return: An integer, minimum path sum.
+    """
+    def minimumTotal(self, triangle):
+        # write your code here
+        n = len(triangle)
+        if n <= 0:
+            return(0)
+        o = [0]*n
+        o[n-1] = triangle[0][0]
+        for i in range(1,n): #row
+            for j in range(0,i+1): #col
+                idx = j + n - 1 - i #conver to index in solution
+                cur = triangle[i][j]
+                if j == 0:
+                    o[idx] = o[idx+1] + cur
+                elif j < i:
+                    o[idx] = min(o[idx],o[idx+1]) + cur
+                else:
+                    o[idx] = o[idx] + cur
+        return(min(o))

@@ -1,0 +1,35 @@
+class Solution:
+    """
+    @params s1, s2, s3: Three strings as description.
+    @return: return True if s3 is formed by the interleaving of
+             s1 and s2 or False if not.
+    @hint: you can use [[True] * m for i in range (n)] to allocate a n*m matrix.
+    """
+    def isInterleave(self, s1, s2, s3):
+        # write your code here
+        n = len(s1)
+        m = len(s2)
+        l = len(s3)
+        if n == 0 and m == 0 and l == 0:
+            return(True)
+        if n+m != l:
+            return(False)
+        o = [] #store solution for s1[0..i-1],s2[0..j-1],s3[0..i+j-1]
+
+        for i in xrange(n+1):
+            o.append([])
+            for j in xrange(m+1):
+                #print("i:"+str(i))
+                #print("j:"+str(j))
+                if i == 0 and j == 0:
+                    o[i].append(True)
+                elif i == 0:
+                    o[i].append(o[i][j-1] and s2[j-1]==s3[i+j-1])
+                elif j == 0:
+                    o[i].append(o[i-1][j] and s1[i-1] == s3[i+j-1])
+                else:
+                    o[i].append( (o[i-1][j] and s1[i-1] == s3[i+j-1]) 
+                    or (o[i][j-1] and s2[j-1] == s3[i+j-1]) )
+        return(o[-1][-1])
+#x = Solution()
+#print(x.isInterleave("a","","a"))

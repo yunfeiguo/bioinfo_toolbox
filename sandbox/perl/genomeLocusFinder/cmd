@@ -1,0 +1,29 @@
+#!/bin/bash -x
+#perl -ne 'print if rand()<0.05' hg19_iCAGES.txt > random_hg19_icages_large_test.snv
+#downloaded from illumina platinum genome ftp
+#convert2annovar.pl --format vcf4 NA12878hg19.vcf > NA12878hg19.avinput
+#perl -pe 's/^chr//;' NA12878hg19.avinput > NA12878hg19_nochr.avinput
+#
+#./genomeLocusFinder.pl index human_g1k_v37.fasta.fai testDB.txt
+#./genomeLocusFinder.pl find testDB.txt TCGA-06-0155.snv
+#
+#./genomeLocusFinder.pl index human_g1k_v37.fasta.fai mediumTestDB.txt
+#./genomeLocusFinder.pl find mediumTestDB.txt TCGA-06-0155.snv > TCGA-06-0155_in_mediumTestDB.txt
+#
+#./genomeLocusFinder.pl index human_g1k_v37.fasta.fai hg19_iCAGES.txt
+#./genomeLocusFinder.pl find hg19_iCAGES.txt TCGA-06-0155.snv > TCGA-06-0155_in_hg19_icages.txt
+#./genomeLocusFinder.pl index human_g1k_v37.fasta.fai hg19_funseq2.txt
+#./genomeLocusFinder.pl find hg19_iCAGES.txt random_hg19_icages_large_test.snv > random_hg19_icages_large_test_in_hg19_icages.snv
+time ./genomeLocusFinder.pl find hg19_iCAGES.txt NA12878hg19_nochr.avinput > NA12878hg19_in_hg19_icages.avinput
+time ./genomeLocusFinder.pl find hg19_funseq2.txt NA12878hg19_nochr.avinput > NA12878hg19_in_hg19_funseq2.avinput
+#./genomeLocusFinder.pl index GCA_000001405.15_GRCh38_full_analysis_set.fna.fai hg38_iCAGES.txt
+#
+#./genomeLocusFinder.pl index human_g1k_v37.fasta.fai hg19_funseq2.txt
+#./genomeLocusFinder.pl find hg19_funseq2.txt TCGA-06-0155.snv > TCGA-06-0155_in_hg19_funseq2.txt
+
+
+
+
+#test seek speed on files of different sizes
+#time perl -e '$file="hg19_funseq2.txt";open IN,$file;$size = -s $file;for (1..10_000_000){$n=int rand($size);seek IN,$n,0;}'
+#time perl -e '$file="hg19_iCAGEs.txt";open IN,$file;$size = -s $file;for (1..10_000_000){$n=int rand($size);seek IN,$n,0;}'

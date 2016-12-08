@@ -1,0 +1,25 @@
+class Solution:
+    """
+    @param obstacleGrid: An list of lists of integers
+    @return: An integer
+    """
+    def uniquePathsWithObstacles(self, obstacleGrid):
+        # wrte your code here
+        n = len(obstacleGrid)
+        if n == 0:
+            return([])
+        m = len(obstacleGrid[0])
+        o = [0]*m
+        if obstacleGrid[0][0] != 1:
+            o[0] = 1
+        for i in range(n):
+            for j in range(m):
+                if obstacleGrid[i][j] == 1:
+                    o[j] = 0
+                elif j != 0:
+                    o[j] = o[j-1] + o[j]
+        return(o[-1])
+
+
+                
+

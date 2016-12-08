@@ -1,0 +1,34 @@
+class MinStack(object):
+
+    def __init__(self):
+        # do some intialize if necessary
+        self.stack = []
+        self.minimum = None
+
+    def push(self, number):
+        # write yout code here
+        if len(self.stack) == 0:
+            self.minimum = number
+        else:
+            self.minimum = min(number,self.minimum)
+        newElement = [number,self.minimum]
+        self.stack.append(newElement)    
+
+    def pop(self):
+        # pop and return the top item in stack
+        if len(self.stack) == 0:
+            return(None)
+        else:
+            popElement = self.stack.pop()
+            if len(self.stack) > 0:
+                self.minimum = self.stack[-1][1]
+            else:
+                self.minimum = None
+            return(popElement[0])
+
+    def min(self):
+        # return the minimum number in stack
+        if len(self.stack) == 0:
+            return(None)
+        else:
+            return(self.minimum)

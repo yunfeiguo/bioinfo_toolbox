@@ -1,0 +1,31 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+
+use Time::HiRes qw/gettimeofday tv_interval/;
+use IO::Uncompress::AnyUncompress qw/anyuncompress $AnyUncompressError/;
+
+my $file=shift @ARGV;
+my $t0=[gettimeofday()]; #note the reference here
+
+#######
+#my $z=new IO::Uncompress::AnyUncompress $file or die "Cannot read $file: $AnyUncompressError\n";
+#my $buffer;
+#$z->read($buffer);
+#print STDOUT $buffer;
+#$z->close; #done
+anyuncompress $file => '-' or die "anyuncompress failed: $AnyUncompressError\n";
+my $t1=[gettimeofday()];
+
+######
+open (my $fh,"-|","gunzip -c $file") or die "Cannot read $file: $!\n";
+my @buffer=<$fh>;
+print STDOUT @buffer; 
+close $fh; #done
+my $t2=[gettimeofday()];
+
+my $cpan_t=tv_interval $t0,$t1;
+my $gunzip_t=tv_interval $t1,$t2;
+warn "IO module time: $cpan_t\n";
+warn "GUNZIP time: $gunzip_t\n";

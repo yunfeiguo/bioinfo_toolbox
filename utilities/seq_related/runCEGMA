@@ -1,0 +1,27 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use File::Basename qw/basename/;
+
+die "Usage: $0 <fasta>\n" unless @ARGV == 1;
+my $fa = shift @ARGV;
+my ($prefix) = $fa =~ /(.*?)\.(fa|fasta|fna)$/i or die "failed to prefix\n";
+$prefix = basename $prefix;
+my $faout = $prefix.".newheader.fasta"; 
+
+
+my $script = "cegma.$$.script";
+open OUT,'>',$script or die "$!\n";
+print OUT "#!/bin/bash
+set -e
+
+##add 'scaffold' string to p_ctg.fa sequence IDs
+perl -pe 's/^(>\\d+)\\s/\$1scaffold /' $fa > $faout
+source /home/yunfeiguo/Downloads/CEGMA_v2-2.5/bin/activate
+cegma --genome $faout -o $prefix -threads 12
+";
+close OUT;
+warn "$script done\n";
+!system("chmod +x $script") or die "chmod: $!\n";
+
+!system("qsub -S /bin/bash -V -cwd -pe smp 12 -m ea -M guoyunfei1989\@gmail.com $script") or die "failed to qsub: $!\n";

@@ -1,0 +1,17 @@
+#!/usr/bin/env perl
+
+use warnings;
+use strict;
+
+die "Usage: $0 file1.csv file2.csv ...\n" unless @ARGV;
+warn "NOTE: CSV fields must have headers, and be quoted for strings\n";
+
+for my $csv (@ARGV)
+{
+	my ($pre)= $csv=~/(.*?)\.csv$/ or die "Unrecognized format: $csv\n";
+	my $tab="$pre.txt";
+	warn "$tab exists, omitting $csv ...\n" and next if -e $tab;
+
+	warn "Writing output to $tab ...\n";
+	! system ("Rscript","--vanilla","-e","x=read.csv(\"$csv\");write.table(x,file=\"$tab\",quote=FALSE,sep=\"\\t\",row.names=FALSE)") or warn "Converting $csv failed ...\n";
+}

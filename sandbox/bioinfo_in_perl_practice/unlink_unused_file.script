@@ -1,0 +1,35 @@
+#!/usr/bin/env perl
+
+use warnings;
+use strict;
+use File::Find;
+
+my $program="make";
+my @search_dir;
+push @search_dir,"/home/yunfeiguo/projects/seqmule/src/inc/bundle/boost_1_51_0_nolib";
+open INPUT, " strace -tt -f $program 3>&1 1>&2 2>&3 | grep open | grep nolib |" or die;
+my @system_calls_with_fork=<INPUT>;
+chomp(@system_calls_with_fork);
+close INPUT;
+
+#------------------less variable code below
+map { s/.*open\(\"(.*)\",.*/$1/ } @system_calls_with_fork;
+my @all;
+my %hash_all;
+find ( {
+	wanted => sub {push @all,$File::Find::name if -f}
+}, @search_dir);
+map {	$hash_all{$_}=1 } @all;
+map {	$hash_all{$_}=0 } @system_calls_with_fork; #mark off elements you want to retain
+my @unlink_list=grep { $hash_all{$_} } @all;
+#for (0..9) {
+#	print $unlink_list[$_],"\n";
+#	print $system_calls_with_fork[$_],"\n";
+#}
+#exit;
+map {unlink $_ } @unlink_list;
+
+
+#afterwards use following commands
+#find . -name ".svn" -print | xargs rm -rf
+#perl -MFile::Find -e 'finddepth(sub{rmdir},".")'

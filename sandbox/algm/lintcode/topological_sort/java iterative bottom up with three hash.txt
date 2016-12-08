@@ -1,0 +1,68 @@
+public class Solution {
+	public ArrayList<DirectedGraphNode> topSort(ArrayList<DirectedGraphNode> graph) {
+ArrayList<DirectedGraphNode> ret = new ArrayList<DirectedGraphNode> ();
+		if (graph == null || graph.size() <= 0) {	
+			return ret;
+		}
+		//assume no cycle exists
+		//assume every node has a unique label, otherwise we can create one
+		//for them
+		topSort(ret, graph);
+		return ret;
+}
+private void topSort(ArrayList<DirectedGraphNode> ret, ArrayList<DirectedGraphNode> g) {
+	Map<Integer, ArrayList<DirectedGraphNode>> parents = new HashMap<Integer, ArrayList<DirectedGraphNode>> ();
+	Map<Integer, Integer> childCount = new HashMap<Integer, Integer> ();
+	Map<Integer, DirectedGraphNode> labelNode = new HashMap<Integer, DirectedGraphNode> ();
+	countChildren(g, childCount);
+	findParents(g, parents);
+	linkLabel(g, labelNode);
+	while(!childCount.isEmpty()) {
+		ArrayList<Integer> cur = new ArrayList<Integer> ();
+		for (Integer i : childCount.keySet()) {
+			if (childCount.get(i) == 0) {
+				cur.add(i);
+				ret.add(0, labelNode.get(i)); //always add to head
+				//because we are going backwards
+			}
+		}		
+		//remove nodes with no children from childCount
+		for (Integer i : cur) {
+			childCount.remove(i);
+		}
+		//update childCount
+		for (Integer i : cur) {
+			for (DirectedGraphNode p : parents.get(i)) {
+				childCount.put(p.label, childCount.get(p.label) - 1);
+			}
+		}
+	}	
+}
+/*count number of children for each node*/
+private void countChildren(ArrayList<DirectedGraphNode> g, Map<Integer, Integer> childCount) {
+	for (DirectedGraphNode n : g) {
+		//assume no duplicate in input
+		assert(!childCount.containsKey(n.label));
+		childCount.put(n.label, n.neighbors == null ? 0 : n.neighbors.size());	
+	}
+}
+private void findParents(ArrayList<DirectedGraphNode> g, Map<Integer, ArrayList<DirectedGraphNode>> parents) {
+	for (DirectedGraphNode n : g) {
+			//for every node, we create empty list for them
+			parents.put(n.label, new ArrayList<DirectedGraphNode> ());
+	}
+	for (DirectedGraphNode n : g) {
+		assert(n.neighbors != null);
+		for (DirectedGraphNode child : n.neighbors) {
+			assert(parents.containsKey(child.label));
+			parents.get(child.label).add(n);	
+		}
+	}
+}
+private void linkLabel(ArrayList<DirectedGraphNode> g, Map<Integer, DirectedGraphNode> labelNode) {
+	for (DirectedGraphNode n : g) {
+		assert(!labelNode.containsKey(n.label));
+		labelNode.put(n.label, n);
+	}
+}
+}

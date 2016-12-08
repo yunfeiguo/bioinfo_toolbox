@@ -1,0 +1,82 @@
+#!/usr/bin/env perl
+
+use warnings;
+use strict;
+use List::Util qw(max min sum);
+use Statistics::Basic qw(:all);
+use Pod::Usage;
+use Getopt::Long;
+
+my ($help);
+
+GetOptions('help|h'=>\$help) or pod2usage ({-verbose => 0, -exitval => 2, -output => \*STDERR}); #however, all arguments inside pod2usage can be omitted
+
+$help and pod2usage ({-verbose=>1, -exitval=>1, -output=>\*STDOUT}); #default output filehandle is STDERR unless the exit value is less than 2
+@ARGV or pod2usage ({-verbose=>0, -exitval=>2, -output=>\*STDERR}); #this is invoked by an error, so better go to STDERR
+
+for (@ARGV) 
+{
+    print "Processing $_\n";
+    my @len;
+    my $count;
+    open FILE, "< $_";
+    print STDERR "Reading $_ ...";
+    my $contig_name;
+    while (<FILE>) 
+    {
+	chomp(my $input=$_);
+	if ($input=~/^>(.*)/) 
+	{
+	    $count++;
+	    $contig_name=$1;
+	} else 
+	{
+	    $len[$count-1] += length $_;
+	    #if ($input=~/[^A-Za-z*\-]/) {
+	    #print "WARNING: unusual code detected at contig <<$contig_name>>, please check if your input comply with FASTA format.\n";
+	    #}
+    }
+}
+close FILE;
+print "Done\n";
+my $total_count=scalar @len;
+print "Number of sequences: ",$total_count,"\n";
+print "Max length: ", max (@len), "\n";  #the parentheses for max for min function are necessary, otherwise all following LIST elements will be recognized as their arguments.
+print "Min length: ", min (@len), "\n";
+print "Average length: ", (sum @len)/@len,"\n";
+print "Median length: ", median (@len), "\n";
+#dirty method for determining quartiles
+my ($percentile_25th,$percentile_75th)=(int ($total_count*0.25 + 0.5), $total_count+1-int ($total_count*0.25 + 0.5));
+my @sorted=sort {$a<=>$b} @len;
+print "Lower quartile: ",$sorted[$percentile_25th],"\n";
+print "Upper quartile: ",$sorted[$percentile_75th],"\n";
+}
+#the blank between each tag is mandatory!!!
+__END__
+
+=head1 NAME
+
+fasta_len a program that takes FASTA files as input and output descriptive statistics about them.
+
+=head1 SYNOPSIS
+
+fasta_len [options] [file ...]
+
+ Options:
+	-h, -help		print help information
+
+=head1 OPTIONS
+
+=over 8
+
+=item B<-help>
+
+Print a brief help message and exits
+
+=back
+
+=head1 DESCRIPTION
+
+B<This program> will give you the summary descriptive statistics about a fasta file. 
+
+=cut

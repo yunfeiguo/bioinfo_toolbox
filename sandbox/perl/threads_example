@@ -1,0 +1,91 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+use File::Basename qw/dirname basename/;
+use File::Spec;
+use threads;
+
+my $wd = "/home/rcf-40/kaiwang/project/fish_kmer";
+my @listfiles = glob "$wd/*/list";
+my $tid = 0;
+my $last_return;
+
+for my $i(@listfiles)
+{
+#       my $statfile = $i;
+#       $statfile =~ s/[\\\/]/_/g;
+#       $statfile .= ".linecount.txt";
+##!system ("echo 'cd \$PBS_O_WORKDIR && ./count_fq $i' | qsub ".
+#               " -l walltime=2:0:0 ".
+#               " -l nodes=1:ppn=1 ".
+#               " -l mem=4GB ".
+#               " -A lc_kw ".
+#               " -q laird ".
+#               " -m ea ".
+#               " -M guoyunfei1989\@gmail.com "
+#       ) or die "failed to submit $i\n";
+    my $thr = threads->create('process_list',$i,$tid) if $tid==3;
+    $tid++;
+}
+
+for my $i(threads->list(threads::running))
+{
+    $last_return .= $i->join(); #output return value
+}
+warn "All threads joined\n";
+warn "----------------------------\n";
+warn $last_return;
+warn "all done\n";
+
+
+sub process_list
+{
+    my $i = shift;
+    my $tid = shift;
+    my $return;
+    warn "[TID:$tid]processing $i\n";
+    $return .= "[TID:$tid]processing $i\n";
+    my @fq = `cat $i`;
+    chomp @fq;
+    for my $j(@fq)
+    {
+	if ($j eq basename $j)
+	{
+	    $j = File::Spec->catfile((dirname $i),(basename $j));
+	}
+    }
+    my $wc = 0;
+
+    my $wd = dirname $i;
+    chdir $wd;
+
+    for my $j(@fq)
+    {
+	warn "[TID:$tid]processing $j\n";
+	$return .="[TID:$tid]processing $j\n";
+	my $count = 0;
+	if(-e $j)
+	{
+	    if($j =~ /\.gz$/)
+	    {
+		$count = `gunzip -c $j | wc -l`;
+	    } else
+	    {
+		$count = `wc -l $j`;
+	    }
+	    chomp $count;
+	    $wc += $count;
+	    warn "[TID:$tid]$j lines: $count\n";
+	    $return .= "[TID:$tid]$j lines: $count\n";
+	} else
+	{
+	    warn "[TID:$tid]$j does NOT exist\n";
+	    $return .= "[TID:$tid]$j does NOT exist\n";
+	}
+
+    }
+    warn "[TID:$tid]$i lines: $wc\n";
+    $return .= "[TID:$tid]$i lines: $wc\n";
+    return $return;
+}

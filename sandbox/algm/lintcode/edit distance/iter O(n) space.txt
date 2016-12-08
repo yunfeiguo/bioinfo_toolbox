@@ -1,0 +1,31 @@
+class Solution: 
+    # @param word1 & word2: Two string.
+    # @return: The minimum number of steps.
+    def minDistance(self, word1, word2):
+        # write your code here
+        n = len(word1)
+        m = len(word2)
+        if n == 0 or m == 0:
+            return(max(n,m))
+        o = [0]*(m+1)
+        #set up o[n][m] matrix
+        #store min steps for converting word[1..n] to word[1..m]
+        #combine setup and calculation in two loops
+        #use one list to replace the matrix
+        import copy
+        for i in range(n+1):
+            oI_1_J_1 = o[0]
+            for j in range(m+1):
+                if i == 0:
+                    o[j] = j
+                elif j == 0:
+                    o[j] = i
+                else:
+                    oI_1_J = o[j]
+                    if word1[i-1] == word2[j-1]:
+                        o[j] = oI_1_J_1
+                    else:
+                        o[j] = min(o[j-1]+1,oI_1_J+1,oI_1_J_1+1)                    
+                    oI_1_J_1 = oI_1_J
+        return(o[-1])
+                

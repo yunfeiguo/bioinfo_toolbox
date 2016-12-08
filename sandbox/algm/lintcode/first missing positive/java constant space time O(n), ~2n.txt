@@ -1,0 +1,68 @@
+public class Solution {
+    /**    
+     * @param A: an array of integers
+     * @return: an integer
+     */
+    public int firstMissingPositive(int[] A) {
+        // write your code here    
+        if(A==null||A.length==0) {
+            return 1;
+        }
+        for(int i = 0; i < A.length; i++) {
+            /*  the while makes elements up to i
+            *   satisfy [1,A.length] or A[i] == i + 1
+            *   or A[A[i] - 1] == A[i] (duplicate element)
+            *   meanwhile, elements to the right of i satisfy
+            *   A[i] == i + 1 if they go through swapping
+            *   every swapping will put an element into its
+            *   proper position
+            */
+            while(A[i] > 0 && A[i] <= A.length && A[i] != i + 1 && A[A[i] - 1] != A[i]) {
+                swap(A, i, A[i] - 1);
+            }
+        }
+        for(int i = 0; i < A.length; i++) {
+            if(A[i] != i + 1) {
+                return i+1;
+            }
+        }
+        return A.length+1;
+    }
+    private void swap(int[] A, int i, int j) {
+        int tmp = A[i];
+        A[i] = A[j];
+        A[j] = tmp;
+    }
+}
+
+
+/*simpler implementation*/
+public class Solution {
+	private void exch(int[] A, int i, int j) {
+		int tmp = A[i];
+		A[i] = A[j];
+		A[j] = tmp;
+	}
+	public int firstMissingPositive(int[] A) {
+		if (A == null || A.length == 0) {
+			return 1;
+		}
+		//swap each element to the position pointed by itself
+		//suppose index starts at 1
+		int n = A.length;
+		int i = 0;
+		while (i < n) {
+			if (A[i] == i + 1 || A[i] <= 0 || A[i] > n || A[i] == A[A[i] - 1]) {
+				i++;
+			} else {
+				exch(A, i, A[i] - 1);
+			}
+		}
+		for (int j = 0; j < n; j++) {
+			if (A[j] != j + 1) {
+				return j + 1;
+			}
+		}
+		return n + 1;
+	}
+}

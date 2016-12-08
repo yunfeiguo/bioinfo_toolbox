@@ -1,0 +1,42 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+use Benchmark qw/:all/;
+
+use IO::Uncompress::AnyUncompress qw/anyuncompress $AnyUncompressError/;
+
+my $file=shift @ARGV;
+my $tryfile;
+my @unlink;
+
+#######
+sub io_uncomp 
+{
+$tryfile='try111';
+open (my $tryfh,">",$tryfile) or die "Cannot write to $tryfile: $!\n";
+anyuncompress $file => $tryfh or die "anyuncompress failed: $AnyUncompressError\n";
+close $tryfh;
+push @unlink,$tryfile;
+}
+
+######
+sub gunzip
+{
+$tryfile='try222';
+open (my $tryfh,">",$tryfile) or die "Cannot write to $tryfile: $!\n";
+open (my $fh,"-|","gunzip -c $file") or die "Cannot read $file: $!\n";
+my @buffer=<$fh>;
+print $tryfh @buffer; 
+close $fh; 
+close $tryfh;
+push @unlink,$tryfile;
+}
+
+my $count=13;
+my $results=timethese($count,{
+	'IO::Uncompress::AnyUncompress' => \&io_uncomp,
+	'gunzip'			=>	\&gunzip,
+    });
+cmpthese($results);
+map {unlink} @unlink;

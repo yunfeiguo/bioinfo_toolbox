@@ -1,0 +1,14 @@
+#!/usr/bin/perl
+
+use strict;
+
+use Fcntl qw/:DEFAULT :flock/;
+open (FH,"< form.cgi") || die "can't open: $!\n";
+unless (flock (FH, LOCK_SH| LOCK_NB)) 
+{
+local $|=1;
+print "waiting for lock on form.cgi...";
+flock(FH,LOCK_SH | LOCK_NB) || die "can't lock form.cgi\n";
+print "Got it\n";
+}
+print ("END\n");

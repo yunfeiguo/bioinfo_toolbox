@@ -1,0 +1,11 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+
+open FH,'<',"try.bin" or die "failed to open: $!\n";
+binmode(FH) or die "failed to set to binmode: $!\n";
+while(<FH>) {
+    print $_,"\n";
+}
+close FH;

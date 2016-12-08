@@ -1,0 +1,47 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+
+die "Usage: $0 <INT> <1.fasta 2.fasta ...>\n" unless @ARGV>=2;
+my $n = shift @ARGV;
+my @fa = @ARGV;
+
+die "ERROR: INT expected, got $n\n" unless $n=~/^\d+$/;
+
+for my $i(@fa)
+{
+    my $out = $i.".wrapped";
+    open IN,'<',$i or die "ERROR: failed to open $i ($!)\n";
+    open OUT,'>',$out or die "ERROR: failed to write to $out ($!)\n";
+
+    my $id;
+    my $seq;
+    while (<IN>)
+    {
+	if(/^>/)
+	{
+	    if(defined $seq)
+	    {
+		print OUT $id;
+		$seq =~ s/[\r\n]+//mg;
+		print OUT substr($seq,0,$n,'') . "\n" while ($seq);
+
+		$seq = undef;
+	    } 
+		$id = $_;
+	} else
+	{
+	    $seq .= $_;
+	}
+    }
+    if(defined $id && defined $seq)
+    {
+	print OUT $id;
+	$seq =~ s/[\r\n]+//mg;
+	print OUT substr($seq,0,$n,'') . "\n" while ($seq);
+    }
+    close IN;
+    close OUT;
+    warn "$out done\n";
+}
