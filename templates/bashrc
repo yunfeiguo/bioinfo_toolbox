@@ -21,6 +21,7 @@ export PS1='[\A \u@\H \W]\$ '
 export R_LIB=$HOME/.R
 export MACHTYPE=x86_64
 export EDITOR=vi
+#prevent loss of command history in case of disconnection
 export HISTCONTROL=ignoredups
 export PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
 
