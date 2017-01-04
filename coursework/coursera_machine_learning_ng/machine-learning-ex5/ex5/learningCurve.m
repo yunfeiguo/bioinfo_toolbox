@@ -53,6 +53,20 @@ error_val   = zeros(m, 1);
 
 % ---------------------- Sample Solution ----------------------
 
+initial_theta = zeros(size(X, 2) + 1, 1);
+for i = 1:m
+    options = optimset("GradObj", "on","MaxIter",50);
+    %learningCurve(X, y, Xval, yval, lambda)
+    % Usage: [X, fX, i] = fmincg(f, X, options, P1, P2, P3, P4, P5)
+    %function [J, grad] = linearRegCostFunction(X, y, theta, lambda)
+    %function [theta] = trainLinearReg(X, y, lambda)
+    theta = trainLinearReg(X(1:i,:), y(1:i,:),lambda);
+
+    error_train(i) = linearRegCostFunction(X(1:i,:), y(1:i,:), theta,0);
+    error_val(i) = linearRegCostFunction(Xval,yval, theta, 0);
+
+end
+
 
 
 
