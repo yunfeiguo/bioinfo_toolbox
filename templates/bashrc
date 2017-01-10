@@ -27,6 +27,7 @@ export PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
 
 
 #alias
+alias rv='Rscript --vanilla'
 alias hpcc='ssh yunfeigu@hpc-login2.usc.edu'
 alias uec='ssh yunfeigu@hpc-uec.usc.edu'
 alias bionas='ssh yunfeiguo@bionas.usc.edu'
