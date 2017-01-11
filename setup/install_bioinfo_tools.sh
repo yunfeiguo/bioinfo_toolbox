@@ -16,6 +16,10 @@ ln -sf $PWD/bin/bamtools ~/bin/
 #samtools
 #bedtools
 #seqtk
+git clone https://github.com/lh3/seqtk.git;
+cd seqtk; make
+ln -s $PWD/seqtk $HOME/bin
+cd ..
 #freebayes
 #tabix
 git clone git@github.com:samtools/tabix.git
