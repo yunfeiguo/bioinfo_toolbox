@@ -7,7 +7,7 @@ void increase(void *p, int size) {
 	(*(int *)p)++;
     }
 }
-int main() {
+int pointer() {
     char c ('x');
     int n (5);
     cout << "before\n";

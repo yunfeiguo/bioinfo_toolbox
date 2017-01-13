@@ -1,6 +1,6 @@
 #include <iostream>
 using namespace std;
-int main() {
+int declarationExample() {
     int a = 1;
     int b (2);
     unsigned int result = a + b;

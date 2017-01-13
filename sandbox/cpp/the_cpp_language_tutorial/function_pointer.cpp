@@ -9,7 +9,7 @@ int subtract(int x, int y) {
 int operation(int x, int y, int (*function)(int, int)) {
 	return (*function)(x, y);
 }
-int main() {
+int functionPointer() {
     cout << "1 + 2 = " << operation(1, 2, addition) << endl;
     cout << "1 - 2 = " << operation(1, 2, subtract) << endl;
 }
