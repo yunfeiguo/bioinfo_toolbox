@@ -49,7 +49,7 @@ pushd asciidoc-8.6.9/
 autoconf
 ./configure --prefix=$HOME/Downloads/asciidoc-8.6.9_install
 make && make install
-ln -sf $HOME/Downloads/asciidoc-8.6.9_install/asciidoc.py ~/bin/asciidoc
+ln -sf $PWD/asciidoc.py ~/bin/asciidoc
 ln -sf $PWD/a2x.py ~/bin/a2x
 popd
 #xmlto
