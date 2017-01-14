@@ -1,6 +1,20 @@
 mkdir -p $HOME/Downloads
 cd $HOME/Downloads
-#gcc
+NUM_THREADS=$( cat /proc/cpuinfo | grep -c '^processor')
+USABLE_THREADS=$(expr $NUM_THREADS - 1)
+#gcc, may a a few hours
+wget http://www.netgull.com/gcc/releases/gcc-6.3.0/gcc-6.3.0.tar.gz
+tar zxf gcc-6.3.0.tar.gz
+pushd gcc-6.3.0/
+./contrib/download_prerequisites
+popd
+mkdir gcc-6.3.0-objdir
+pushd gcc-6.3.0-objdir/
+../gcc-6.3.0/configure --prefix=$HOME/Downloads/gcc-6.3.0_install --enable-languages=c,c++,fortran,go --disable-multilib
+make -j $USABLE_THREADS && make install
+popd
+echo 'export LD_LIBRARY_PATH=$HOME/Downloads/gcc-6.3.0_install/lib:$LD_LIBRARY_PATH' >> $HOME/.bashrc
+echo 'export LD_LIBRARY_PATH=$HOME/Downloads/gcc-6.3.0_install/lib64:$LD_LIBRARY_PATH' >> $HOME/.bashrc
 #cmake
 #zlib
 #python +setuptools+pip
