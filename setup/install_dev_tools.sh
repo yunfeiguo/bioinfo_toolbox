@@ -2,6 +2,8 @@ mkdir -p $HOME/Downloads
 cd $HOME/Downloads
 NUM_THREADS=$( cat /proc/cpuinfo | grep -c '^processor')
 USABLE_THREADS=$(expr $NUM_THREADS - 1)
+
+
 #gcc, may a a few hours
 wget http://www.netgull.com/gcc/releases/gcc-6.3.0/gcc-6.3.0.tar.gz
 tar zxf gcc-6.3.0.tar.gz
@@ -68,7 +70,7 @@ pushd git-2.11.0/
 make configure
 ./configure --prefix=$HOME/Downloads/git-2.11.0_install
 make all doc
-make install install-doc install-html
+make install
 ln -sf $HOME/Downloads/git-2.11.0_install/bin/git ~/bin
 popd
 #git bash autocompletion
