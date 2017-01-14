@@ -74,6 +74,5 @@ make install
 ln -sf $HOME/Downloads/git-2.11.0_install/bin/git ~/bin
 popd
 #git bash autocompletion
-wget https://github.com/git/git/blob/master/contrib/completion/git-completion.bash
-echo 'source $HOME/Downloads/git-completion.bash' >> $HOME/.bashrc
+echo 'source $HOME/Downloads/git-2.11.0/contrib/completion/git-completion.bash' >> $HOME/.bashrc
 
