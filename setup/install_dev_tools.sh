@@ -1,4 +1,5 @@
 mkdir -p $HOME/Downloads
+mkdir -p $HOME/bin
 cd $HOME/Downloads
 NUM_THREADS=$( cat /proc/cpuinfo | grep -c '^processor')
 USABLE_THREADS=$(expr $NUM_THREADS - 1)
@@ -14,6 +15,10 @@ mkdir gcc-6.3.0-objdir
 pushd gcc-6.3.0-objdir/
 ../gcc-6.3.0/configure --prefix=$HOME/Downloads/gcc-6.3.0_install --enable-languages=c,c++,fortran,go --disable-multilib
 make -j $USABLE_THREADS && make install
+ln -sf $PWD/gcc $HOME/bin/
+ln -sf $PWD/g++ $HOME/bin/
+ln -sf $PWD/go $HOME/bin/
+ln -sf $PWD/gfortran $HOME/bin/
 popd
 echo 'export LD_LIBRARY_PATH=$HOME/Downloads/gcc-6.3.0_install/lib:$LD_LIBRARY_PATH' >> $HOME/.bashrc
 echo 'export LD_LIBRARY_PATH=$HOME/Downloads/gcc-6.3.0_install/lib64:$LD_LIBRARY_PATH' >> $HOME/.bashrc
