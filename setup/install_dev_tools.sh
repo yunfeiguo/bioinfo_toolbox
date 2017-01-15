@@ -1,6 +1,27 @@
 mkdir -p $HOME/Downloads
+mkdir -p $HOME/bin
 cd $HOME/Downloads
-#gcc
+NUM_THREADS=$( cat /proc/cpuinfo | grep -c '^processor')
+USABLE_THREADS=$(expr $NUM_THREADS - 1)
+
+
+#gcc, may a a few hours
+wget http://www.netgull.com/gcc/releases/gcc-6.3.0/gcc-6.3.0.tar.gz
+tar zxf gcc-6.3.0.tar.gz
+pushd gcc-6.3.0/
+./contrib/download_prerequisites
+popd
+mkdir gcc-6.3.0-objdir
+pushd gcc-6.3.0-objdir/
+../gcc-6.3.0/configure --prefix=$HOME/Downloads/gcc-6.3.0_install --enable-languages=c,c++,fortran,go --disable-multilib
+make -j $USABLE_THREADS && make install
+ln -sf $PWD/gcc $HOME/bin/
+ln -sf $PWD/g++ $HOME/bin/
+ln -sf $PWD/go $HOME/bin/
+ln -sf $PWD/gfortran $HOME/bin/
+popd
+echo 'export LD_LIBRARY_PATH=$HOME/Downloads/gcc-6.3.0_install/lib:$LD_LIBRARY_PATH' >> $HOME/.bashrc
+echo 'export LD_LIBRARY_PATH=$HOME/Downloads/gcc-6.3.0_install/lib64:$LD_LIBRARY_PATH' >> $HOME/.bashrc
 #cmake
 #zlib
 #python +setuptools+pip
@@ -35,7 +56,7 @@ pushd asciidoc-8.6.9/
 autoconf
 ./configure --prefix=$HOME/Downloads/asciidoc-8.6.9_install
 make && make install
-ln -sf $HOME/Downloads/asciidoc-8.6.9_install/asciidoc.py ~/bin/asciidoc
+ln -sf $PWD/asciidoc.py ~/bin/asciidoc
 ln -sf $PWD/a2x.py ~/bin/a2x
 popd
 #xmlto
@@ -54,7 +75,9 @@ pushd git-2.11.0/
 make configure
 ./configure --prefix=$HOME/Downloads/git-2.11.0_install
 make all doc
-make install install-doc install-html
+make install
 ln -sf $HOME/Downloads/git-2.11.0_install/bin/git ~/bin
 popd
+#git bash autocompletion
+echo 'source $HOME/Downloads/git-2.11.0/contrib/completion/git-completion.bash' >> $HOME/.bashrc
 
