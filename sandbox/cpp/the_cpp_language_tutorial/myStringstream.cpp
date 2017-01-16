@@ -14,4 +14,5 @@ int myStringstream() {
     stringstream(s) >> x;
 
     cout << "result " << x << " x " << n << endl;
+    return 0;
 }

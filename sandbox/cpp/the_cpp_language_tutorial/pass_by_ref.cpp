@@ -8,4 +8,5 @@ int passByRef() {
     cout << "Before " << x << endl;
     doubleNumber(x);
     cout << "After " << x << endl;
+    return 0;
 }

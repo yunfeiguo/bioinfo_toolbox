@@ -16,4 +16,5 @@ int pointer() {
     increase(&n, sizeof(n));
     cout << "after\n";
     cout << "c " << c << " n " << n << endl;
+    return 0;
 }
