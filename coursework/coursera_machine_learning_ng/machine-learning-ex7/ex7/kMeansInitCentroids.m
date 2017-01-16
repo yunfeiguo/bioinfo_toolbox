@@ -13,7 +13,13 @@ centroids = zeros(K, size(X, 2));
 %               the dataset X
 %
 
+%assume sample size is at least K
+%ignore setting seed (but we should explicitly set seed)
 
+m = size(X,1);
+if m >= K
+    centroids = X(randperm(m)(1:K), :);
+end
 
 
 

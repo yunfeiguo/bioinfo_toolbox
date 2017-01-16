@@ -20,6 +20,9 @@ S = zeros(n);
 %       number of examples).
 %
 
+%assume X has reasonable dimensions
+sigma = X'*X/m;
+[U S C] = svd(sigma);
 
 
 
