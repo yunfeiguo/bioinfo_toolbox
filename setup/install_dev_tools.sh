@@ -30,6 +30,7 @@ pushd  zlib-1.2.11/
 ./configure --prefix=$HOME/Downloads/zlib-1.2.11_install
 make && make install
 echo 'export LD_LIBRARY_PATH=$HOME/Downloads/zlib-1.2.11_install:$LD_LIBRARY_PATH' >> /home/guoy28/.bashrc
+popd
 
 #python +setuptools+pip
 wget https://www.python.org/ftp/python/2.7.12/Python-2.7.12.tgz
