@@ -27,3 +27,18 @@ cd tabix/
 make
 ln -s $PWD/tabix ~/bin/
 ln -s $PWD/bgzip ~/bin/
+
+
+
+#ngmlr
+wget
+tar zxvf
+pushd
+mkdir build
+pushd build
+cmake ..
+#cmake does not seem to have good support for make -j
+make
+ln -s $PWD/
+popd
+popd
