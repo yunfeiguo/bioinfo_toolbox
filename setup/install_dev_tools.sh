@@ -29,7 +29,7 @@ tar zxvf zlib-1.2.11.tar.gz
 pushd  zlib-1.2.11/
 ./configure --prefix=$HOME/Downloads/zlib-1.2.11_install
 make && make install
-
+echo 'export LD_LIBRARY_PATH=$HOME/Downloads/zlib-1.2.11_install:$LD_LIBRARY_PATH' >> /home/guoy28/.bashrc
 
 #python +setuptools+pip
 wget https://www.python.org/ftp/python/2.7.12/Python-2.7.12.tgz
@@ -88,3 +88,6 @@ popd
 #git bash autocompletion
 echo 'source $HOME/Downloads/git-2.11.0/contrib/completion/git-completion.bash' >> $HOME/.bashrc
 
+
+
+echo 'export LIBRARY_PATH=$LD_LIBRARY_PATH:$LIBRARY_PATH' >> $HOME/.bashrc
