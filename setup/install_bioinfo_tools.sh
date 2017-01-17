@@ -30,7 +30,7 @@ ln -s $PWD/bgzip ~/bin/
 
 
 
-#ngmlr
+#ngmlr, make sure to have at least gcc 5.3
 wget
 tar zxvf
 pushd
