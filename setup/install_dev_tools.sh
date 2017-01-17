@@ -24,6 +24,13 @@ echo 'export LD_LIBRARY_PATH=$HOME/Downloads/gcc-6.3.0_install/lib:$LD_LIBRARY_P
 echo 'export LD_LIBRARY_PATH=$HOME/Downloads/gcc-6.3.0_install/lib64:$LD_LIBRARY_PATH' >> $HOME/.bashrc
 #cmake
 #zlib
+wget http://www.zlib.net/zlib-1.2.11.tar.gz
+tar zxvf zlib-1.2.11.tar.gz 
+pushd  zlib-1.2.11/
+./configure --prefix=$HOME/Downloads/zlib-1.2.11_install
+make && make install
+
+
 #python +setuptools+pip
 wget https://www.python.org/ftp/python/2.7.12/Python-2.7.12.tgz
 tar zxvf Python-2.7.12.tgz 
