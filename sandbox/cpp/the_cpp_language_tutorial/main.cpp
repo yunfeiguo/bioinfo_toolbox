@@ -8,14 +8,28 @@
 #include "myStringstream.h"
 #include "myString.h"
 #include "overloading.h"
+#include "FirstClass.h"
+#include<iostream>
+using namespace std;
 
 int main() {
-    hello();
-    array();
-    dynamicMemory();
-    pointer();
-    myStringstream();
-    myString();
-    overloading();
+    if (0) {
+        hello();
+        myArray();
+        dynamicMemory();
+        pointer();
+        myStringstream();
+        myString();
+        overloading();
+        FirstClass x;
+        x.setValues(2,3);
+        cout << "area: " << x.area() << endl;
+    }
+    SecondClass *y = new SecondClass(3,4);
+    cout << "area: " << y->area() << endl;
+    delete y;
+    SecondClass z(3,4);
+    cout << "area: " << z.area() << endl;
+//desctructor will be automatically called once z is out of scope.
 }
 

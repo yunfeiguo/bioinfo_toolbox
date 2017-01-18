@@ -1,6 +1,6 @@
 #include<iostream>
 using namespace std;
-int array() {
+int myArray() {
     int num1 [5];
     int num2 [] = {1,2,3};
     //uninitialized values

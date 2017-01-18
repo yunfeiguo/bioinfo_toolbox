@@ -6,4 +6,4 @@
 #define THE_CPP_LANGUAGE_TUTORIAL_ARRAY_H
 
 #endif //THE_CPP_LANGUAGE_TUTORIAL_ARRAY_H
-int array();
+int myArray();

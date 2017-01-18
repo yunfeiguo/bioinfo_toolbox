@@ -13,6 +13,6 @@ set(SOURCE_FILES
         myString.cpp
         myStringstream.cpp
         array.cpp array.h
-        hello.cpp main.cpp main.h hello.h array.h declaration_example.h.h dynamic_memory.h function.h function_pointer.h overloading.h pass_by_ref.h pointer.h myString.h myStringstream.h)
+        hello.cpp main.cpp main.h hello.h array.h declaration_example.h.h dynamic_memory.h function.h function_pointer.h overloading.h pass_by_ref.h pointer.h myString.h myStringstream.h FirstClass.cpp FirstClass.h)
 
 add_executable(the_cpp_language_tutorial ${SOURCE_FILES})
