@@ -13,7 +13,12 @@ pushd gcc-6.3.0/
 popd
 mkdir gcc-6.3.0-objdir
 pushd gcc-6.3.0-objdir/
-../gcc-6.3.0/configure --prefix=$HOME/Downloads/gcc-6.3.0_install --enable-languages=c,c++,fortran,go --disable-multilib
+../gcc-6.3.0/configure --prefix=$HOME/Downloads/gcc-6.3.0_install --enable-shared --enable-threads \
+--with-system-zlib --enable-languages=c,c++,fortran,go --disable-multilib
+#--with-gmp
+#--with-mpfr
+#--with-mpc
+#--with-isl
 make -j $USABLE_THREADS && make install
 ln -sf $PWD/gcc $HOME/bin/
 ln -sf $PWD/g++ $HOME/bin/
@@ -22,6 +27,8 @@ ln -sf $PWD/gfortran $HOME/bin/
 popd
 echo 'export LD_LIBRARY_PATH=$HOME/Downloads/gcc-6.3.0_install/lib:$LD_LIBRARY_PATH' >> $HOME/.bashrc
 echo 'export LD_LIBRARY_PATH=$HOME/Downloads/gcc-6.3.0_install/lib64:$LD_LIBRARY_PATH' >> $HOME/.bashrc
+echo 'export CC=$HOME/bin/gcc' >> $HOME/.bashrc
+echo 'export CXX=$HOME/bin/g++' >> $HOME/.bashrc
 #cmake
 #zlib
 wget http://www.zlib.net/zlib-1.2.11.tar.gz
