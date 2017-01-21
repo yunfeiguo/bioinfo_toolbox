@@ -4,6 +4,15 @@ cd $HOME/Downloads
 NUM_THREADS=$( cat /proc/cpuinfo | grep -c '^processor')
 USABLE_THREADS=$(expr $NUM_THREADS - 1)
 
+#glibc
+wget https://ftp.gnu.org/gnu/libc/glibc-2.24.tar.gz
+tar zxvf glibc-2.24.tar.gz 
+mkdir glibc-2.24-objdir
+pushd glibc-2.24-objdir/
+../glibc-2.24/configure --prefix=$HOME/Downloads/glibc-2.24_install
+make -j
+make install
+popd
 
 #gcc, may a a few hours
 wget http://www.netgull.com/gcc/releases/gcc-6.3.0/gcc-6.3.0.tar.gz
