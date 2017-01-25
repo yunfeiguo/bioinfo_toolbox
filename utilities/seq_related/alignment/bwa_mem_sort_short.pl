@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-
+#simple wrapper for bwa mem 0.7.15 and SAMtools 1.3.1
 die "Usage: $0 <ref prefix> <output prefix> <fq1> [fq2...]\n" unless @ARGV >= 3;
 
 $ref = shift @ARGV;
