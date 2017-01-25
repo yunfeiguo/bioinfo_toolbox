@@ -1,6 +1,7 @@
 //
 // Created by guoy28 on 1/13/17.
 //
+#include "OperatorOverloading.h"
 #include "pointer.h"
 #include "hello.h"
 #include "array.h"
@@ -24,12 +25,19 @@ int main() {
         FirstClass x;
         x.setValues(2,3);
         cout << "area: " << x.area() << endl;
-    }
-    SecondClass *y = new SecondClass(3,4);
-    cout << "area: " << y->area() << endl;
-    delete y;
-    SecondClass z(3,4);
-    cout << "area: " << z.area() << endl;
+
+        SecondClass *y = new SecondClass(3,4);
+        cout << "area: " << y->area() << endl;
+        delete y;
+        SecondClass z(3,4);
+        cout << "area: " << z.area() << endl;
 //desctructor will be automatically called once z is out of scope.
+    }
+    OperatorOverloading one(1,2);
+    OperatorOverloading two(2,3);
+    OperatorOverloading three;
+    three = one + two;
+    cout << "add one and two using overloaded +" << endl;
+    cout << three.x << " y: " << three.y << endl;
 }
 
