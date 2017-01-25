@@ -1,8 +1,53 @@
 mkdir -p $HOME/Downloads
+mkdir -p $HOME/bin
 cd $HOME/Downloads
-#gcc
+NUM_THREADS=$( cat /proc/cpuinfo | grep -c '^processor')
+USABLE_THREADS=$(expr $NUM_THREADS - 1)
+
+#glibc
+wget https://ftp.gnu.org/gnu/libc/glibc-2.24.tar.gz
+tar zxvf glibc-2.24.tar.gz 
+mkdir glibc-2.24-objdir
+pushd glibc-2.24-objdir/
+../glibc-2.24/configure --prefix=$HOME/Downloads/glibc-2.24_install
+make -j
+make install
+popd
+
+#gcc, may a a few hours
+wget http://www.netgull.com/gcc/releases/gcc-6.3.0/gcc-6.3.0.tar.gz
+tar zxf gcc-6.3.0.tar.gz
+pushd gcc-6.3.0/
+./contrib/download_prerequisites
+popd
+mkdir gcc-6.3.0-objdir
+pushd gcc-6.3.0-objdir/
+../gcc-6.3.0/configure --prefix=$HOME/Downloads/gcc-6.3.0_install --enable-shared --enable-threads \
+--with-system-zlib --enable-languages=c,c++,fortran,go --disable-multilib
+#--with-gmp
+#--with-mpfr
+#--with-mpc
+#--with-isl
+make -j $USABLE_THREADS && make install
+ln -sf $PWD/gcc $HOME/bin/
+ln -sf $PWD/g++ $HOME/bin/
+ln -sf $PWD/go $HOME/bin/
+ln -sf $PWD/gfortran $HOME/bin/
+popd
+echo 'export LD_LIBRARY_PATH=$HOME/Downloads/gcc-6.3.0_install/lib:$LD_LIBRARY_PATH' >> $HOME/.bashrc
+echo 'export LD_LIBRARY_PATH=$HOME/Downloads/gcc-6.3.0_install/lib64:$LD_LIBRARY_PATH' >> $HOME/.bashrc
+echo 'export CC=$HOME/bin/gcc' >> $HOME/.bashrc
+echo 'export CXX=$HOME/bin/g++' >> $HOME/.bashrc
 #cmake
 #zlib
+wget http://www.zlib.net/zlib-1.2.11.tar.gz
+tar zxvf zlib-1.2.11.tar.gz 
+pushd  zlib-1.2.11/
+./configure --prefix=$HOME/Downloads/zlib-1.2.11_install
+make && make install
+echo 'export LD_LIBRARY_PATH=$HOME/Downloads/zlib-1.2.11_install:$LD_LIBRARY_PATH' >> /home/guoy28/.bashrc
+popd
+
 #python +setuptools+pip
 wget https://www.python.org/ftp/python/2.7.12/Python-2.7.12.tgz
 tar zxvf Python-2.7.12.tgz 
@@ -35,7 +80,7 @@ pushd asciidoc-8.6.9/
 autoconf
 ./configure --prefix=$HOME/Downloads/asciidoc-8.6.9_install
 make && make install
-ln -sf $HOME/Downloads/asciidoc-8.6.9_install/asciidoc.py ~/bin/asciidoc
+ln -sf $PWD/asciidoc.py ~/bin/asciidoc
 ln -sf $PWD/a2x.py ~/bin/a2x
 popd
 #xmlto
@@ -54,7 +99,12 @@ pushd git-2.11.0/
 make configure
 ./configure --prefix=$HOME/Downloads/git-2.11.0_install
 make all doc
-make install install-doc install-html
+make install
 ln -sf $HOME/Downloads/git-2.11.0_install/bin/git ~/bin
 popd
+#git bash autocompletion
+echo 'source $HOME/Downloads/git-2.11.0/contrib/completion/git-completion.bash' >> $HOME/.bashrc
 
+
+
+echo 'export LIBRARY_PATH=$LD_LIBRARY_PATH:$LIBRARY_PATH' >> $HOME/.bashrc
