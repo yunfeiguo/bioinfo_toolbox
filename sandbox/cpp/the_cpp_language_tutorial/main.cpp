@@ -10,6 +10,7 @@
 #include "myString.h"
 #include "overloading.h"
 #include "FirstClass.h"
+#include "ThisUsage.h"
 #include<iostream>
 using namespace std;
 
@@ -32,12 +33,19 @@ int main() {
         SecondClass z(3,4);
         cout << "area: " << z.area() << endl;
 //desctructor will be automatically called once z is out of scope.
+        OperatorOverloading one(1,2);
+        OperatorOverloading two(2,3);
+        OperatorOverloading three;
+        three = one + two;
+        cout << "add one and two using overloaded +" << endl;
+        cout << three.x << " y: " << three.y << endl;
     }
-    OperatorOverloading one(1,2);
-    OperatorOverloading two(2,3);
-    OperatorOverloading three;
-    three = one + two;
-    cout << "add one and two using overloaded +" << endl;
-    cout << three.x << " y: " << three.y << endl;
+    ThisUsage tu(1,2);
+    ThisUsage tu2 = tu;
+    cout << "tu" << endl;
+    tu.print();
+    tu.setX(10);
+    cout << "tu2 after chaning tu" << endl;
+    tu2.print();
 }
 
