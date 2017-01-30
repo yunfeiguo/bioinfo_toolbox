@@ -24,7 +24,7 @@ public class Problem1IterativeDFS {
 	private int count;
 	//we can also record paths, but here I just ignore them
 	public Problem1IterativeDFS(Graph g, int v) {
-		this.g = g;
+		this.g = g; //to make the program more robust, we need to make a copy of graph as it is mutable.
 		this.source = v;
 		this.visited = new boolean[g.V()];
 		count = 0;
