@@ -11,6 +11,7 @@
 #include "overloading.h"
 #include "FirstClass.h"
 #include "ThisUsage.h"
+#include "ClassStaticVariable.h"
 #include<iostream>
 using namespace std;
 
@@ -39,13 +40,22 @@ int main() {
         three = one + two;
         cout << "add one and two using overloaded +" << endl;
         cout << three.x << " y: " << three.y << endl;
+
+        ThisUsage tu(1,2);
+        ThisUsage tu2 = tu;
+        cout << "tu" << endl;
+        tu.print();
+        tu.setX(10);
+        cout << "tu2 after chaning tu" << endl;
+        tu2.print();
     }
-    ThisUsage tu(1,2);
-    ThisUsage tu2 = tu;
-    cout << "tu" << endl;
-    tu.print();
-    tu.setX(10);
-    cout << "tu2 after chaning tu" << endl;
-    tu2.print();
+    ClassStaticVariable csv1 (ClassStaticVariable(1));
+    ClassStaticVariable csv2[5] = {{1}, {2}, {3}, {4}, {5}};
+    ClassStaticVariable *csv3 = new ClassStaticVariable(2);
+    cout << "count after 2 elements and 1 array of length 5" << endl;
+    cout << csv1.n << endl;
+    delete csv3;
+    cout << "count after del" << endl;
+    cout << ClassStaticVariable::n << endl;
 }
 
