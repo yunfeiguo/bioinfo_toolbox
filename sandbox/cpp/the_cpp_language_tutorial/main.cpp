@@ -12,6 +12,7 @@
 #include "FirstClass.h"
 #include "ThisUsage.h"
 #include "ClassStaticVariable.h"
+#include "FriendExample.h"
 #include<iostream>
 using namespace std;
 
@@ -48,14 +49,19 @@ int main() {
         tu.setX(10);
         cout << "tu2 after chaning tu" << endl;
         tu2.print();
+        ClassStaticVariable csv1 (ClassStaticVariable(1));
+        ClassStaticVariable csv2[5] = {{1}, {2}, {3}, {4}, {5}};
+        ClassStaticVariable *csv3 = new ClassStaticVariable(2);
+        cout << "count after 2 elements and 1 array of length 5" << endl;
+        cout << csv1.n << endl;
+        delete csv3;
+        cout << "count after del" << endl;
+        cout << ClassStaticVariable::n << endl;
     }
-    ClassStaticVariable csv1 (ClassStaticVariable(1));
-    ClassStaticVariable csv2[5] = {{1}, {2}, {3}, {4}, {5}};
-    ClassStaticVariable *csv3 = new ClassStaticVariable(2);
-    cout << "count after 2 elements and 1 array of length 5" << endl;
-    cout << csv1.n << endl;
-    delete csv3;
-    cout << "count after del" << endl;
-    cout << ClassStaticVariable::n << endl;
+    FriendExample friendExample(2,3);
+    FriendExample friendExample2 (duplicate(friendExample));
+    cout << "friend area" << endl;
+    cout << friendExample2.area() << endl;
 }
+
 
