@@ -13,6 +13,8 @@
 #include "ThisUsage.h"
 #include "ClassStaticVariable.h"
 #include "FriendExample.h"
+#include "FriendClassExample.h"
+#include "InheritanceExample.h"
 #include<iostream>
 using namespace std;
 
@@ -57,11 +59,23 @@ int main() {
         delete csv3;
         cout << "count after del" << endl;
         cout << ClassStaticVariable::n << endl;
+        FriendExample friendExample(2,3);
+        FriendExample friendExample2 (duplicate(friendExample));
+        cout << "friend area" << endl;
+        cout << friendExample2.area() << endl;
+        MySquare mySquare;
+        mySquare.setL(5);
+        MyRectangle myRectangle;
+        myRectangle.convert(mySquare);
+        cout << "myRectangle after conversion" << endl;
+        cout << myRectangle.area() << endl;
     }
-    FriendExample friendExample(2,3);
-    FriendExample friendExample2 (duplicate(friendExample));
-    cout << "friend area" << endl;
-    cout << friendExample2.area() << endl;
+    Process p(1);
+    LinuxProcess lp(2);
+    cout << "regular process" << endl;
+    cout << p.processGetPid() << endl;
+    cout << "linux process" << endl;
+    cout << lp.linuxProcessGetPid() << endl; //cannot call processGetPid() directly because it is a protected member
 }
 
 
