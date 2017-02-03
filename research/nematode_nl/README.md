@@ -60,3 +60,23 @@ wget https://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/ncbi-blast-2.6
 
 ```
 ## analysis
+
+# miniasm/minimap
+## resource requirements
+even use 24 threads, memory usage does not exceed 65GB, time is < 1hr, total CPU time is < 12hr.
+## parameter tuning
+`-S` for minimap is required for de-novo assembly.
+## command
+```
+#qsub -q largemem -N mini3 -l walltime=48:0:0 -l nodes=1:ppn=24 -l mem=256GB -S /bin/bash -V -o stdout -e stderr -S /bin/bash cmd
+INPUT=/home/rcf-02/yunfeigu/proj_dir/nematode/data/filtered_subreads.fasta
+NCPU=24
+# Overlap
+minimap -Sw5 -L100 -m0 -t $NCPU $INPUT $INPUT | gzip -1 > out.paf.gz
+# Layout
+miniasm -f $INPUT out.paf.gz > out.gfa
+gfa2fa.sh out.gfa > out.fa
+```
+## troubleshooting
+### disk quota exceeded
+it seems the intermediate file is very large, exceeding the remaining 1.x TB space.
