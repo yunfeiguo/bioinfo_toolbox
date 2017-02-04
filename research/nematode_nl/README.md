@@ -64,6 +64,7 @@ wget https://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/ncbi-blast-2.6
 # miniasm/minimap
 ## resource requirements
 even use 24 threads, memory usage does not exceed 65GB, time is < 1hr, total CPU time is < 12hr.
+during parameter tuning, max mem usage reached 88GB using 24 threads.
 ## parameter tuning
 * `-S` for minimap is required for de-novo assembly.
 * combining raw reads with draft assembly will lead to very high N50 but very poor quality, e.g. very low GC content, at least with the default settings for minimap and miniasm.
