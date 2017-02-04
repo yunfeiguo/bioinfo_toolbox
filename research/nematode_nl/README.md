@@ -65,7 +65,10 @@ wget https://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/ncbi-blast-2.6
 ## resource requirements
 even use 24 threads, memory usage does not exceed 65GB, time is < 1hr, total CPU time is < 12hr.
 ## parameter tuning
-`-S` for minimap is required for de-novo assembly.
+* `-S` for minimap is required for de-novo assembly.
+* combining raw reads with draft assembly will lead to very high N50 but very poor quality, e.g. very low GC content, at least with the default settings for minimap and miniasm.
+* `-T1` will lead to very short assembly, but `-T0` and `-T10` are okay.
+* current best parameter combination for minimap (w.r.t N50) is `minimap -k15 -w7 -f0.001 -r500 -m0 -c4 -L100 -g10000 -T0 -S`
 ## command
 ```
 #qsub -q largemem -N mini3 -l walltime=48:0:0 -l nodes=1:ppn=24 -l mem=256GB -S /bin/bash -V -o stdout -e stderr -S /bin/bash cmd
