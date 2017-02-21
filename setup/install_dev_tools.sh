@@ -73,6 +73,14 @@ popd
 popd
 #perl
 #boost
+wget -O boost_1_63_0.tar.gz 'https://downloads.sourceforge.net/project/boost/boost/1.63.0/boost_1_63_0.tar.gz?r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Fboost%2Ffiles%2Fboost%2F1.63.0%2F&ts=1487717694&use_mirror=droneda
+ta'
+tar zxvf boost_1_63_0.tar.gz
+pushd boost_1_63_0/
+./bootstrap.sh 
+./b2
+popd
+
 #asciidoc
 wget https://github.com/asciidoc/asciidoc/archive/8.6.9.zip
 unzip 8.6.9.zip 
