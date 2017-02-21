@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-die "Usage: $0 &lt;seq1&gt; &lt;seq2&gt;\n" unless @ARGV==2;
+die "Usage: $0 <seq1> <seq2>\n" unless @ARGV==2;
 my ($seq1,$seq2)=@ARGV;
 
 my $MATCH=1;
@@ -14,12 +14,12 @@ my $GAP=-1;
 my @matrix;
 $matrix[0][0]{score}=0;
 $matrix[0][0]{pointer}="none";
-for (my $j=1;$j&lt;=length $seq1;$j++)
+for (my $j=1;$j<=length $seq1;$j++)
 {
     $matrix[0][$j]{score}=0;
     $matrix[0][$j]{pointer}="none";
 }
-for (my $i=1;$i&lt;=length $seq2;$i++)
+for (my $i=1;$i<=length $seq2;$i++)
 {
     $matrix[$i][0]{score}=0;
     $matrix[$i][0]{pointer}="none";
@@ -30,9 +30,9 @@ my $max_i=0;
 my $max_j=0;
 my $max_score=0;
 
-for (my $i=1;$i&lt;=length $seq2;$i++)
+for (my $i=1;$i<=length $seq2;$i++)
 {
-    for(my $j=1;$j&lt;=length $seq1;$j++)
+    for(my $j=1;$j<=length $seq1;$j++)
     {
 	my ($diagonal_score,$up_score,$left_score);
 
@@ -51,16 +51,16 @@ for (my $i=1;$i&lt;=length $seq2;$i++)
 	$up_score=$matrix[$i-1][$j]{score}+$GAP;
 	$left_score=$matrix[$i][$j-1]{score}+$GAP;
 
-	if ($diagonal_score&lt;=0 &amp;&amp; $up_score &lt;=0 &amp;&amp; $left_score&lt;=0)
+	if ($diagonal_score<=0 && $up_score <=0 && $left_score<=0)
 	{
 	    $matrix[$i][$j]{score}=0;
 	    $matrix[$i][$j]{pointer}="none";
 	    next;
 	}
 	#choose best score
-	if ($diagonal_score &gt;= $up_score)
+	if ($diagonal_score >= $up_score)
 	{
-	    if ($diagonal_score &gt;= $left_score)
+	    if ($diagonal_score >= $left_score)
 	    {
 		$matrix[$i][$j]{score}=$diagonal_score;
 		$matrix[$i][$j]{pointer}="diagonal";
@@ -71,7 +71,7 @@ for (my $i=1;$i&lt;=length $seq2;$i++)
 	    }
 	} else
 	{
-	    if ($up_score&gt;= $left_score)
+	    if ($up_score>= $left_score)
 	    {
 		$matrix[$i][$j]{score}=$up_score;
 		$matrix[$i][$j]{pointer}='up';
@@ -83,7 +83,7 @@ for (my $i=1;$i&lt;=length $seq2;$i++)
 	}
 
 	#update max score
-	if ($matrix[$i][$j]{score}&gt;$max_score)
+	if ($matrix[$i][$j]{score}>$max_score)
 	{
 	    $max_score=$matrix[$i][$j]{score};
 	    $max_i=$i;
