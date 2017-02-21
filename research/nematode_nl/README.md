@@ -69,7 +69,7 @@ during parameter tuning, max mem usage reached 88GB using 24 threads.
 * `-S` for minimap is required for de-novo assembly.
 * combining raw reads with draft assembly will lead to very high N50 but very poor quality, e.g. very low GC content, at least with the default settings for minimap and miniasm.
 * `-T1` will lead to very short assembly, but `-T0` and `-T10` are okay.
-* current best parameter combination for minimap (w.r.t N50) is `minimap -k15 -w7 -f0.001 -r500 -m0 -c4 -L100 -g10000 -T0 -S`
+* current best parameter combination for minimap (w.r.t N50) is `minimap -k15 -w7 -f0.001 -r600 -m0.05 -c4 -L100 -g10000 -T0 -S`
 * increasing `-w` from 3 to 7 almost doubled assembly N50.
 * increasing `-f` from 0.0005 to 0.002 increases N50
 * increasing `-r` from 400 to 600 increases N50
@@ -77,6 +77,23 @@ during parameter tuning, max mem usage reached 88GB using 24 threads.
 * increasing `-c` from 2 to 6 increases N50
 * `-L70` `-L130` `-L100` do not seem to be significantly different
 * `-g5000` doubles N50 at `-g10000`.
+* current best parameter combination for miniasm (wrt N50): `-m100 -i0.05 -s2000 -c3 -h1000 -I0.8 -g1000 -d50000 -e4 -n3 -r0.7,0.5 -F0.8`
+* `-R` decreases N50
+* `-m50` `-m100` do not have difference, `-m150` reduces N50
+* `-i0.05`->`-i0.02` or `-i0.08` halved N50.
+* `-s2000`->`-s1500`or`-s2500` seems no difference
+* `-c3`->`c2` or`-c4` reduced N50
+* `-h1000`->`h600` significantly reduced N50, ->`-h1400` mildly reduced N50.
+* `-I0.8`->`-I0.6` or `-I0.9` reduced N50
+* `-g1000`->`-g500`,`-g1500` seems no effect
+* `-d30000`->`-d50000`->`-d70000` increased N50
+* `-e3,4,5` no difference
+* `-n2,3,4` no difference
+* `-r0.7,0.5`->`-r0.8,0.6` reduced N50
+* `-F0.7,0.8,0.9` no difference
+* `-b` will result in 0bp assembly.
+
+
 ## command
 ```
 #qsub -q largemem -N mini3 -l walltime=48:0:0 -l nodes=1:ppn=24 -l mem=256GB -S /bin/bash -V -o stdout -e stderr -S /bin/bash cmd
@@ -91,3 +108,7 @@ gfa2fa.sh out.gfa > out.fa
 ## troubleshooting
 ### disk quota exceeded
 it seems the intermediate file is very large, exceeding the remaining 1.x TB space.
+
+# racon
+## installation
+I did fresh installation of gcc-6.3.0 to overcome issue of `cannot find -lstdc++`.
