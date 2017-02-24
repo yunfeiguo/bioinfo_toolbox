@@ -39,6 +39,11 @@ echo 'export LD_LIBRARY_PATH=$HOME/Downloads/gcc-6.3.0_install/lib64:$LD_LIBRARY
 echo 'export CC=$HOME/bin/gcc' >> $HOME/.bashrc
 echo 'export CXX=$HOME/bin/g++' >> $HOME/.bashrc
 #cmake
+wget https://cmake.org/files/v3.7/cmake-3.7.2-Linux-x86_64.sh
+bash cmake-3.7.2-Linux-x86_64.sh
+ln -s $PWD/cmake-3.7.2-Linux-x86_64/bin/cmake $HOME/bin/
+
+
 #zlib
 wget http://www.zlib.net/zlib-1.2.11.tar.gz
 tar zxvf zlib-1.2.11.tar.gz 
