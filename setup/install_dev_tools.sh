@@ -39,6 +39,11 @@ echo 'export LD_LIBRARY_PATH=$HOME/Downloads/gcc-6.3.0_install/lib64:$LD_LIBRARY
 echo 'export CC=$HOME/bin/gcc' >> $HOME/.bashrc
 echo 'export CXX=$HOME/bin/g++' >> $HOME/.bashrc
 #cmake
+wget https://cmake.org/files/v3.7/cmake-3.7.2-Linux-x86_64.sh
+bash cmake-3.7.2-Linux-x86_64.sh
+ln -s $PWD/cmake-3.7.2-Linux-x86_64/bin/* $HOME/bin/
+
+
 #zlib
 wget http://www.zlib.net/zlib-1.2.11.tar.gz
 tar zxvf zlib-1.2.11.tar.gz 
@@ -73,6 +78,14 @@ popd
 popd
 #perl
 #boost
+wget -O boost_1_63_0.tar.gz 'https://downloads.sourceforge.net/project/boost/boost/1.63.0/boost_1_63_0.tar.gz?r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Fboost%2Ffiles%2Fboost%2F1.63.0%2F&ts=1487717694&use_mirror=droneda
+ta'
+tar zxvf boost_1_63_0.tar.gz
+pushd boost_1_63_0/
+./bootstrap.sh 
+./b2
+popd
+
 #asciidoc
 wget https://github.com/asciidoc/asciidoc/archive/8.6.9.zip
 unzip 8.6.9.zip 
@@ -104,5 +117,30 @@ ln -sf $HOME/Downloads/git-2.11.0_install/bin/git ~/bin
 popd
 #git bash autocompletion
 echo 'source $HOME/Downloads/git-2.11.0/contrib/completion/git-completion.bash' >> $HOME/.bashrc
+
+
+#####R#####
+#libcurl
+wget https://curl.haxx.se/download/curl-7.53.1.tar.gz
+tar zxvf curl-7.53.1.tar.gz 
+pushd curl-7.53.1/
+./configure --prefix=$HOME/Downloads/curl-7.53.1_install && make -j && make install
+
+#xz, lzma libs
+wget http://tukaani.org/xz/xz-5.2.3.tar.gz
+tar zxvf xz-5.2.3.tar.gz 
+pushd xz-5.2.3/
+./configure --prefix=$HOME/Downloads/xz-5.2.3_install && make -j && make install
+popd
+#R
+wget https://cloud.r-project.org/src/base/R-3/R-3.3.2.tar.gz
+tar zxvf R-3.3.2.tar.gz 
+pushd R-3.3.2/
+export CFLAGS="-I$HOME/Downloads/xz-5.2.3_install/include -I$HOME/Downloads/curl-7.53.1_install/include" &&\
+export LDFLAGS="-L$HOME/Downloads/xz-5.2.3_install/lib -L$HOME/Downloads/curl-7.53.1_install/lib " &&\
+./configure --disable-openmp --prefix=$HOME/Downloads/R-3.3.2_install &&\
+make -j && make install
+ln -s $HOME/Downloads/R-3.3.2_install/bin/* $HOME/bin
+popd
 
 echo 'export LIBRARY_PATH=$LD_LIBRARY_PATH:$LIBRARY_PATH' >> $HOME/.bashrc
