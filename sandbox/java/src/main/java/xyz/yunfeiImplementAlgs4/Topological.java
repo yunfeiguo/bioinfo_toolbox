@@ -77,6 +77,19 @@ public class Topological {
             rank[v] = i++;
         }
     }
+    public Topological(EdgeWeightedDigraph g) {
+        EdgeWeightedDirectedCycle cycleDetecter = new EdgeWeightedDirectedCycle(g);
+        if(cycleDetecter.hasCycle()) {
+            throw new IllegalArgumentException("cycle deteced");
+        }
+        rank = new int[g.V()];
+        DepthFirstOrder dfs = new DepthFirstOrder(g);
+        order = dfs.reversePost();
+        int i = 0;
+        for (int v : order) {
+            rank[v] = i++;
+        }
+    }
     /**
      * Returns a topological order if the digraph has a topologial order,
      * and <tt>null</tt> otherwise.
