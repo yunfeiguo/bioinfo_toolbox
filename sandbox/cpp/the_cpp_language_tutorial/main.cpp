@@ -15,6 +15,8 @@
 #include "FriendExample.h"
 #include "FriendClassExample.h"
 #include "InheritanceExample.h"
+#include "AbstractBaseClassExample.h"
+#include "TemplateExample.h"
 #include<iostream>
 using namespace std;
 
@@ -69,13 +71,20 @@ int main() {
         myRectangle.convert(mySquare);
         cout << "myRectangle after conversion" << endl;
         cout << myRectangle.area() << endl;
+
+        Process p(1);
+        LinuxProcess lp(2);
+        cout << "regular process" << endl;
+        cout << p.processGetPid() << endl;
+        cout << "linux process" << endl;
+        cout << lp.linuxProcessGetPid() << endl; //cannot call processGetPid() directly because it is a protected member
+        Bird bird(1);
+        Insect insect(2);
+        Animal *a1 = &bird;
+        Animal *a2 = &insect;
+        a1->move();
+        a2->move();
     }
-    Process p(1);
-    LinuxProcess lp(2);
-    cout << "regular process" << endl;
-    cout << p.processGetPid() << endl;
-    cout << "linux process" << endl;
-    cout << lp.linuxProcessGetPid() << endl; //cannot call processGetPid() directly because it is a protected member
+    cout << "max of 1 and 2 " << getMax<int>(1,2) << endl;
+    cout << "min of 1 and 2L " << getMin<int,long>(1,2L) << endl;
 }
-
-
