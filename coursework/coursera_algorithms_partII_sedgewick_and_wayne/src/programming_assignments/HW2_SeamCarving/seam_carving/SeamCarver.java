@@ -1,6 +1,5 @@
 package programming_assignments.HW2_SeamCarving.seam_carving;
 
-import com.sun.tools.corba.se.idl.constExpr.Not;
 import edu.princeton.cs.algs4.Picture;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -16,7 +15,16 @@ public class SeamCarver {
   private double[][] energy;
   // create a seam carver object based on the given picture
   public SeamCarver(Picture picture) {
-    pic = picture;
+    updatePicture(picture);
+  }
+
+  /**
+   * replace old picture with new one
+   * update energy matrix
+   * @param p
+   */
+  private void updatePicture(Picture p) {
+    pic = p;
     energy = new double[width()][height()];
     for (int x = 0; x < width(); x++) {
       for (int y = 0; y < height(); y++) {
@@ -62,16 +70,51 @@ public class SeamCarver {
    * sequence of indices for horizontal seam
    * seam has minimum energy among all possible
    * seams
+   *
+   * **********************
+   * **********************
+   * --------------------->
+   * **********************
+   * **********************
+   *
     */
   public int[] findHorizontalSeam() {
     NeighborFinder neighborFinder = new HorizontalNeighborFinder(height(), width());
     double minEnergy = Double.POSITIVE_INFINITY;
-    int minEnergyColumn;
+    int minEnergyRow = -1;
+    List<Point> firstColumn = new ArrayList<>(width());
+    for (int y = 0; y < height(); y++) {
+      firstColumn.add(new Point(0, y));
+    }
+    MatrixDigraphDAGSP sp = new MatrixDigraphDAGSP(energy, neighborFinder, firstColumn);
+    for (int y = 0; y < height(); y++) {
+      if (sp.distTo(new Point(width() - 1, y)) < minEnergy) {
+        minEnergy = sp.distTo(new Point(width() - 1, y));
+        minEnergyRow = y;
+      }
+    }
+    return(sp.pathTo(new Point(width() - 1, minEnergyRow)));
+  }
+
+  /** sequence of indices for vertical seam
+   * seam has minimum energy among all possible
+   * seams
+   *
+   * ********|*************
+   * ********|*************
+   * ********|*************
+   * ********|*************
+   * ********\*************
+   */
+  public int[] findVerticalSeam() {
+    NeighborFinder neighborFinder = new VerticalNeighborFinder(height(), width());
+    double minEnergy = Double.POSITIVE_INFINITY;
+    int minEnergyColumn = -1;
     List<Point> firstRow = new ArrayList<>(width());
     for (int x = 0; x < width(); x++) {
       firstRow.add(new Point(x, 0));
     }
-    MatrixDigraphSP sp = new MatrixDigraphSP(energy, neighborFinder, firstRow);
+    MatrixDigraphDAGSP sp = new MatrixDigraphDAGSP(energy, neighborFinder, firstRow);
     for (int x = 0; x < width(); x++) {
       if (sp.distTo(new Point(x, height() - 1)) < minEnergy) {
         minEnergy = sp.distTo(new Point(x, height() - 1));
@@ -79,13 +122,6 @@ public class SeamCarver {
       }
     }
     return(sp.pathTo(new Point(minEnergyColumn, height() - 1)));
-  }
-
-  /** sequence of indices for vertical seam
-   * seam has minimum energy among all possible
-   * seams
-   */
-  public int[] findVerticalSeam() {
   }
 
   /**
@@ -119,7 +155,7 @@ public class SeamCarver {
           newPic.set(x, y - 1, pic.get(x, y));
       }
     }
-    pic = newPic;
+    updatePicture(newPic);
   }
 
   /** remove vertical seam from current picture
@@ -153,7 +189,7 @@ public class SeamCarver {
           newPic.set(x - 1, y, pic.get(x, y));
       }
     }
-    pic = newPic;
+    updatePicture(newPic);
   }
 
   public static void main(String[] args) {
@@ -164,7 +200,7 @@ public class SeamCarver {
    * find shortest path (SP) from sources
    * to all possible destinations
    */
-  private class MatrixDigraphSP {
+  private class MatrixDigraphDAGSP {
     private double[][] matrix;
     private List<List<Double>> distTo;
     private List<List<Point>> parentOf;
@@ -176,7 +212,7 @@ public class SeamCarver {
      * @param neighborFinder
      * @param sources
      */
-    public MatrixDigraphSP(double[][] matrix, NeighborFinder neighborFinder, Iterable<Point> sources) {
+    public MatrixDigraphDAGSP(double[][] matrix, NeighborFinder neighborFinder, Iterable<Point> sources) {
 
     }
 
