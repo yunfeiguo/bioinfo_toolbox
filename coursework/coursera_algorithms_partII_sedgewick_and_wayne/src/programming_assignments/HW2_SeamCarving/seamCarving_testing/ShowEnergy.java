@@ -8,10 +8,12 @@
  *  image (only useful if image is large enough).
  *
  ******************************************************************************/
-package programming_assignments.HW2_SeamCarving.seam_carving;
+package programming_assignments.HW2_SeamCarving.seamCarving_testing;
 
 import edu.princeton.cs.algs4.Picture;
 import edu.princeton.cs.algs4.StdOut;
+import programming_assignments.HW2_SeamCarving.seamCarving_testing.SCUtility;
+import programming_assignments.HW2_SeamCarving.seam_carving.SeamCarver;
 
 public class ShowEnergy {
 

@@ -1,4 +1,4 @@
-package programming_assignments.HW2_SeamCarving.seam_carving;
+package programming_assignments.HW2_SeamCarving.seamCarving_testing;
 /******************************************************************************
  *  Compilation:  javac SCUtility.java
  *  Execution:    none
@@ -12,6 +12,7 @@ import java.awt.Color;
 
 import edu.princeton.cs.algs4.Picture;
 import edu.princeton.cs.algs4.StdRandom;
+import programming_assignments.HW2_SeamCarving.seam_carving.SeamCarver;
 
 public class SCUtility {
     // create random width-by-height array of tiles

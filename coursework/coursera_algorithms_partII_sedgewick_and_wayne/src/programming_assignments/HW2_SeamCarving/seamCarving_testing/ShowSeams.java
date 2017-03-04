@@ -1,4 +1,4 @@
-package programming_assignments.HW2_SeamCarving.seam_carving;
+package programming_assignments.HW2_SeamCarving.seamCarving_testing;
 /******************************************************************************
  *  Compilation:  javac ShowSeams.java
  *  Execution:    java ShowSeams input.png
@@ -12,6 +12,8 @@ package programming_assignments.HW2_SeamCarving.seam_carving;
 
 import edu.princeton.cs.algs4.Picture;
 import edu.princeton.cs.algs4.StdOut;
+import programming_assignments.HW2_SeamCarving.seamCarving_testing.SCUtility;
+import programming_assignments.HW2_SeamCarving.seam_carving.SeamCarver;
 
 public class ShowSeams {
 
