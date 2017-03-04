@@ -8,6 +8,7 @@
  *  image (only useful if image is large enough).
  *
  ******************************************************************************/
+package programming_assignments.HW2_SeamCarving.seam_carving;
 
 import edu.princeton.cs.algs4.Picture;
 import edu.princeton.cs.algs4.StdOut;

@@ -1,3 +1,4 @@
+package programming_assignments.HW2_SeamCarving.seam_carving;
 /******************************************************************************
  *  Compilation:  javac ShowSeams.java
  *  Execution:    java ShowSeams input.png
