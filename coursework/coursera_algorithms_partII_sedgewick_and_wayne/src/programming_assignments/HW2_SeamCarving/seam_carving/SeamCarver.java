@@ -51,18 +51,18 @@ public class SeamCarver {
     if (x == 0 || x == width() - 1 || y == 0 || y == height() - 1)
       return(BORDER_ENERGY);
     Color left = pic.get(x - 1, y);
-    Color right = pic.get(x - 1, y);
-    Color top = pic.get(x - 1, y);
-    Color bottom = pic.get(x - 1, y);
+    Color right = pic.get(x + 1, y);
+    Color top = pic.get(x, y - 1);
+    Color bottom = pic.get(x, y + 1);
     double rX = left.getRed() - right.getRed();
     double gX = left.getGreen() - right.getGreen();
     double bX = left.getBlue() - right.getBlue();
     double rY = top.getRed() - bottom.getRed();
     double gY = top.getGreen() - bottom.getGreen();
     double bY = top.getBlue() - bottom.getBlue();
-    double deltaX = rX * rX + gX * gX + bX * bX;
-    double deltaY = rY * rY + gY * gY + bY * bY;
-    return(Math.sqrt(deltaX * deltaX + deltaY + deltaY));
+    double deltaX2 = rX * rX + gX * gX + bX * bX;
+    double deltaY2 = rY * rY + gY * gY + bY * bY;
+    return(Math.sqrt(deltaX2 + deltaY2));
   }
 
   /**
@@ -93,7 +93,12 @@ public class SeamCarver {
         minEnergyRow = y;
       }
     }
-    return(sp.pathTo(new Point(width() - 1, minEnergyRow)));
+    int[] seam = new int[width()];
+    int i = 0;
+    for (Point p : sp.pathTo(new Point(width() - 1, minEnergyRow))) {
+      seam[i++] = p.getY();
+    }
+    return seam;
   }
 
   /** sequence of indices for vertical seam
@@ -121,7 +126,12 @@ public class SeamCarver {
         minEnergyColumn = x;
       }
     }
-    return(sp.pathTo(new Point(minEnergyColumn, height() - 1)));
+    int[] seam = new int[height()];
+    int i = 0;
+    for (Point p : sp.pathTo(new Point(minEnergyColumn, height() - 1))) {
+      seam[i++] = p.getX();
+    }
+    return seam;
   }
 
   /**
@@ -137,7 +147,7 @@ public class SeamCarver {
     if (height() <= 1)
       throw new IllegalArgumentException("image too small");
     for (int i : seam) {
-      if (i < 0 || i >= width())
+      if (i < 0 || i >= height())
         throw new IllegalArgumentException("seam index out of bound");
     }
     for (int i = 1; i < seam.length - 1; i++) {
@@ -170,7 +180,7 @@ public class SeamCarver {
     if (width() <= 1)
       throw new IllegalArgumentException("image too small");
     for (int i : seam) {
-      if (i < 0 || i >= height())
+      if (i < 0 || i >= width())
         throw new IllegalArgumentException("seam index out of bound");
     }
     for (int i = 1; i < seam.length - 1; i++) {
@@ -202,18 +212,60 @@ public class SeamCarver {
    */
   private class MatrixDigraphDAGSP {
     private double[][] matrix;
-    private List<List<Double>> distTo;
-    private List<List<Point>> parentOf;
+    //right now we use wxh matrix to store distances
+    //memory usage can be reduced to linear
+    private double[][] distTo;
+    private Point[][] closestParentOf;
 
     /**
      * constructor will find shortest paths from sources
      * to all possible destinations
+     *
+     * since the edges are dynamically defined by the
+     * neighborfinder, we do not really know whether
+     * the graph is a DAG or not. To make this class more
+     * widely applicable, we need to check its prerequisites.
+     * For now, ignore it.
+     *
      * @param matrix
      * @param neighborFinder
      * @param sources
      */
-    public MatrixDigraphDAGSP(double[][] matrix, NeighborFinder neighborFinder, Iterable<Point> sources) {
-
+    public MatrixDigraphDAGSP(double[][] matrix, NeighborFinder neighborFinder, Collection<Point> sources) {
+      if (matrix == null || matrix[0] == null)
+        throw new NullPointerException("matrix null");
+      this.matrix = matrix;
+      int w = matrix.length;
+      int h = matrix[0].length;
+      if (w == 0)
+        throw new IllegalArgumentException("matrix empty");
+      distTo = new double[w][h];
+      closestParentOf = new Point[w][h];
+      //initialization
+      for (int x = 0; x < w; x++) {
+        Arrays.fill(distTo[x], Double.POSITIVE_INFINITY);
+        Arrays.fill(closestParentOf[x], null);
+      }
+      for (Point p : sources) {
+        distTo[p.getX()][p.getY()] = matrix[p.getX()][p.getY()];
+      }
+      //assume matrix is DAG
+      Queue<Point> q = new ArrayDeque<>(sources);
+      while(!q.isEmpty()) {
+        Set<Point> nextSetInTopologicalOrder = new HashSet<>();
+        while (!q.isEmpty()) {
+          Point next = q.poll();
+          for (Point p : neighborFinder.adj(next)) {
+            relax(next, p);
+            nextSetInTopologicalOrder.add(p);
+          }
+        }
+        //we can do this because we know the graph is being
+        //visited in topological order
+        for(Point p : nextSetInTopologicalOrder) {
+          q.offer(p);
+        }
+      }
     }
 
     /**
@@ -223,27 +275,35 @@ public class SeamCarver {
     public double distTo(Point destination) {
       if (!hasPathTo(destination))
         throw new IllegalArgumentException("no path");
-      return (double) -1;
+      return (double) distTo[destination.getX()][destination.getY()];
     }
     public boolean hasPathTo(Point destination) {
-      throw new NotImplementedException();
-      return distTo.get(destination.getX()).get(destination.getY()) != Double.POSITIVE_INFINITY;
+      return distTo[destination.getX()][destination.getY()] != Double.POSITIVE_INFINITY;
     }
-    public int[] pathTo(Point destination) {
+    public Collection<Point> pathTo(Point destination) {
       if (!hasPathTo(destination))
         throw new IllegalArgumentException("no path");
-      return new int[0];
+      Deque<Point> path = new ArrayDeque<>();
+      for (Point p = destination; p != null; p = closestParentOf[p.getX()][p.getY()]) {
+        path.addFirst(p);
+      }
+      return path;
+    }
+    private void relax(Point parent, Point child) {
+      if (distTo[child.getX()][child.getY()] > distTo[parent.getX()][parent.getY()] + matrix[child.getX()][child.getY()]) {
+        distTo[child.getX()][child.getY()] = distTo[parent.getX()][parent.getY()] + matrix[child.getX()][child.getY()];
+        closestParentOf[child.getX()][child.getY()] = parent;
+      }
     }
   }
 
   private interface NeighborFinder {
     /**
      * return neighbors of point(x,y)
-     * @param x
-     * @param y
+     * @param p
      * @return
      */
-    public Iterable<Point> adj(int x, int y);
+    public Iterable<Point> adj(Point p);
   }
   private class Point {
     public int getX() {
@@ -259,6 +319,22 @@ public class SeamCarver {
       this.x = x;
       this.y = y;
     }
+    @Override
+    public boolean equals(Object o) {
+      if (o == null)
+        return false;
+      if (!(o instanceof Point))
+        return false;
+      Point that = (Point) o;
+      return this.x == that.x && this.y == that.y;
+    }
+    @Override
+    public int hashCode() {
+      int result = 17;
+      result = result * 31 + x;
+      result = result * 31 + y;
+      return result;
+    }
   }
   private class VerticalNeighborFinder implements NeighborFinder{
     private int width;
@@ -268,20 +344,21 @@ public class SeamCarver {
       this.height = height;
     }
     @Override
-    public Iterable<Point> adj(int x, int y) {
-      throw new NotImplementedException();
+    public Iterable<Point> adj(Point p) {
+      int x = p.getX();
+      int y = p.getY();
       List<Point> neighbors = new ArrayList<>();
-      if (x == width - 1)
+      if (y == height - 1)
         return neighbors;
-      if (y == 0) {
-        neighbors.add(new Point(x + 1, y));
+      if (x == 0) {
+        neighbors.add(new Point(x, y + 1));
         neighbors.add(new Point(x + 1, y + 1));
-      } else if (y == height - 1) {
-        neighbors.add(new Point(x + 1, y));
-        neighbors.add(new Point(x + 1, y - 1));
+      } else if (x == width - 1) {
+        neighbors.add(new Point(x - 1, y + 1));
+        neighbors.add(new Point(x, y + 1));
       } else {
-        neighbors.add(new Point(x + 1, y - 1));
-        neighbors.add(new Point(x + 1, y));
+        neighbors.add(new Point(x - 1, y + 1));
+        neighbors.add(new Point(x, y + 1));
         neighbors.add(new Point(x + 1, y + 1));
       }
       return neighbors;
@@ -295,7 +372,9 @@ public class SeamCarver {
       this.height = height;
     }
     @Override
-    public Iterable<Point> adj(int x, int y) {
+    public Iterable<Point> adj(Point p) {
+      int x = p.getX();
+      int y = p.getY();
       List<Point> neighbors = new ArrayList<>();
       if (x == width - 1)
         return neighbors;
