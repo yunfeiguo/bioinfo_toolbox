@@ -1,7 +1,6 @@
 package programming_assignments.HW2_SeamCarving.seam_carving;
 
 import edu.princeton.cs.algs4.Picture;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.awt.Color;
 import java.util.*;
@@ -24,7 +23,7 @@ public class SeamCarver {
    * @param p
    */
   private void updatePicture(Picture p) {
-    pic = p;
+    pic = new Picture(p);
     energy = new double[width()][height()];
     for (int x = 0; x < width(); x++) {
       for (int y = 0; y < height(); y++) {
@@ -34,7 +33,7 @@ public class SeamCarver {
   }
   // current picture
   public Picture picture() {
-    return pic;
+    return new Picture(pic);
   }
   // width of current picture
   public int width() {
@@ -49,7 +48,7 @@ public class SeamCarver {
     if (x < 0 || x >= width() || y < 0 || y >= height())
       throw new IndexOutOfBoundsException("coordinates out of bound");
     if (x == 0 || x == width() - 1 || y == 0 || y == height() - 1)
-      return(BORDER_ENERGY);
+      return BORDER_ENERGY;
     Color left = pic.get(x - 1, y);
     Color right = pic.get(x + 1, y);
     Color top = pic.get(x, y - 1);
@@ -62,7 +61,7 @@ public class SeamCarver {
     double bY = top.getBlue() - bottom.getBlue();
     double deltaX2 = rX * rX + gX * gX + bX * bX;
     double deltaY2 = rY * rY + gY * gY + bY * bY;
-    return(Math.sqrt(deltaX2 + deltaY2));
+    return Math.sqrt(deltaX2 + deltaY2);
   }
 
   /**
@@ -154,7 +153,7 @@ public class SeamCarver {
       if (Math.abs(seam[i] - seam[i - 1]) > 1 || Math.abs(seam[i + 1] - seam[i]) > 1)
         throw new IllegalArgumentException("neighbors not differ <= 1");
     }
-    if (Math.abs(seam[1] - seam[0]) > 1 || Math.abs(seam[width() - 1] - seam[width() - 2]) > 1)
+    if (width() > 1 && (Math.abs(seam[1] - seam[0]) > 1 || Math.abs(seam[width() - 1] - seam[width() - 2]) > 1))
       throw new IllegalArgumentException("neighbors not differ <= 1");
     Picture newPic = new Picture(width(), height() - 1);
     for (int x = 0; x < width(); x++) {
@@ -187,7 +186,7 @@ public class SeamCarver {
       if (Math.abs(seam[i] - seam[i - 1]) > 1 || Math.abs(seam[i + 1] - seam[i]) > 1)
         throw new IllegalArgumentException("neighbors not differ <= 1");
     }
-    if (Math.abs(seam[1] - seam[0]) > 1 || Math.abs(seam[height() - 1] - seam[height() - 2]) > 1)
+    if (height() > 1 && (Math.abs(seam[1] - seam[0]) > 1 || Math.abs(seam[height() - 1] - seam[height() - 2]) > 1))
       throw new IllegalArgumentException("neighbors not differ <= 1");
 
     Picture newPic = new Picture(width() - 1, height());
@@ -275,7 +274,7 @@ public class SeamCarver {
     public double distTo(Point destination) {
       if (!hasPathTo(destination))
         throw new IllegalArgumentException("no path");
-      return (double) distTo[destination.getX()][destination.getY()];
+      return distTo[destination.getX()][destination.getY()];
     }
     public boolean hasPathTo(Point destination) {
       return distTo[destination.getX()][destination.getY()] != Double.POSITIVE_INFINITY;
@@ -303,9 +302,11 @@ public class SeamCarver {
      * @param p
      * @return
      */
-    public Iterable<Point> adj(Point p);
+    Iterable<Point> adj(Point p);
   }
   private class Point {
+    private final int x;
+    private final int y;
     public int getX() {
       return x;
     }
@@ -313,8 +314,7 @@ public class SeamCarver {
     public int getY() {
       return y;
     }
-    private final int x;
-    private final int y;
+
     public Point(int x, int y) {
       this.x = x;
       this.y = y;
@@ -323,7 +323,7 @@ public class SeamCarver {
     public boolean equals(Object o) {
       if (o == null)
         return false;
-      if (!(o instanceof Point))
+      if (o.getClass() != Point.class)
         return false;
       Point that = (Point) o;
       return this.x == that.x && this.y == that.y;
@@ -350,7 +350,9 @@ public class SeamCarver {
       List<Point> neighbors = new ArrayList<>();
       if (y == height - 1)
         return neighbors;
-      if (x == 0) {
+      if (width == 1) {
+        neighbors.add(new Point(x, y + 1));
+      } else if (x == 0) {
         neighbors.add(new Point(x, y + 1));
         neighbors.add(new Point(x + 1, y + 1));
       } else if (x == width - 1) {
@@ -378,7 +380,9 @@ public class SeamCarver {
       List<Point> neighbors = new ArrayList<>();
       if (x == width - 1)
         return neighbors;
-      if (y == 0) {
+      if (height == 1) {
+        neighbors.add(new Point(x + 1, y));
+      } else if (y == 0) {
         neighbors.add(new Point(x + 1, y));
         neighbors.add(new Point(x + 1, y + 1));
       } else if (y == height - 1) {
