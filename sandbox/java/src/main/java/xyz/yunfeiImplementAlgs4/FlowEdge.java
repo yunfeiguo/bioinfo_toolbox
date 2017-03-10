@@ -30,6 +30,7 @@ import edu.princeton.cs.algs4.StdOut;
  *  @author Kevin Wayne
  */
 public class FlowEdge {
+  public static final double FLOATING_POINT_ERROR = 1e-10;
   private final int from;
   private final int to;
   private final double capacity;
@@ -79,6 +80,12 @@ public class FlowEdge {
   }
   public int to() {
     return to;
+  }
+  public double capacity() {
+    return capacity;
+  }
+  public double flow() {
+    return flow;
   }
   /**
    * Returns the endpoint of the edge that is different from the given vertex
@@ -137,7 +144,11 @@ public class FlowEdge {
     } else if (v == to) {
       flow += delta;
     }
-    //here we cannot assume delta is positive, therefore, check flow at the end
+    //floating point error can accumulate over many computations
+    if (flow >= 0 && flow <= FLOATING_POINT_ERROR)
+      flow = 0;
+    if (Math.abs(flow - capacity) <= FLOATING_POINT_ERROR)
+      flow = capacity;
     if (flow < 0)
       throw new IllegalArgumentException("flow is negative");
     if (flow > capacity) {
