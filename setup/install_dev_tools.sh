@@ -53,6 +53,13 @@ make && make install
 echo 'export LD_LIBRARY_PATH=$HOME/Downloads/zlib-1.2.11_install:$LD_LIBRARY_PATH' >> /home/guoy28/.bashrc
 popd
 
+#openssl (for https)
+wget https://github.com/openssl/openssl/archive/OpenSSL_1_1_0e.tar.gz
+tar zxvf OpenSSL_1_1_0e.tar.gz 
+pushd openssl-OpenSSL_1_1_0e/
+./config --prefix=$HOME/Downloads/openssl_1_1_0e_install && make -j && make install
+popd
+
 #libcurl
 wget https://curl.haxx.se/download/curl-7.53.1.tar.gz
 tar zxvf curl-7.53.1.tar.gz 
