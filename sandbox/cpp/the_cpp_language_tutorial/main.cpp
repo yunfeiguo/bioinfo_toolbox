@@ -23,7 +23,8 @@
 #include <iostream>
 #include <seqan/sequence.h>
 #include <seqan/seq_io.h>
-//using namespace std;
+#include <fcntl.h>
+#include <exception>
 
 int main() {
     if (0) {
@@ -99,7 +100,11 @@ int main() {
     seqan::Dna5String seq;
     seqan::CharString seqFileName = "/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/resources/example.fa";
 
-    seqan::SeqFileIn seqFileIn(toCString(seqFileName));
-    readRecord(id, seq, seqFileIn);
-    std::cout << id << '\t' << seq << '\n';
+    try {
+        seqan::SeqFileIn seqFileIn(toCString(seqFileName));
+        readRecord(id, seq, seqFileIn);
+        std::cout << id << '\t' << seq << '\n';
+    } catch (std::exception const & e) {
+        std::cerr << "ERROR: " << e.what() << std::endl;
+    }
 }
