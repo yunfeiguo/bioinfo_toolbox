@@ -113,11 +113,11 @@ ln -sf $HOME/Downloads/xmlto-0.0.28_install/bin/xmlto ~/bin/
 popd
 #git
 wget https://github.com/git/git/archive/v2.11.0.zip
-unzip v2.11.0.zip 
+unzip v2.11.0.zip
 pushd git-2.11.0/
-make configure
-./configure --prefix=$HOME/Downloads/git-2.11.0_install
-make all doc
+make configure && \
+./configure --prefix=$HOME/Downloads/git-2.11.0_install --with-curl && \
+make all doc && \
 make install
 ln -sf $HOME/Downloads/git-2.11.0_install/bin/git ~/bin
 popd
