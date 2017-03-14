@@ -53,6 +53,12 @@ make && make install
 echo 'export LD_LIBRARY_PATH=$HOME/Downloads/zlib-1.2.11_install:$LD_LIBRARY_PATH' >> /home/guoy28/.bashrc
 popd
 
+#libcurl
+wget https://curl.haxx.se/download/curl-7.53.1.tar.gz
+tar zxvf curl-7.53.1.tar.gz 
+pushd curl-7.53.1/
+./configure --prefix=$HOME/Downloads/curl-7.53.1_install && make -j && make install
+
 #python +setuptools+pip
 wget https://www.python.org/ftp/python/2.7.12/Python-2.7.12.tgz
 tar zxvf Python-2.7.12.tgz 
