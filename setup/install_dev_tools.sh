@@ -64,7 +64,7 @@ popd
 wget https://curl.haxx.se/download/curl-7.53.1.tar.gz
 tar zxvf curl-7.53.1.tar.gz 
 pushd curl-7.53.1/
-./configure --prefix=$HOME/Downloads/curl-7.53.1_install && make -j && make install
+./configure --prefix=$HOME/Downloads/curl-7.53.1_install --with-ssl=$HOME/Downloads/openssl_1_1_0e_install && make -j && make install
 
 #python +setuptools+pip
 wget https://www.python.org/ftp/python/2.7.12/Python-2.7.12.tgz
