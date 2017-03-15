@@ -53,6 +53,19 @@ make && make install
 echo 'export LD_LIBRARY_PATH=$HOME/Downloads/zlib-1.2.11_install:$LD_LIBRARY_PATH' >> /home/guoy28/.bashrc
 popd
 
+#openssl (for https)
+wget https://github.com/openssl/openssl/archive/OpenSSL_1_1_0e.tar.gz
+tar zxvf OpenSSL_1_1_0e.tar.gz 
+pushd openssl-OpenSSL_1_1_0e/
+./config --prefix=$HOME/Downloads/openssl_1_1_0e_install && make -j && make install
+popd
+
+#libcurl
+wget https://curl.haxx.se/download/curl-7.53.1.tar.gz
+tar zxvf curl-7.53.1.tar.gz 
+pushd curl-7.53.1/
+./configure --prefix=$HOME/Downloads/curl-7.53.1_install --with-ssl=$HOME/Downloads/openssl_1_1_0e_install && make -j && make install
+
 #python +setuptools+pip
 wget https://www.python.org/ftp/python/2.7.12/Python-2.7.12.tgz
 tar zxvf Python-2.7.12.tgz 
@@ -107,11 +120,11 @@ ln -sf $HOME/Downloads/xmlto-0.0.28_install/bin/xmlto ~/bin/
 popd
 #git
 wget https://github.com/git/git/archive/v2.11.0.zip
-unzip v2.11.0.zip 
+unzip v2.11.0.zip
 pushd git-2.11.0/
-make configure
-./configure --prefix=$HOME/Downloads/git-2.11.0_install
-make all doc
+make configure && \
+./configure --prefix=$HOME/Downloads/git-2.11.0_install --with-curl && \
+make all doc && \
 make install
 ln -sf $HOME/Downloads/git-2.11.0_install/bin/git ~/bin
 popd
