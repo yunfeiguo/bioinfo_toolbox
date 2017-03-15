@@ -96,19 +96,19 @@ public class SuffixArrayX {
    * @param k
    */
   private void sort(String s, int[] indices, int lo, int hi, int k) {
-    if (lo > hi)
+    if (lo >= hi)
       return;
     if (hi - lo + 1< CUTOFF) {
       insertion(s, indices, lo, hi, k);
       return;
     }
-    int pivot = indices[lo];
+    int pivot = lo;
     int pivotChar = getChar(s, indices[pivot] + k);
     int small = lo + 1;
     int large = hi;
     int scan = small;
 
-    while (small <= large) {
+    while (scan <= large) {
       int currentChar = getChar(s, indices[scan] + k);
       if (currentChar > pivotChar) {
         swap(indices, scan, large--);
@@ -131,8 +131,8 @@ public class SuffixArrayX {
    */
   private void insertion(String s, int[] indices, int lo, int hi, int k) {
     for (int i = lo; i <= hi; i++) {
-      int compareIndex = k;
       for (int j = i + 1; j <= hi; j++) {
+        int compareIndex = k;
         while(getChar(s, indices[i] + compareIndex) == getChar(s, indices[j] + compareIndex) &&
                 indices[i] + compareIndex < s.length() &&
                 indices[j] + compareIndex < s.length())
@@ -199,15 +199,15 @@ public class SuffixArrayX {
    * @param q
    */
   private int compare(String s, int i, String q) {
-    int l = Math.min(s.length() - i, q.length());
+    int l = Math.min(s.length() - index(i), q.length());
     for (int j = 0; j < l; j++) {
-      if (s.charAt(j + i) > q.charAt(j)) {
+      if (s.charAt(j + index(i)) > q.charAt(j)) {
         return 1;
-      } else if (s.charAt(j + i) < q.charAt(j)) {
+      } else if (s.charAt(j + index(i)) < q.charAt(j)) {
         return -1;
       }
     }
-    return s.length() - i - q.length();
+    return s.length() - index(i) - q.length();
   }
 
   /**
@@ -242,7 +242,7 @@ public class SuffixArrayX {
    */
   public static void main(String[] args) {
     In in = new In(args[0]);
-    String s = in.readAll().replaceAll("\n", " ").trim();
+    String s = in.readAll().replaceAll("\\W+", " ").trim();
     SuffixArrayX suffix1 = new SuffixArrayX(s);
     SuffixArray suffix2 = new SuffixArray(s);
     boolean check = true;
@@ -257,21 +257,20 @@ public class SuffixArrayX {
         check = false;
       }
     }
-
     StdOut.println("  i ind lcp rnk  select");
     StdOut.println("---------------------------");
 
     for (int i = 0; i < s.length(); i++) {
-      int index = suffix2.index(i);
+      int index = suffix1.index(i);
       String ith = "\"" + s.substring(index, Math.min(index + 50, s.length())) + "\"";
-      int rank = suffix2.rank(s.substring(index));
-      assert s.substring(index).equals(suffix2.select(i));
+      int rank = suffix1.rank(s.substring(index));
+      assert s.substring(index).equals(suffix1.select(i));
       if (i == 0) {
         StdOut.printf("%3d %3d %3s %3d  %s\n", i, index, "-", rank, ith);
       }
       else {
         // int lcp  = suffix.lcp(suffix2.index(i), suffix2.index(i-1));
-        int lcp  = suffix2.lcp(i);
+        int lcp  = suffix1.lcp(i);
         StdOut.printf("%3d %3d %3d %3d  %s\n", i, index, lcp, rank, ith);
       }
     }

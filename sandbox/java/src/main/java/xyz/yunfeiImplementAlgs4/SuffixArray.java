@@ -231,7 +231,7 @@ public class SuffixArray {
    */
   public static void main(String[] args) {
     In in = new In(args[0]);
-    String s = in.readAll().replaceAll("\\s+", " ").trim();
+    String s = in.readAll().replaceAll("\\W+", " ").trim();
     SuffixArray suffix = new SuffixArray(s);
 
     // StdOut.println("rank(" + args[0] + ") = " + suffix.rank(args[0]));
