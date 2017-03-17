@@ -66,6 +66,14 @@ tar zxvf curl-7.53.1.tar.gz
 pushd curl-7.53.1/
 ./configure --prefix=$HOME/Downloads/curl-7.53.1_install --with-ssl=$HOME/Downloads/openssl_1_1_0e_install && make -j && make install
 
+#BLAS
+wget http://github.com/xianyi/OpenBLAS/archive/v0.2.19.tar.gz
+tar xzvf v0.2.19.tar.gz 
+pushd OpenBLAS-0.2.19/
+make -j
+make PREFIX=$HOME/Downloads/OpenBLAS-0.2.19_install install
+
+
 #python +setuptools+pip
 wget https://www.python.org/ftp/python/2.7.12/Python-2.7.12.tgz
 tar zxvf Python-2.7.12.tgz 
