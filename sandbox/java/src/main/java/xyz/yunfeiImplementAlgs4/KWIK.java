@@ -40,7 +40,7 @@ package yunfeiImplementAlgs4;
  *
  ******************************************************************************/
 
-import edu.princeton.cs.algs4.In;
+import edu.princeton.cs.algs4.*;
 
 /**
  *  The {@code KWIK} class provides a {@link SuffixArray} client for computing
@@ -60,21 +60,37 @@ public class KWIK {
     In in = new In(args[0]);
     String q = args[1];
     String s = in.readAll().replaceAll("\\W+"," ");
-    //SuffixArray sa = new SuffixArray(s);
-    SuffixArrayX sa = new SuffixArrayX(s);
-    int contextWidth = 15;
-    int rank = sa.rank(q);
-    if (rank == 0 || rank == s.length()) {
-      System.out.println("cannot found");
-    } else {
-      System.out.println(s.substring(
-              Math.max(0, sa.index(rank) - contextWidth),
-              Math.min(s.length(), sa.index(rank) + q.length() + contextWidth)));
-      for (int i = rank + 1; sa.lcp(i) >= q.length() && i < s.length(); i++) {
+    SuffixArrayInteface sa = null;
+    sa = new SuffixArray(s);
+    runBenchmark(sa, s, q);
+    /*sa = new SuffixArrayX(s);
+    runBenchmark(sa, s, q);*/
+    /*sa = new Manber(s);
+    runBenchmark(sa, s, q);*/
+  }
+  private static void runBenchmark(SuffixArrayInteface sa, String s, String q) {
+    long totalTime = 0;
+    for (int count = 0; count < 1; count++) {
+      long startTime = System.nanoTime();
+      int contextWidth = 15;
+      int rank = sa.rank(q);
+      if (rank == 0 || rank == s.length()) {
+        System.out.println("cannot found");
+      } else {
         System.out.println(s.substring(
-                Math.max(0, sa.index(i) - contextWidth),
-                Math.min(s.length(), sa.index(i) + q.length() + contextWidth)));
+                Math.max(0, sa.index(rank) - contextWidth),
+                Math.min(s.length(), sa.index(rank) + q.length() + contextWidth)));
+        for (int i = rank + 1; sa.lcp(i) >= q.length() && i < s.length(); i++) {
+          System.out.println(s.substring(
+                  Math.max(0, sa.index(i) - contextWidth),
+                  Math.min(s.length(), sa.index(i) + q.length() + contextWidth)));
+        }
       }
+      long endTime = System.nanoTime();
+      long duration = endTime - startTime;
+      totalTime += duration;
+      System.out.println("time elapsed: " + duration + " ms.");
     }
+    System.out.println("total time: " + totalTime + " ms.");
   }
 }

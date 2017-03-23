@@ -63,7 +63,7 @@ import java.util.Arrays;
  *  For additional documentation, see <a href="http://algs4.cs.princeton.edu/63suffix">Section 6.3</a> of
  *  <i>Algorithms, 4th Edition</i> by Robert Sedgewick and Kevin Wayne.
  */
-public class SuffixArray {
+public class SuffixArray implements SuffixArrayInteface{
   private Suffix[] suffixes;
   /**
    * Initializes a suffix array for the given {@code text} string.
@@ -125,6 +125,7 @@ public class SuffixArray {
    *
    * @return the length of the input string
    */
+  @Override
   public int length() {
     return suffixes.length;
   }
@@ -137,6 +138,7 @@ public class SuffixArray {
    * @return the index into the original string of the <em>i</em>th smallest suffix
    * @throws java.lang.IndexOutOfBoundsException unless {@code 0 <= i < n}
    */
+  @Override
   public int index(int i) {
     if (i < 0 || i >= length()) throw new IndexOutOfBoundsException("");
     return suffixes[i].index;
@@ -151,6 +153,7 @@ public class SuffixArray {
    * smallest suffix and the <em>i</em>-1st smallest suffix.
    * @throws java.lang.IndexOutOfBoundsException unless {@code 1 <= i < n}
    */
+  @Override
   public int lcp(int i) {
     if (i < 1 || i >= length()) throw new IndexOutOfBoundsException("no suffix before me");
 
@@ -180,6 +183,7 @@ public class SuffixArray {
    * @return the <em>i</em> smallest suffix as a string
    * @throws java.lang.IndexOutOfBoundsException unless {@code 0 <= i < n}
    */
+  @Override
   public String select(int i) {
     if (i < 0 || i >= length()) throw new IndexOutOfBoundsException("");
     return suffixes[i].toString();
@@ -193,6 +197,7 @@ public class SuffixArray {
    * @param query the query string
    * @return the number of suffixes strictly less than {@code query}
    */
+  @Override
   public int rank(String query) {
     if (query == null) throw new NullPointerException();
     int lo = 0;
@@ -231,7 +236,7 @@ public class SuffixArray {
    */
   public static void main(String[] args) {
     In in = new In(args[0]);
-    String s = in.readAll().replaceAll("\\W+", " ").trim();
+    String s = in.readAll().replaceAll("\\s+", " ").trim();
     SuffixArray suffix = new SuffixArray(s);
 
     // StdOut.println("rank(" + args[0] + ") = " + suffix.rank(args[0]));

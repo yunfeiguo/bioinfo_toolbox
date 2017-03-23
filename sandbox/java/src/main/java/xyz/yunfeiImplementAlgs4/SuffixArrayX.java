@@ -66,7 +66,7 @@ import edu.princeton.cs.algs4.StdOut;
  *  For additional documentation, see <a href="http://algs4.cs.princeton.edu/63suffix">Section 6.3</a> of
  *  <i>Algorithms, 4th Edition</i> by Robert Sedgewick and Kevin Wayne.
  */
-public class SuffixArrayX {
+public class SuffixArrayX implements SuffixArrayInteface {
   private static final int CUTOFF = 5;
   private int[] suffixIndices;
   private String s;
@@ -160,11 +160,17 @@ public class SuffixArrayX {
     return -1;
   }
 
+  @Override
+  public int length() {
+    return s.length();
+  }
+
   /**
    *
    * @param i
    * @return original index of ith suffix
    */
+  @Override
   public int index(int i) {
     if (i < 0 || i >= suffixIndices.length) throw new IndexOutOfBoundsException();
     return suffixIndices[i];
@@ -175,6 +181,7 @@ public class SuffixArrayX {
    * @param q
    * @return number of suffixes exactly smaller than q
    */
+  @Override
   public int rank(String q) {
     int lo = 0;
     int hi = suffixIndices.length - 1;
@@ -215,6 +222,7 @@ public class SuffixArrayX {
    * @param i
    * @return ith smallest suffix
    */
+  @Override
   public String select(int i) {
     if (i < 0 || i >= suffixIndices.length) throw new IndexOutOfBoundsException();
     return s.substring(suffixIndices[i]);
@@ -224,6 +232,7 @@ public class SuffixArrayX {
    * @param i
    * @return length of longest common prefix between i and i-1 suffixes
    */
+  @Override
   public int lcp(int i) {
     if (i < 1 || i >= suffixIndices.length) throw new IndexOutOfBoundsException();
     int l = Math.min(suffixIndices.length - index(i - 1), suffixIndices.length - index(i));
@@ -242,7 +251,7 @@ public class SuffixArrayX {
    */
   public static void main(String[] args) {
     In in = new In(args[0]);
-    String s = in.readAll().replaceAll("\\W+", " ").trim();
+    String s = in.readAll().replaceAll("\\s+", " ").trim();
     SuffixArrayX suffix1 = new SuffixArrayX(s);
     SuffixArray suffix2 = new SuffixArray(s);
     boolean check = true;
