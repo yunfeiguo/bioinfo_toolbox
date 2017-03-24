@@ -65,6 +65,15 @@ wget https://curl.haxx.se/download/curl-7.53.1.tar.gz
 tar zxvf curl-7.53.1.tar.gz 
 pushd curl-7.53.1/
 ./configure --prefix=$HOME/Downloads/curl-7.53.1_install --with-ssl=$HOME/Downloads/openssl_1_1_0e_install && make -j && make install
+popd
+
+#BLAS
+wget http://github.com/xianyi/OpenBLAS/archive/v0.2.19.tar.gz
+tar xzvf v0.2.19.tar.gz 
+pushd OpenBLAS-0.2.19/
+make -j
+make PREFIX=$HOME/Downloads/OpenBLAS-0.2.19_install install
+popd
 
 #python +setuptools+pip
 wget https://www.python.org/ftp/python/2.7.12/Python-2.7.12.tgz
@@ -154,6 +163,15 @@ export LDFLAGS="-L$HOME/Downloads/xz-5.2.3_install/lib -L$HOME/Downloads/curl-7.
 ./configure --disable-openmp --prefix=$HOME/Downloads/R-3.3.2_install &&\
 make -j && make install
 ln -s $HOME/Downloads/R-3.3.2_install/bin/* $HOME/bin
+popd
+
+
+#octave
+curl https://ftp.gnu.org/gnu/octave/octave-4.2.1.tar.gz | tar zxv
+pushd octave-4.2.1/
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/isilon/Analysis/datainsights/users/guoy28/Downloads/OpenBLAS-0.2.19_install/lib && ./configure --prefix=$HOME/Downloads/octave-4.2.1_install --with-blas=$HOME/Downloads/OpenBLAS-0.2.19_install/lib --disable-readline
+make -j && make install
+ln -s $HOME/Downloads/octave-4.2.1_install/bin/octave $HOME/bin/
 popd
 
 echo 'export LIBRARY_PATH=$LD_LIBRARY_PATH:$LIBRARY_PATH' >> $HOME/.bashrc
