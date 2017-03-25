@@ -1,4 +1,4 @@
-package HW1_WordNet;
+package programming_assignments.HW1_WordNet.wordnet;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

@@ -1,4 +1,4 @@
-package HW1_WordNet;
+package programming_assignments.HW1_WordNet.wordnet;
 import edu.princeton.cs.algs4.BreadthFirstDirectedPaths;
 import edu.princeton.cs.algs4.Digraph;
 import edu.princeton.cs.algs4.In;
