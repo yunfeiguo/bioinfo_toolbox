@@ -107,11 +107,10 @@ public class RabinKarp {
             = (((x_i - txt_i*radix^(L-1)%prime)*(radix%prime))%prime + txt_(i+L)) % prime
      */
     for (int i = 1; i < txt.length() - pattern.length() + 1; i++) {
-      currentHash = (
-              ((currentHash - (multiplier * (txt.charAt(i-1)%prime))%prime)*
-                      (radix%prime))%prime +
-              txt.charAt(i + pattern.length() - 1)
-              ) % prime;
+      //remove leading bit
+      currentHash = (currentHash - (multiplier * (txt.charAt(i-1)%prime))%prime)%prime;
+      //add new trailing bit
+      currentHash = ((currentHash * (radix%prime))%prime + txt.charAt(i + pattern.length() - 1)) % prime;
       /*
       java % can operate on negative numbers, but
       we assume positive numbers all the time
