@@ -119,7 +119,7 @@ ln -sf $PWD/asciidoc.py ~/bin/asciidoc
 ln -sf $PWD/a2x.py ~/bin/a2x
 popd
 #xmlto
-wget https://fedorahosted.org/releases/x/m/xmlto/xmlto-0.0.28.tar.bz2
+wget http://pkgs.fedoraproject.org/repo/pkgs/xmlto/xmlto-0.0.28.tar.bz2/93bab48d446c826399d130d959fe676f/xmlto-0.0.28.tar.bz2
 tar jxvf xmlto-0.0.28.tar.bz2 
 pushd xmlto-0.0.28/
 ./configure --prefix=$HOME/Downloads/xmlto-0.0.28_install
