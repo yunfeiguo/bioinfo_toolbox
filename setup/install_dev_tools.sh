@@ -108,6 +108,16 @@ pushd boost_1_63_0/
 ./b2
 popd
 
+#xslt
+if ! [ -x "$(command -v xsltproc)" ]; then
+  wget ftp://xmlsoft.org/xslt/libxslt-1.1.29-rc1.tar.gz
+  tar zxvf libxslt-1.1.29-rc1.tar.gz
+  pushd libxslt-1.1.29/
+  ./configure --prefix=$HOME/Downloads/libxslt-1.1.29_install
+  make -j && make install
+  ln -s $HOME/Downloads/libxslt-1.1.29_install/bin/xsltproc $HOME/bin
+  popd
+fi
 #asciidoc
 wget https://github.com/asciidoc/asciidoc/archive/8.6.9.zip
 unzip 8.6.9.zip 
