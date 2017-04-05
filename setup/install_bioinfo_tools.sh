@@ -44,3 +44,11 @@ make
 ln -s $PWD/
 popd
 popd
+
+
+#UCSC utilities
+mkdir -p $HOME/Downloads/UCSC_util/
+pushd $HOME/Downloads/UCSC_util/
+wget http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/twoBitToFa
+ln -sf $HOME/Downloads/UCSC_util/* $HOME/bin
+popd

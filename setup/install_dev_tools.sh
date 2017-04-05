@@ -108,6 +108,16 @@ pushd boost_1_63_0/
 ./b2
 popd
 
+#xslt
+if ! [ -x "$(command -v xsltproc)" ]; then
+  wget ftp://xmlsoft.org/xslt/libxslt-1.1.29-rc1.tar.gz
+  tar zxvf libxslt-1.1.29-rc1.tar.gz
+  pushd libxslt-1.1.29/
+  ./configure --prefix=$HOME/Downloads/libxslt-1.1.29_install
+  make -j && make install
+  ln -s $HOME/Downloads/libxslt-1.1.29_install/bin/xsltproc $HOME/bin
+  popd
+fi
 #asciidoc
 wget https://github.com/asciidoc/asciidoc/archive/8.6.9.zip
 unzip 8.6.9.zip 
@@ -119,7 +129,7 @@ ln -sf $PWD/asciidoc.py ~/bin/asciidoc
 ln -sf $PWD/a2x.py ~/bin/a2x
 popd
 #xmlto
-wget https://fedorahosted.org/releases/x/m/xmlto/xmlto-0.0.28.tar.bz2
+wget http://pkgs.fedoraproject.org/repo/pkgs/xmlto/xmlto-0.0.28.tar.bz2/93bab48d446c826399d130d959fe676f/xmlto-0.0.28.tar.bz2
 tar jxvf xmlto-0.0.28.tar.bz2 
 pushd xmlto-0.0.28/
 ./configure --prefix=$HOME/Downloads/xmlto-0.0.28_install
