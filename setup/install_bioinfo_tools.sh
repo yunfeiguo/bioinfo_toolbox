@@ -15,6 +15,11 @@ cd ..
 ln -sf $PWD/bin/bamtools ~/bin/
 #samtools
 #bedtools
+wget -O - https://github.com/arq5x/bedtools2/releases/download/v2.25.0/bedtools-2.25.0.tar.gz | tar zxv
+pushd bedtools2/
+make -j
+ln -sf $PWD/bin/* $HOME/bin
+popd
 #seqtk
 git clone git@github.com:lh3/seqtk.git
 cd seqtk; make
