@@ -22,6 +22,7 @@ args <- commandArgs(trailingOnly = TRUE)
 scaling = 1
 input = args[1]
 title <- basename(input)
+print(title)
 rawdata = data.table(read.table(input, fill = TRUE, as.is = TRUE))
 rawdata = rawdata[1:(which(rawdata$V1 == 'Total')[1]-1),]
 rawdata = rawdata[,.(V1=as.integer(V1), V2 = as.integer(V2))]
@@ -71,7 +72,7 @@ data3$y <- data3$cdf
 
 data <- rbindlist(list(data1, data2, data3), fill = TRUE)
 
-pdf(paste(title,".pdf",sep=""), width = 12, height = 10)
+pdf(paste(input,".pdf",sep=""), width = 12, height = 10)
 #combined plots
 ggplot(data = data, aes(x=len, y=y)) + facet_grid(panel~., scales = "free") + 
   geom_line(data = data1) + 
