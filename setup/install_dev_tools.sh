@@ -184,4 +184,11 @@ make -j && make install
 ln -s $HOME/Downloads/octave-4.2.1_install/bin/octave $HOME/bin/
 popd
 
+#datamash
+wget -O - http://ftp.gnu.org/gnu/datamash/datamash-1.1.0.tar.gz | tar xzf -
+pushd datamash-1.1.0
+./configure --prefix=$HOME/Downloads/datamash-1.1.0_install
+make -j && make check && make install
+ln -sf $HOME/Downloads/datamash-1.1.0_install/bin/datamash $HOME/bin
+popd
 echo 'export LIBRARY_PATH=$LD_LIBRARY_PATH:$LIBRARY_PATH' >> $HOME/.bashrc
