@@ -20,8 +20,9 @@ get_ticks <- function(x) {
 args <- commandArgs(trailingOnly = TRUE)
 
 scaling = 1
-title = args[1]
-rawdata = data.table(read.table(title, fill = TRUE, as.is = TRUE))
+input = args[1]
+title <- basename(input)
+rawdata = data.table(read.table(input, fill = TRUE, as.is = TRUE))
 rawdata = rawdata[1:(which(rawdata$V1 == 'Total')[1]-1),]
 rawdata = rawdata[,.(V1=as.integer(V1), V2 = as.integer(V2))]
 rawdata = untable(data.table(rawdata[,V1]), num=rawdata$V2)
