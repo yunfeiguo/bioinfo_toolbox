@@ -53,6 +53,28 @@ make && make install
 echo 'export LD_LIBRARY_PATH=$HOME/Downloads/zlib-1.2.11_install:$LD_LIBRARY_PATH' >> /home/guoy28/.bashrc
 popd
 
+#openssl (for https)
+wget https://github.com/openssl/openssl/archive/OpenSSL_1_1_0e.tar.gz
+tar zxvf OpenSSL_1_1_0e.tar.gz 
+pushd openssl-OpenSSL_1_1_0e/
+./config --prefix=$HOME/Downloads/openssl_1_1_0e_install && make -j && make install
+popd
+
+#libcurl
+wget https://curl.haxx.se/download/curl-7.53.1.tar.gz
+tar zxvf curl-7.53.1.tar.gz 
+pushd curl-7.53.1/
+./configure --prefix=$HOME/Downloads/curl-7.53.1_install --with-ssl=$HOME/Downloads/openssl_1_1_0e_install && make -j && make install
+popd
+
+#BLAS
+wget http://github.com/xianyi/OpenBLAS/archive/v0.2.19.tar.gz
+tar xzvf v0.2.19.tar.gz 
+pushd OpenBLAS-0.2.19/
+make -j
+make PREFIX=$HOME/Downloads/OpenBLAS-0.2.19_install install
+popd
+
 #python +setuptools+pip
 wget https://www.python.org/ftp/python/2.7.12/Python-2.7.12.tgz
 tar zxvf Python-2.7.12.tgz 
@@ -86,6 +108,16 @@ pushd boost_1_63_0/
 ./b2
 popd
 
+#xslt
+if ! [ -x "$(command -v xsltproc)" ]; then
+  wget ftp://xmlsoft.org/xslt/libxslt-1.1.29-rc1.tar.gz
+  tar zxvf libxslt-1.1.29-rc1.tar.gz
+  pushd libxslt-1.1.29/
+  ./configure --prefix=$HOME/Downloads/libxslt-1.1.29_install
+  make -j && make install
+  ln -s $HOME/Downloads/libxslt-1.1.29_install/bin/xsltproc $HOME/bin
+  popd
+fi
 #asciidoc
 wget https://github.com/asciidoc/asciidoc/archive/8.6.9.zip
 unzip 8.6.9.zip 
@@ -97,7 +129,7 @@ ln -sf $PWD/asciidoc.py ~/bin/asciidoc
 ln -sf $PWD/a2x.py ~/bin/a2x
 popd
 #xmlto
-wget https://fedorahosted.org/releases/x/m/xmlto/xmlto-0.0.28.tar.bz2
+wget http://pkgs.fedoraproject.org/repo/pkgs/xmlto/xmlto-0.0.28.tar.bz2/93bab48d446c826399d130d959fe676f/xmlto-0.0.28.tar.bz2
 tar jxvf xmlto-0.0.28.tar.bz2 
 pushd xmlto-0.0.28/
 ./configure --prefix=$HOME/Downloads/xmlto-0.0.28_install
@@ -107,11 +139,11 @@ ln -sf $HOME/Downloads/xmlto-0.0.28_install/bin/xmlto ~/bin/
 popd
 #git
 wget https://github.com/git/git/archive/v2.11.0.zip
-unzip v2.11.0.zip 
+unzip v2.11.0.zip
 pushd git-2.11.0/
-make configure
-./configure --prefix=$HOME/Downloads/git-2.11.0_install
-make all doc
+make configure && \
+./configure --prefix=$HOME/Downloads/git-2.11.0_install --with-curl && \
+make all doc && \
 make install
 ln -sf $HOME/Downloads/git-2.11.0_install/bin/git ~/bin
 popd
@@ -141,6 +173,15 @@ export LDFLAGS="-L$HOME/Downloads/xz-5.2.3_install/lib -L$HOME/Downloads/curl-7.
 ./configure --disable-openmp --prefix=$HOME/Downloads/R-3.3.2_install &&\
 make -j && make install
 ln -s $HOME/Downloads/R-3.3.2_install/bin/* $HOME/bin
+popd
+
+
+#octave
+curl https://ftp.gnu.org/gnu/octave/octave-4.2.1.tar.gz | tar zxv
+pushd octave-4.2.1/
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/isilon/Analysis/datainsights/users/guoy28/Downloads/OpenBLAS-0.2.19_install/lib && ./configure --prefix=$HOME/Downloads/octave-4.2.1_install --with-blas=$HOME/Downloads/OpenBLAS-0.2.19_install/lib --disable-readline
+make -j && make install
+ln -s $HOME/Downloads/octave-4.2.1_install/bin/octave $HOME/bin/
 popd
 
 echo 'export LIBRARY_PATH=$LD_LIBRARY_PATH:$LIBRARY_PATH' >> $HOME/.bashrc

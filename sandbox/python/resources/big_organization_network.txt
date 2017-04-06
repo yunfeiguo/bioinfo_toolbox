@@ -1,0 +1,7 @@
+John_Milligan Gilead_Sciences
+John_Milligan Pacific_Biosciences
+Gordon_Moore Gilead_Sciences
+Gordon_Moore Transamerica
+Gordon_Moore Intel
+Gordon_Moore Gordon_and_Betty_Moore_Foundation
+Gordon_Moore CalTech

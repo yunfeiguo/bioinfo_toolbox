@@ -138,7 +138,7 @@ public class PrimMST implements MST{
       if (visisted[neighbor])
         continue;
       if (indexMinPQ.contains(neighbor)) {
-        indexMinPQ.autoDecreaseKey(neighbor, e);
+        indexMinPQ.decreaseKey(neighbor, e);
         edgeTo.set(neighbor, indexMinPQ.keyOf(neighbor));
       } else {
         indexMinPQ.insert(neighbor, e);

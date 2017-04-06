@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="the_cpp_language_tutorial"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="the_cpp_language_tutorial">
+				<Option output="/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/cmake-build-debug/the_cpp_language_tutorial" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/bin/../lib/clang/8.0.0/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/bin/../include/c++/v1"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/cmake-build-debug/Makefile&quot;  VERBOSE=1 the_cpp_language_tutorial"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="the_cpp_language_tutorial/fast">
+				<Option output="/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/cmake-build-debug/the_cpp_language_tutorial" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/bin/../lib/clang/8.0.0/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/bin/../include/c++/v1"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/cmake-build-debug/Makefile&quot;  VERBOSE=1 the_cpp_language_tutorial/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/AbstractBaseClassExample.cpp">
+			<Option target="the_cpp_language_tutorial"/>
+		</Unit>
+		<Unit filename="/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/AbstractBaseClassExample.h">
+			<Option target="the_cpp_language_tutorial"/>
+		</Unit>
+		<Unit filename="/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/ClassStaticVariable.cpp">
+			<Option target="the_cpp_language_tutorial"/>
+		</Unit>
+		<Unit filename="/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/ClassStaticVariable.h">
+			<Option target="the_cpp_language_tutorial"/>
+		</Unit>
+		<Unit filename="/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/FirstClass.cpp">
+			<Option target="the_cpp_language_tutorial"/>
+		</Unit>
+		<Unit filename="/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/FirstClass.h">
+			<Option target="the_cpp_language_tutorial"/>
+		</Unit>
+		<Unit filename="/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/FriendClassExample.cpp">
+			<Option target="the_cpp_language_tutorial"/>
+		</Unit>
+		<Unit filename="/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/FriendClassExample.h">
+			<Option target="the_cpp_language_tutorial"/>
+		</Unit>
+		<Unit filename="/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/FriendExample.cpp">
+			<Option target="the_cpp_language_tutorial"/>
+		</Unit>
+		<Unit filename="/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/FriendExample.h">
+			<Option target="the_cpp_language_tutorial"/>
+		</Unit>
+		<Unit filename="/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/InheritanceExample.cpp">
+			<Option target="the_cpp_language_tutorial"/>
+		</Unit>
+		<Unit filename="/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/InheritanceExample.h">
+			<Option target="the_cpp_language_tutorial"/>
+		</Unit>
+		<Unit filename="/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/OperatorOverloading.cpp">
+			<Option target="the_cpp_language_tutorial"/>
+		</Unit>
+		<Unit filename="/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/OperatorOverloading.h">
+			<Option target="the_cpp_language_tutorial"/>
+		</Unit>
+		<Unit filename="/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/TemplateExample.cpp">
+			<Option target="the_cpp_language_tutorial"/>
+		</Unit>
+		<Unit filename="/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/TemplateExample.h">
+			<Option target="the_cpp_language_tutorial"/>
+		</Unit>
+		<Unit filename="/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/ThisUsage.cpp">
+			<Option target="the_cpp_language_tutorial"/>
+		</Unit>
+		<Unit filename="/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/ThisUsage.h">
+			<Option target="the_cpp_language_tutorial"/>
+		</Unit>
+		<Unit filename="/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/array.cpp">
+			<Option target="the_cpp_language_tutorial"/>
+		</Unit>
+		<Unit filename="/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/array.h">
+			<Option target="the_cpp_language_tutorial"/>
+		</Unit>
+		<Unit filename="/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/declaration_example.cpp">
+			<Option target="the_cpp_language_tutorial"/>
+		</Unit>
+		<Unit filename="/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/declaration_example.h.h">
+			<Option target="the_cpp_language_tutorial"/>
+		</Unit>
+		<Unit filename="/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/dynamic_memory.cpp">
+			<Option target="the_cpp_language_tutorial"/>
+		</Unit>
+		<Unit filename="/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/dynamic_memory.h">
+			<Option target="the_cpp_language_tutorial"/>
+		</Unit>
+		<Unit filename="/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/function.cpp">
+			<Option target="the_cpp_language_tutorial"/>
+		</Unit>
+		<Unit filename="/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/function.h">
+			<Option target="the_cpp_language_tutorial"/>
+		</Unit>
+		<Unit filename="/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/function_pointer.h">
+			<Option target="the_cpp_language_tutorial"/>
+		</Unit>
+		<Unit filename="/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/hello.cpp">
+			<Option target="the_cpp_language_tutorial"/>
+		</Unit>
+		<Unit filename="/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/hello.h">
+			<Option target="the_cpp_language_tutorial"/>
+		</Unit>
+		<Unit filename="/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/main.cpp">
+			<Option target="the_cpp_language_tutorial"/>
+		</Unit>
+		<Unit filename="/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/main.h">
+			<Option target="the_cpp_language_tutorial"/>
+		</Unit>
+		<Unit filename="/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/myString.cpp">
+			<Option target="the_cpp_language_tutorial"/>
+		</Unit>
+		<Unit filename="/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/myString.h">
+			<Option target="the_cpp_language_tutorial"/>
+		</Unit>
+		<Unit filename="/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/myStringstream.cpp">
+			<Option target="the_cpp_language_tutorial"/>
+		</Unit>
+		<Unit filename="/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/myStringstream.h">
+			<Option target="the_cpp_language_tutorial"/>
+		</Unit>
+		<Unit filename="/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/overloading.cpp">
+			<Option target="the_cpp_language_tutorial"/>
+		</Unit>
+		<Unit filename="/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/overloading.h">
+			<Option target="the_cpp_language_tutorial"/>
+		</Unit>
+		<Unit filename="/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/pass_by_ref.cpp">
+			<Option target="the_cpp_language_tutorial"/>
+		</Unit>
+		<Unit filename="/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/pass_by_ref.h">
+			<Option target="the_cpp_language_tutorial"/>
+		</Unit>
+		<Unit filename="/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/pointer.cpp">
+			<Option target="the_cpp_language_tutorial"/>
+		</Unit>
+		<Unit filename="/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/pointer.h">
+			<Option target="the_cpp_language_tutorial"/>
+		</Unit>
+		<Unit filename="/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/stdException.cpp">
+			<Option target="the_cpp_language_tutorial"/>
+		</Unit>
+		<Unit filename="/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/stdException.h">
+			<Option target="the_cpp_language_tutorial"/>
+		</Unit>
+		<Unit filename="/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/templateSpecialization.cpp">
+			<Option target="the_cpp_language_tutorial"/>
+		</Unit>
+		<Unit filename="/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/templateSpecialization.h">
+			<Option target="the_cpp_language_tutorial"/>
+		</Unit>
+		<Unit filename="/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/vectorExample.cpp">
+			<Option target="the_cpp_language_tutorial"/>
+		</Unit>
+		<Unit filename="/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/vectorExample.h">
+			<Option target="the_cpp_language_tutorial"/>
+		</Unit>
+		<Unit filename="/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>
