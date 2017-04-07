@@ -98,6 +98,15 @@ ln -sf $HOME/Downloads/python-2.7.12_install/bin/pip ~/bin/
 popd
 
 popd
+
+#python3
+wget -O - https://www.python.org/ftp/python/3.6.1/Python-3.6.1.tgz | tar zxf -
+pushd Python-3.6.1/
+./configure --prefix=$HOME/Downloads/Python-3.6.1_install
+make -j && make install
+ln -sf $HOME/Downloads/Python-3.6.1_install/bin/python3 $HOME/bin
+ln -sf $HOME/Downloads/Python-3.6.1_install/bin/pip3 $HOME/bin
+
 #perl
 #boost
 wget -O boost_1_63_0.tar.gz 'https://downloads.sourceforge.net/project/boost/boost/1.63.0/boost_1_63_0.tar.gz?r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Fboost%2Ffiles%2Fboost%2F1.63.0%2F&ts=1487717694&use_mirror=droneda
@@ -184,4 +193,11 @@ make -j && make install
 ln -s $HOME/Downloads/octave-4.2.1_install/bin/octave $HOME/bin/
 popd
 
+#datamash
+wget -O - http://ftp.gnu.org/gnu/datamash/datamash-1.1.0.tar.gz | tar xzf -
+pushd datamash-1.1.0
+./configure --prefix=$HOME/Downloads/datamash-1.1.0_install
+make -j && make check && make install
+ln -sf $HOME/Downloads/datamash-1.1.0_install/bin/datamash $HOME/bin
+popd
 echo 'export LIBRARY_PATH=$LD_LIBRARY_PATH:$LIBRARY_PATH' >> $HOME/.bashrc
