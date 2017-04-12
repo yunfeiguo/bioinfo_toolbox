@@ -1,6 +1,7 @@
 //
 // Created by guoy28 on 1/13/17.
 //
+#include "Casting.h"
 #include "OperatorOverloading.h"
 #include "pointer.h"
 #include "hello.h"
@@ -23,6 +24,7 @@
 #include <iostream>
 #include <seqan/sequence.h>
 #include <seqan/seq_io.h>
+#include "seqan_fa.h"
 #include <fcntl.h>
 #include <exception>
 
@@ -95,16 +97,7 @@ int main() {
         testVector();
         testTemplateSpecialization();
         testMyException();
+        seqan_fa_example();
     }
-    seqan::CharString id;
-    seqan::Dna5String seq;
-    seqan::CharString seqFileName = "/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/the_cpp_language_tutorial/resources/example.fa";
-
-    try {
-        seqan::SeqFileIn seqFileIn(toCString(seqFileName));
-        readRecord(id, seq, seqFileIn);
-        std::cout << id << '\t' << seq << '\n';
-    } catch (std::exception const & e) {
-        std::cerr << "ERROR: " << e.what() << std::endl;
-    }
+    tryCasting();
 }
