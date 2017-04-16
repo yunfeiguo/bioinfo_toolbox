@@ -39,7 +39,7 @@ public class Validate {
             "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaac ",
             "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaac",
             "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaac",
-            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaac"}) {
+            }) {
 
       StdOut.println("backtracking");
       StdOut.print(regexp + " matching " + text + " ");

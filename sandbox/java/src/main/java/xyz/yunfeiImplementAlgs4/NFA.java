@@ -59,16 +59,18 @@ import edu.princeton.cs.algs4.DepthFirstSearch;
  *  @author Kevin Wayne
  */
 public class NFA {
+  private int m;
   private Digraph nfa;
   private String pattern;
   public NFA(String pattern) {
     if (pattern == null) throw new IllegalArgumentException("null input");
+    this.m = pattern.length();
     Deque<Integer> stack = new ArrayDeque<>();
     this.pattern = pattern;
-    this.nfa = new Digraph(pattern.length() + 1);
+    this.nfa = new Digraph(m + 1);
     //the directed graph only records epsilon transitions
 
-    for (int i = 0; i < pattern.length(); i++) {
+    for (int i = 0; i < m; i++) {
       char currentChar = pattern.charAt(i);
       /* illegal syntax
        */
@@ -99,7 +101,7 @@ public class NFA {
         if (pattern.charAt(stack.peekFirst()) != '(')
           throw new IllegalArgumentException("() must be paired");
         int leftParenthesisIndex = stack.removeFirst();
-        if (i + 1< pattern.length() && pattern.charAt(i + 1) == '*') {
+        if (i + 1< m && pattern.charAt(i + 1) == '*') {
           nfa.addEdge(i + 1, leftParenthesisIndex);
         }
         if (lastAlternationIndex != -1) {
@@ -122,7 +124,7 @@ public class NFA {
         char charOnStack = pattern.charAt(indexOnStack);
         if (charOnStack != '|')
           throw new IllegalArgumentException("non | found at the end of pattern, () not paired?");
-        nfa.addEdge(indexOnStack - 1, nfa.V() - 1);
+        nfa.addEdge(indexOnStack - 1, m);
         if (lastAlternationIndex != -1) {
           nfa.addEdge(indexOnStack, lastAlternationIndex);
         }
@@ -136,12 +138,12 @@ public class NFA {
     List<Integer> next = new ArrayList<>();
 
     DirectedDFS dfs = new DirectedDFS(nfa, 0);
-    for (int j = 0; j < nfa.V(); j++) {
+    for (int j = 0; j < m; j++) {
       if (dfs.marked(j)) {
         toVisit.add(j);
       }
     }
-    if (dfs.marked(nfa.V() - 1))
+    if (dfs.marked(m))
       return true;
 
     for (int i = 0; i < q.length(); i++) {
@@ -157,12 +159,12 @@ public class NFA {
       }
       dfs = new DirectedDFS(nfa, next);
       toVisit = new ArrayList<>();
-      for (int j = 0; j < nfa.V(); j++) {
+      for (int j = 0; j < m; j++) {
         if (dfs.marked(j)) {
           toVisit.add(j);
         }
       }
-      if (dfs.marked(nfa.V() - 1))
+      if (dfs.marked(m))
         return true;
     }
     return false;
