@@ -179,6 +179,12 @@ public class NFA {
     String txt = args[1];
     NFA nfa = new NFA(regexp);
     StdOut.println(nfa.recognizes(txt));
+
+    /*
+    not work in this case
+
+    edu.princeton.cs.algs4.NFA nfa2 = new edu.princeton.cs.algs4.NFA("aa|bb|cc");
+    StdOut.println(nfa.recognizes("cc"));*/
   }
 }
 
