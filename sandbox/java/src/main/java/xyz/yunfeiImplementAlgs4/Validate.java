@@ -41,10 +41,19 @@ public class Validate {
             "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaac",
             "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaac"}) {
 
+      StdOut.println("backtracking");
       StdOut.print(regexp + " matching " + text + " ");
       long start = System.nanoTime();
       StdOut.print(text.matches(regexp));
       long end = System.nanoTime();
+      StdOut.println(" " + (end-start)/1e9 + " seconds.");
+
+      StdOut.println("no backtracking");
+      StdOut.print(regexp + " matching " + text + " ");
+      start = System.nanoTime();
+      NFA nfa = new NFA(regexp);
+      StdOut.print(nfa.recognizes(text));
+      end = System.nanoTime();
       StdOut.println(" " + (end-start)/1e9 + " seconds.");
     }
   }

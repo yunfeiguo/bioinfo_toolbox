@@ -1,87 +1,191 @@
 package yunfeiImplementAlgs4;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
+import java.util.*;
 
-import edu.princeton.cs.algs4.Digraph;
+import edu.princeton.cs.algs4.*;
+import edu.princeton.cs.algs4.DepthFirstSearch;
+/******************************************************************************
+ *  Compilation:  javac NFA.java
+ *  Execution:    java NFA regexp text
+ *  Dependencies: Stack.java Bag.java Digraph.java DirectedDFS.java
+ *
+ *  % java NFA "(A*B|AC)D" AAAABD
+ *  true
+ *
+ *  % java NFA "(A*B|AC)D" AAAAC
+ *  false
+ *
+ *  % java NFA "(a|(bc)*d)*" abcbcd
+ *  true
+ *
+ *  % java NFA "(a|(bc)*d)*" abcbcbcdaaaabcbcdaaaddd
+ *  true
+ *
+ *  Remarks
+ *  -----------
+ *  The following features are not supported:
+ *    - The + operator
+ *    - Multiway or
+ *    - Metacharacters in the text
+ *    - Character classes.
+ *
+ ******************************************************************************/
 
+/**
+ *  The {@code NFA} class provides a data type for creating a
+ *  <em>nondeterministic finite state automaton</em> (NFA) from a regular
+ *  expression and testing whether a given string is matched by that regular
+ *  expression.
+ *  It supports the following operations: <em>concatenation</em>,
+ *  <em>closure</em>, <em>binary or</em>, and <em>parentheses</em>.
+ *  It does not support <em>mutiway or</em>, <em>character classes</em>,
+ *  <em>metacharacters</em> (either in the text or pattern),
+ *  <em>capturing capabilities</em>, <em>greedy</em> or <em>relucantant</em>
+ *  modifiers, and other features in industrial-strength implementations
+ *  such as {@link java.util.regex.Pattern} and {@link java.util.regex.Matcher}.
+ *  <p>
+ *  This implementation builds the NFA using a digraph and a stack
+ *  and simulates the NFA using digraph search (see the textbook for details).
+ *  The constructor takes time proportional to <em>m</em>, where <em>m</em>
+ *  is the number of characters in the regular expression.
+ *  The <em>recognizes</em> method takes time proportional to <em>m n</em>,
+ *  where <em>n</em> is the number of characters in the text.
+ *  <p>
+ *  For additional documentation,
+ *  see <a href="http://algs4.cs.princeton.edu/54regexp">Section 5.4</a> of
+ *  <i>Algorithms, 4th Edition</i> by Robert Sedgewick and Kevin Wayne.
+ *
+ *  @author Robert Sedgewick
+ *  @author Kevin Wayne
+ */
 public class NFA {
-    private Digraph eTransition; //episilon transition
-    private char[] regex;
-    private int regexLength;
-    public NFA(String regexStr) {
-        this.regex = regexStr.toCharArray();
-        this.regexLength = regex.length;
-        
-        Deque<Integer> deque = new ArrayDeque<Integer>();
-        eTransition = new Digraph(regexLength + 1); 
-        for (int i = 0; i < regexLength; i++) {
-            int lp = i;
-            if (regex[i] == '(' || regex[i] == '|') {
-                deque.addLast(i);
-            } else if (regex[i] == ')') {
-                int or = deque.removeLast();
-                if (regex[or] == '|') {
-                    lp = deque.removeLast();
-                    eTransition.addEdge(or, i);
-                    eTransition.addEdge(lp, or + 1);                   
-                } else
-                    lp = or;                
-            }
-            //look ahead for * closure
-            //closure only appears after right parenthesis or 
-            //a regular character
-            if (i < regexLength - 1 && regex[i + 1] == '*') {
-                eTransition.addEdge(lp, i + 1);
-                eTransition.addEdge(i + 1, lp);
-            }
-            //add e-transition for (,),*, but not for or operator
-            //when i == regexLength - 1, add one additional
-            //e-transition to accept state
-            if (regex[i] == '(' || regex[i] == ')' || regex[i] == '*') {
-                eTransition.addEdge(i, i + 1);
-            }
+  private Digraph nfa;
+  private String pattern;
+  public NFA(String pattern) {
+    if (pattern == null) throw new IllegalArgumentException("null input");
+    Deque<Integer> stack = new ArrayDeque<>();
+    this.pattern = pattern;
+    this.nfa = new Digraph(pattern.length() + 2);
+    //the directed graph only records epsilon transitions
+
+    for (int i = 1; i <= pattern.length(); i++) {
+      char currentChar = pattern.charAt(i - 1);
+      /* illegal syntax
+       */
+      if (currentChar == '*') {
+        nfa.addEdge(i - 1, i);
+        if (i - 2 >= 0 && pattern.charAt(i - 2) != ')') {
+          nfa.addEdge(i, i - 1);
         }
-    }
-    public boolean recognizes(String txt) {
-        Bag<Integer> next = new Bag<Integer>();
-        DirectedDFS dfs = new DirectedDFS(eTransition, 0);
-        
-        //first add all nodes directly reachable
-        //to search space
-        for (int i = 0; i < eTransition.V(); i++) {
-            if (dfs.marked(i)) {
-                next.add(i);
-                if (i == regexLength) {
-                    return true;
-                }
-            }            
-        }
-        for (int i = 0; i < txt.length(); i++) {
-            char current = txt.charAt(i);
-            Bag<Integer> matches = new Bag<Integer>();
-            for (int j : next) {                
-                if (regex[j] == '.' || regex[j] == current) {
-                    matches.add(j + 1); //since we only store epsilon transitions, we must
-                                        //add next adjacent char index to search space
-                }
+      } else if (currentChar == '(') {
+        stack.addFirst(i);
+        nfa.addEdge(i - 1, i);
+      } else if (currentChar == ')') {
+        int lastAlternationIndex = -1;
+        while(pattern.charAt(stack.peekFirst() - 1) != '(') {
+          if (pattern.charAt(stack.peekFirst()-1) == '|') {
+            int indexOnStack = stack.removeFirst();
+            nfa.addEdge(indexOnStack - 1, i);
+            if (lastAlternationIndex != -1) {
+              nfa.addEdge(indexOnStack, lastAlternationIndex);
             }
-            next = new Bag<Integer>();
-            dfs = new DirectedDFS(eTransition, matches);
-            for (int k = 0; k < eTransition.V(); k++) {                
-                if (dfs.marked(k)) {
-                    next.add(k);
-                    if (k == regexLength) {
-                        return true;
-                    }
-                }
-            }                        
+            lastAlternationIndex = indexOnStack;
+          }
         }
-        return false;
+        if (pattern.charAt(stack.peekFirst()-1) != '(')
+          throw new IllegalArgumentException("() must be paired");
+        int leftParenthesisIndex = stack.removeFirst();
+        if (i < pattern.length() && pattern.charAt(i) == '*') {
+          nfa.addEdge(i + 1, leftParenthesisIndex);
+        }
+        if (lastAlternationIndex != -1) {
+          nfa.addEdge(leftParenthesisIndex, lastAlternationIndex);
+        }
+        nfa.addEdge(i - 1, i);
+      } else if (currentChar == '|') {
+        stack.addFirst(i);
+      } else {
+        //regular chars or .
+        if (i - 2 >= 0) {
+          char previousChar = pattern.charAt( i - 2);
+          if (previousChar == '|' || previousChar == '.' || previousChar == '(' || previousChar == ')' || previousChar == '*') {
+            nfa.addEdge(i - 1, i);
+          }
+        }
+      }
     }
-    public static void main(String[] args) {
-        NFA test = new NFA("AB((C|D*E)F)*G");
-        System.out.println(test.recognizes("ABCFDDEFG"));
-        System.out.println(test.recognizes("ABCCFDDEFG") == false);
+    //make sure start is connected to non-| chars
+    if (pattern.length() >= 1 && pattern.charAt(0) != '|')
+      nfa.addEdge(0, 1);
+    if (!stack.isEmpty()) {
+      int lastAlternationIndex = -1;
+      while(!stack.isEmpty()) {
+        int indexOnStack = stack.removeFirst();
+        char charOnStack = pattern.charAt(indexOnStack - 1);
+        if (charOnStack != '|')
+          throw new IllegalArgumentException("non | found at the end of pattern, () not paired?");
+        nfa.addEdge(indexOnStack - 1, nfa.V() - 1);
+        if (lastAlternationIndex != -1) {
+          nfa.addEdge(indexOnStack, lastAlternationIndex);
+        }
+        lastAlternationIndex = indexOnStack;
+      }
+      nfa.addEdge(0, lastAlternationIndex);
     }
+    //connect last seen node with end node
+    if (pattern.length() >= 1) {
+      char lastChar = pattern.charAt(pattern.length() - 1);
+      if (lastChar == '|' || lastChar == '.' || lastChar == '(' || lastChar == ')' || lastChar == '*') {
+        nfa.addEdge(nfa.V() - 2, nfa.V() - 1);
+      }
+    }
+  }
+  public boolean recognizes(String q) {
+    List<Integer> toVisit = new ArrayList<>();
+    List<Integer> next = new ArrayList<>();
+
+    DirectedDFS dfs = new DirectedDFS(nfa, 0);
+    for (int j = 1; j < nfa.V(); j++) {
+      if (dfs.marked(j)) {
+        toVisit.add(j);
+      }
+    }
+    if (dfs.marked(nfa.V() - 1))
+      return true;
+
+    for (int i = 0; i < q.length(); i++) {
+      char currentChar = q.charAt(i);
+      if (currentChar == '|' || currentChar == '*' || currentChar == '(' || currentChar == ')')
+        throw new IllegalArgumentException("no | * ( ) allowed");
+      for (int j : toVisit) {
+        if (pattern.charAt(j -1) == '.' || pattern.charAt(j-1) == currentChar) {
+          //if non-epsilon transition exists
+          //2 nodes must be adjacent
+          next.add(j + 1);
+        }
+      }
+      dfs = new DirectedDFS(nfa, next);
+      toVisit = new ArrayList<>();
+      for (int j = 0; j < nfa.V(); j++) {
+        if (dfs.marked(j)) {
+          toVisit.add(j);
+        }
+      }
+      if (dfs.marked(nfa.V() - 1))
+        return true;
+    }
+    return false;
+  }
+  /**
+   * Unit tests the {@code NFA} data type.
+   *
+   * @param args the command-line arguments
+   */
+  public static void main(String[] args) {
+    String regexp = "(" + args[0] + ")";
+    String txt = args[1];
+    NFA nfa = new NFA(regexp);
+    StdOut.println(nfa.recognizes(txt));
+  }
 }
+
