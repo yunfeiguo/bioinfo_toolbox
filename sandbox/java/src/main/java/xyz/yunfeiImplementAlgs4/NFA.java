@@ -77,9 +77,11 @@ public class NFA {
         if (i - 2 >= 0 && pattern.charAt(i - 2) != ')') {
           nfa.addEdge(i, i - 1);
         }
+        nfa.addEdge(i, i + 1);
       } else if (currentChar == '(') {
         stack.addFirst(i);
         nfa.addEdge(i - 1, i);
+        nfa.addEdge(i, i + 1);
       } else if (currentChar == ')') {
         int lastAlternationIndex = -1;
         while(pattern.charAt(stack.peekFirst() - 1) != '(') {
@@ -102,16 +104,12 @@ public class NFA {
           nfa.addEdge(leftParenthesisIndex, lastAlternationIndex);
         }
         nfa.addEdge(i - 1, i);
+        nfa.addEdge(i, i + 1);
       } else if (currentChar == '|') {
         stack.addFirst(i);
+        nfa.addEdge(i, i + 1);
       } else {
         //regular chars or .
-        if (i - 2 >= 0) {
-          char previousChar = pattern.charAt( i - 2);
-          if (previousChar == '|' || previousChar == '.' || previousChar == '(' || previousChar == ')' || previousChar == '*') {
-            nfa.addEdge(i - 1, i);
-          }
-        }
       }
     }
     //make sure start is connected to non-| chars
@@ -131,13 +129,6 @@ public class NFA {
         lastAlternationIndex = indexOnStack;
       }
       nfa.addEdge(0, lastAlternationIndex);
-    }
-    //connect last seen node with end node
-    if (pattern.length() >= 1) {
-      char lastChar = pattern.charAt(pattern.length() - 1);
-      if (lastChar == '|' || lastChar == '.' || lastChar == '(' || lastChar == ')' || lastChar == '*') {
-        nfa.addEdge(nfa.V() - 2, nfa.V() - 1);
-      }
     }
   }
   public boolean recognizes(String q) {
