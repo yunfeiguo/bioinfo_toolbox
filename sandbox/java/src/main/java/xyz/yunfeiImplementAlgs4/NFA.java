@@ -65,27 +65,29 @@ public class NFA {
     if (pattern == null) throw new IllegalArgumentException("null input");
     Deque<Integer> stack = new ArrayDeque<>();
     this.pattern = pattern;
-    this.nfa = new Digraph(pattern.length() + 2);
+    this.nfa = new Digraph(pattern.length() + 1);
     //the directed graph only records epsilon transitions
 
-    for (int i = 1; i <= pattern.length(); i++) {
-      char currentChar = pattern.charAt(i - 1);
+    for (int i = 0; i < pattern.length(); i++) {
+      char currentChar = pattern.charAt(i);
       /* illegal syntax
        */
       if (currentChar == '*') {
-        nfa.addEdge(i - 1, i);
-        if (i - 2 >= 0 && pattern.charAt(i - 2) != ')') {
+        if (i - 1 >= 0)
+          nfa.addEdge(i - 1, i);
+        if (i - 1 >= 0 && pattern.charAt(i - 1) != ')') {
           nfa.addEdge(i, i - 1);
         }
         nfa.addEdge(i, i + 1);
       } else if (currentChar == '(') {
         stack.addFirst(i);
-        nfa.addEdge(i - 1, i);
+        if (i - 1 >= 0)
+          nfa.addEdge(i - 1, i);
         nfa.addEdge(i, i + 1);
       } else if (currentChar == ')') {
         int lastAlternationIndex = -1;
-        while(pattern.charAt(stack.peekFirst() - 1) != '(') {
-          if (pattern.charAt(stack.peekFirst()-1) == '|') {
+        while(pattern.charAt(stack.peekFirst()) != '(') {
+          if (pattern.charAt(stack.peekFirst()) == '|') {
             int indexOnStack = stack.removeFirst();
             nfa.addEdge(indexOnStack - 1, i);
             if (lastAlternationIndex != -1) {
@@ -94,16 +96,17 @@ public class NFA {
             lastAlternationIndex = indexOnStack;
           }
         }
-        if (pattern.charAt(stack.peekFirst()-1) != '(')
+        if (pattern.charAt(stack.peekFirst()) != '(')
           throw new IllegalArgumentException("() must be paired");
         int leftParenthesisIndex = stack.removeFirst();
-        if (i < pattern.length() && pattern.charAt(i) == '*') {
+        if (i + 1< pattern.length() && pattern.charAt(i + 1) == '*') {
           nfa.addEdge(i + 1, leftParenthesisIndex);
         }
         if (lastAlternationIndex != -1) {
           nfa.addEdge(leftParenthesisIndex, lastAlternationIndex);
         }
-        nfa.addEdge(i - 1, i);
+        if (i - 1 >= 0)
+          nfa.addEdge(i - 1, i);
         nfa.addEdge(i, i + 1);
       } else if (currentChar == '|') {
         stack.addFirst(i);
@@ -112,14 +115,11 @@ public class NFA {
         //regular chars or .
       }
     }
-    //make sure start is connected to non-| chars
-    if (pattern.length() >= 1 && pattern.charAt(0) != '|')
-      nfa.addEdge(0, 1);
     if (!stack.isEmpty()) {
       int lastAlternationIndex = -1;
       while(!stack.isEmpty()) {
         int indexOnStack = stack.removeFirst();
-        char charOnStack = pattern.charAt(indexOnStack - 1);
+        char charOnStack = pattern.charAt(indexOnStack);
         if (charOnStack != '|')
           throw new IllegalArgumentException("non | found at the end of pattern, () not paired?");
         nfa.addEdge(indexOnStack - 1, nfa.V() - 1);
@@ -136,7 +136,7 @@ public class NFA {
     List<Integer> next = new ArrayList<>();
 
     DirectedDFS dfs = new DirectedDFS(nfa, 0);
-    for (int j = 1; j < nfa.V(); j++) {
+    for (int j = 0; j < nfa.V(); j++) {
       if (dfs.marked(j)) {
         toVisit.add(j);
       }
@@ -149,7 +149,7 @@ public class NFA {
       if (currentChar == '|' || currentChar == '*' || currentChar == '(' || currentChar == ')')
         throw new IllegalArgumentException("no | * ( ) allowed");
       for (int j : toVisit) {
-        if (pattern.charAt(j -1) == '.' || pattern.charAt(j-1) == currentChar) {
+        if (pattern.charAt(j) == '.' || pattern.charAt(j) == currentChar) {
           //if non-epsilon transition exists
           //2 nodes must be adjacent
           next.add(j + 1);
