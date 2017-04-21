@@ -78,6 +78,10 @@ public class Huffman {
     } else {
       getHuffmanCode(root, st, codeOnStack);
     }
+    //write # of chars, why?
+    //because we use variable length codes, we don't when we
+    //end, there could be padding at the end
+    out.write(input.size());
     //write huffman code
     for (char c : input) {
       for (boolean b : st.get(c)) {
@@ -101,7 +105,8 @@ public class Huffman {
       input.add(c);
     }
     for (int i = 0; i < frequency.length; i++) {
-      q.offer(new Node(null, null, (char) i, frequency[i]));
+      if (frequency[i] > 0)
+        q.offer(new Node(null, null, (char) i, frequency[i]));
     }
     //merging nodes from lowest weight to highest
     while(q.size() > 1) {
@@ -157,11 +162,14 @@ public class Huffman {
   }
   public static void expand(BinaryIn in, BinaryOut out) {
     Node root = readHuffmanTrie(in);
+    int l = in.readInt();
+    int count = 0;
     Node current = root;
-    while(!in.isEmpty()) {
+    while(!in.isEmpty() && count < l) {
       boolean b = in.readBoolean();
       if (current.left == null && current.right == null) {
         out.write(current.c, W);
+        count++;
         current = root;
       }
       current = b ? current.right :current.left;
