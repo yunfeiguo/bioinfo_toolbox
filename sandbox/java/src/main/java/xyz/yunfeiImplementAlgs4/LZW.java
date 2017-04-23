@@ -73,7 +73,6 @@ public class LZW {
   }
   public static void expand(BinaryIn in, BinaryOut out) {
     int count = 256;
-    TST<Integer> st = initializeTST(count);
     String[] int2String = new String[R];
     for (int i = 0; i < count; i++) {
       int2String[i] = "" + (char) i;
@@ -91,18 +90,10 @@ public class LZW {
         int2String[count] = currentString + currentString.substring(0,1);
       }
       out.write(int2String[i]);
-      if (count < R - 1) {
-        for (int j = 0; j < int2String[i].length(); j++) {
-          currentString += int2String[i].charAt(j);
-          if (count < R - 1 && !st.contains(currentString)) {
-            String prefix = st.longestPrefixOf(currentString);
-            st.put(currentString, count);
-            int2String[count] = currentString;
-            currentString = currentString.substring(prefix.length());
-            count++;
-          }
-        }
+      if (count < R - 1 && currentString.length() > 0) {
+        int2String[count++] = currentString + int2String[i].charAt(0);
       }
+      currentString = int2String[i];
     }
   }
   public static void main(String[] args) {
