@@ -177,6 +177,8 @@ public class Huffman {
         //in case there is only one char in decompressed text
         current = root;
     }
+    if (current.left == null && current.right == null)
+      out.write(current.c, W);
   }
   private static Node readHuffmanTrie(BinaryIn in) {
     boolean b = in.readBoolean();
