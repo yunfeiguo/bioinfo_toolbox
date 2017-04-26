@@ -7,8 +7,8 @@ $prefix = shift @ARGV;
 @fq = grep {/\.(fastq|fq)$/} @ARGV;
 @bam = grep {/\.bam$/} @ARGV;
 chomp(my $cpu_count = `grep -c -P '^processor\\s+:' /proc/cpuinfo`);
-$cpu_count *= 0.5; #use only 50% of CPU cores available
-$cpu_count++; #at least 1 CPU core
+#$cpu_count *= 0.5; #use only 50% of CPU cores available
+#$cpu_count++; #at least 1 CPU core
 
 open ALIGN,"|-", "bwa mem -R '\@RG\\tID:$prefix.ID\\tSM:$prefix.SM' -x pacbio -t $cpu_count $ref /dev/stdin | samtools sort -o $prefix.sort.bam --output-fmt BAM -" or die "bwa or samtools failed: $!\n";
 if (@fq) {
