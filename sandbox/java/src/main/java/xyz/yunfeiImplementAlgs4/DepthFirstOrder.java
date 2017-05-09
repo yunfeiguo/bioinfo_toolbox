@@ -88,6 +88,36 @@ public class DepthFirstOrder {
             }
         }
     }
+    public DepthFirstOrder(EdgeWeightedDigraph g) {
+        //assume it's DAG
+        preRank = 0;
+        postRank = 0;
+        preorder = new ArrayList<Integer>();
+        postorder = new ArrayList<Integer>();
+        reversePostOrder = new ArrayDeque<Integer>();
+        pre = new int[g.V()];
+        post = new int[g.V()];
+        visited = new boolean[g.V()];
+        for (int i = 0; i < g.V(); i++) {
+            if (!visited[i]) {
+                dfs(g, i);
+            }
+        }
+    }
+    private void dfs(EdgeWeightedDigraph g, int v) {
+        visited[v] = true;
+        preorder.add(v);
+        pre[v] = preRank++;
+        for (DirectedEdge e: g.adj(v)) {
+            int to = e.to();
+            if (!visited[to]) {
+                dfs(g, to);
+            }
+        }
+        postorder.add(v);
+        reversePostOrder.addFirst(v);
+        post[v] = postRank++;
+    }
     private void dfs(Digraph g, int v) {
         visited[v] = true;
         preorder.add(v);
@@ -147,8 +177,14 @@ public class DepthFirstOrder {
         return reverse;*/
         return reversePostOrder;
     }
+    // throw an IllegalArgumentException unless {@code 0 <= v < V}
+    private void validateVertex(int v) {
+        int V = visited.length;
+        if (v < 0 || v >= V)
+            throw new IllegalArgumentException("vertex " + v + " is not between 0 and " + (V-1));
+    }
     // check that pre() and post() are consistent with pre(v) and post(v)
-    private boolean check(Digraph G) {
+    private boolean check() {
 
         // check that post(v) is consistent with post()
         int r = 0;

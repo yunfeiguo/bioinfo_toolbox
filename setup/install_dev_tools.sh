@@ -39,6 +39,11 @@ echo 'export LD_LIBRARY_PATH=$HOME/Downloads/gcc-6.3.0_install/lib64:$LD_LIBRARY
 echo 'export CC=$HOME/bin/gcc' >> $HOME/.bashrc
 echo 'export CXX=$HOME/bin/g++' >> $HOME/.bashrc
 #cmake
+wget https://cmake.org/files/v3.7/cmake-3.7.2-Linux-x86_64.sh
+bash cmake-3.7.2-Linux-x86_64.sh
+ln -s $PWD/cmake-3.7.2-Linux-x86_64/bin/* $HOME/bin/
+
+
 #zlib
 wget http://www.zlib.net/zlib-1.2.11.tar.gz
 tar zxvf zlib-1.2.11.tar.gz 
@@ -46,6 +51,28 @@ pushd  zlib-1.2.11/
 ./configure --prefix=$HOME/Downloads/zlib-1.2.11_install
 make && make install
 echo 'export LD_LIBRARY_PATH=$HOME/Downloads/zlib-1.2.11_install:$LD_LIBRARY_PATH' >> /home/guoy28/.bashrc
+popd
+
+#openssl (for https)
+wget https://github.com/openssl/openssl/archive/OpenSSL_1_1_0e.tar.gz
+tar zxvf OpenSSL_1_1_0e.tar.gz 
+pushd openssl-OpenSSL_1_1_0e/
+./config --prefix=$HOME/Downloads/openssl_1_1_0e_install && make -j && make install
+popd
+
+#libcurl
+wget https://curl.haxx.se/download/curl-7.53.1.tar.gz
+tar zxvf curl-7.53.1.tar.gz 
+pushd curl-7.53.1/
+./configure --prefix=$HOME/Downloads/curl-7.53.1_install --with-ssl=$HOME/Downloads/openssl_1_1_0e_install && make -j && make install
+popd
+
+#BLAS
+wget http://github.com/xianyi/OpenBLAS/archive/v0.2.19.tar.gz
+tar xzvf v0.2.19.tar.gz 
+pushd OpenBLAS-0.2.19/
+make -j
+make PREFIX=$HOME/Downloads/OpenBLAS-0.2.19_install install
 popd
 
 #python +setuptools+pip
@@ -71,8 +98,35 @@ ln -sf $HOME/Downloads/python-2.7.12_install/bin/pip ~/bin/
 popd
 
 popd
+
+#python3
+wget -O - https://www.python.org/ftp/python/3.6.1/Python-3.6.1.tgz | tar zxf -
+pushd Python-3.6.1/
+./configure --prefix=$HOME/Downloads/Python-3.6.1_install
+make -j && make install
+ln -sf $HOME/Downloads/Python-3.6.1_install/bin/python3 $HOME/bin
+ln -sf $HOME/Downloads/Python-3.6.1_install/bin/pip3 $HOME/bin
+
 #perl
 #boost
+wget -O boost_1_63_0.tar.gz 'https://downloads.sourceforge.net/project/boost/boost/1.63.0/boost_1_63_0.tar.gz?r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Fboost%2Ffiles%2Fboost%2F1.63.0%2F&ts=1487717694&use_mirror=droneda
+ta'
+tar zxvf boost_1_63_0.tar.gz
+pushd boost_1_63_0/
+./bootstrap.sh 
+./b2
+popd
+
+#xslt
+if ! [ -x "$(command -v xsltproc)" ]; then
+  wget ftp://xmlsoft.org/xslt/libxslt-1.1.29-rc1.tar.gz
+  tar zxvf libxslt-1.1.29-rc1.tar.gz
+  pushd libxslt-1.1.29/
+  ./configure --prefix=$HOME/Downloads/libxslt-1.1.29_install
+  make -j && make install
+  ln -s $HOME/Downloads/libxslt-1.1.29_install/bin/xsltproc $HOME/bin
+  popd
+fi
 #asciidoc
 wget https://github.com/asciidoc/asciidoc/archive/8.6.9.zip
 unzip 8.6.9.zip 
@@ -84,7 +138,7 @@ ln -sf $PWD/asciidoc.py ~/bin/asciidoc
 ln -sf $PWD/a2x.py ~/bin/a2x
 popd
 #xmlto
-wget https://fedorahosted.org/releases/x/m/xmlto/xmlto-0.0.28.tar.bz2
+wget http://pkgs.fedoraproject.org/repo/pkgs/xmlto/xmlto-0.0.28.tar.bz2/93bab48d446c826399d130d959fe676f/xmlto-0.0.28.tar.bz2
 tar jxvf xmlto-0.0.28.tar.bz2 
 pushd xmlto-0.0.28/
 ./configure --prefix=$HOME/Downloads/xmlto-0.0.28_install
@@ -94,11 +148,11 @@ ln -sf $HOME/Downloads/xmlto-0.0.28_install/bin/xmlto ~/bin/
 popd
 #git
 wget https://github.com/git/git/archive/v2.11.0.zip
-unzip v2.11.0.zip 
+unzip v2.11.0.zip
 pushd git-2.11.0/
-make configure
-./configure --prefix=$HOME/Downloads/git-2.11.0_install
-make all doc
+make configure && \
+./configure --prefix=$HOME/Downloads/git-2.11.0_install --with-curl && \
+make all doc && \
 make install
 ln -sf $HOME/Downloads/git-2.11.0_install/bin/git ~/bin
 popd
@@ -106,5 +160,44 @@ popd
 echo 'source $HOME/Downloads/git-2.11.0/contrib/completion/git-completion.bash' >> $HOME/.bashrc
 
 
+#####R#####
+#libcurl
+wget https://curl.haxx.se/download/curl-7.53.1.tar.gz
+tar zxvf curl-7.53.1.tar.gz 
+pushd curl-7.53.1/
+./configure --prefix=$HOME/Downloads/curl-7.53.1_install && make -j && make install
 
+#xz, lzma libs
+wget http://tukaani.org/xz/xz-5.2.3.tar.gz
+tar zxvf xz-5.2.3.tar.gz 
+pushd xz-5.2.3/
+./configure --prefix=$HOME/Downloads/xz-5.2.3_install && make -j && make install
+popd
+#R
+wget https://cloud.r-project.org/src/base/R-3/R-3.3.2.tar.gz
+tar zxvf R-3.3.2.tar.gz 
+pushd R-3.3.2/
+export CFLAGS="-I$HOME/Downloads/xz-5.2.3_install/include -I$HOME/Downloads/curl-7.53.1_install/include" &&\
+export LDFLAGS="-L$HOME/Downloads/xz-5.2.3_install/lib -L$HOME/Downloads/curl-7.53.1_install/lib " &&\
+./configure --disable-openmp --prefix=$HOME/Downloads/R-3.3.2_install &&\
+make -j && make install
+ln -s $HOME/Downloads/R-3.3.2_install/bin/* $HOME/bin
+popd
+
+
+#octave
+curl https://ftp.gnu.org/gnu/octave/octave-4.2.1.tar.gz | tar zxv
+pushd octave-4.2.1/
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/isilon/Analysis/datainsights/users/guoy28/Downloads/OpenBLAS-0.2.19_install/lib && ./configure --prefix=$HOME/Downloads/octave-4.2.1_install --with-blas=$HOME/Downloads/OpenBLAS-0.2.19_install/lib --disable-readline
+make -j && make install
+ln -s $HOME/Downloads/octave-4.2.1_install/bin/octave $HOME/bin/
+popd
+
+#datamash
+wget -O - http://ftp.gnu.org/gnu/datamash/datamash-1.1.0.tar.gz | tar xzf -
+pushd datamash-1.1.0
+./configure --prefix=$HOME/Downloads/datamash-1.1.0_install
+make -j && make check && make install
+ln -sf $HOME/Downloads/datamash-1.1.0_install/bin/datamash $HOME/bin
+popd
 echo 'export LIBRARY_PATH=$LD_LIBRARY_PATH:$LIBRARY_PATH' >> $HOME/.bashrc

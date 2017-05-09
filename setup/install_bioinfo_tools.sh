@@ -15,8 +15,13 @@ cd ..
 ln -sf $PWD/bin/bamtools ~/bin/
 #samtools
 #bedtools
+wget -O - https://github.com/arq5x/bedtools2/releases/download/v2.25.0/bedtools-2.25.0.tar.gz | tar zxv
+pushd bedtools2/
+make -j
+ln -sf $PWD/bin/* $HOME/bin
+popd
 #seqtk
-git clone https://github.com/lh3/seqtk.git;
+git clone git@github.com:lh3/seqtk.git
 cd seqtk; make
 ln -s $PWD/seqtk $HOME/bin
 cd ..
@@ -43,4 +48,12 @@ make -j
 make
 ln -s $PWD/
 popd
+popd
+
+
+#UCSC utilities
+mkdir -p $HOME/Downloads/UCSC_util/
+pushd $HOME/Downloads/UCSC_util/
+wget http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/twoBitToFa
+ln -sf $HOME/Downloads/UCSC_util/* $HOME/bin
 popd
