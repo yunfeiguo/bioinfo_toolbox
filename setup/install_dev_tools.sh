@@ -3,6 +3,9 @@ mkdir -p $HOME/bin
 cd $HOME/Downloads
 NUM_THREADS=$( cat /proc/cpuinfo | grep -c '^processor')
 USABLE_THREADS=$(expr $NUM_THREADS - 1)
+#java
+wget -O - --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u112-b15/jdk-8u112-linux-x64.tar.gz | tar zxvf -
+ln -sf $PWD/jdk1.8.0_112/bin/* $HOME/bin
 
 #glibc
 wget https://ftp.gnu.org/gnu/libc/glibc-2.24.tar.gz
