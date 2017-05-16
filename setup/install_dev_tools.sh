@@ -109,6 +109,8 @@ python setup.py install
 ln -sf $HOME/Downloads/python-2.7.12_install/bin/pip ~/bin/
 popd
 
+pip install numpy scipy matplotlib pysam pyvcy Bio
+
 popd
 
 #python3
