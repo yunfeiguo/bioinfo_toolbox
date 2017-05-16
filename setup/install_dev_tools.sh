@@ -91,7 +91,8 @@ pushd ../tk8.6.6/unix/
 
 curl -L https://www.python.org/ftp/python/2.7.12/Python-2.7.12.tgz | tar zxvf -
 pushd Python-2.7.12/
-./configure  --prefix=$HOME/Downloads/python-2.7.12_install --with-tcltk-includes="-I$HOME/Downloads/tcl8.6.6_install/include -I$HOME/Downloads/tk8.6.6_install/include" --with-tcltk-libs="-L$HOME/Downloads/tcl8.6.6_install/lib -L$HOME/Downloads/tk8.6.6_install/lib" && make -j && make install
+
+./configure  --prefix=$HOME/Downloads/python-2.7.12_install && make -j && make install
 make -j && make install
 ln -sf $HOME/Downloads/python-2.7.12_install/bin/python $HOME/bin/
 export PATH=$HOME/Downloads/python-2.7.12_install/bin:$PATH
@@ -109,7 +110,7 @@ python setup.py install
 ln -sf $HOME/Downloads/python-2.7.12_install/bin/pip ~/bin/
 popd
 
-pip install numpy scipy matplotlib pysam pyvcy Bio
+pip install numpy scipy matplotlib pysam pyvcf biopython
 
 popd
 
