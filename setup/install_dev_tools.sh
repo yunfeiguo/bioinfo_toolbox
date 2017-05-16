@@ -89,11 +89,10 @@ curl -L https://prdownloads.sourceforge.net/tcl/tk8.6.6-src.tar.gz | tar zxvf -
 pushd ../tk8.6.6/unix/
 ./configure --prefix=$HOME/Downloads/tk8.6.6_install --with-tcl=$HOME/Downloads/tcl8.6.6/unix && make -j && make install
 
-wget https://www.python.org/ftp/python/2.7.12/Python-2.7.12.tgz
-tar zxvf Python-2.7.12.tgz 
+curl -L https://www.python.org/ftp/python/2.7.12/Python-2.7.12.tgz | tar zxvf -
 pushd Python-2.7.12/
-./configure  --prefix=$HOME/Downloads/python-2.7.12_install
-make -j 6 && make install
+./configure  --prefix=$HOME/Downloads/python-2.7.12_install --with-tcltk-includes="-I$HOME/Downloads/tcl8.6.6_install/include -I$HOME/Downloads/tk8.6.6_install/include" --with-tcltk-libs="-L$HOME/Downloads/tcl8.6.6_install/lib -L$HOME/Downloads/tk8.6.6_install/lib" && make -j && make install
+make -j && make install
 ln -sf $HOME/Downloads/python-2.7.12_install/bin/python $HOME/bin/
 
 wget https://github.com/pypa/setuptools/archive/v29.0.1.zip
