@@ -79,6 +79,16 @@ make PREFIX=$HOME/Downloads/OpenBLAS-0.2.19_install install
 popd
 
 #python +setuptools+pip
+
+curl -L https://prdownloads.sourceforge.net/tcl/tcl8.6.6-src.tar.gz | tar zxvf -
+pushd tcl8.6.6/unix/
+./configure --prefix=$HOME/Downloads/tcl8.6.6_install
+make -j && make install
+popd
+curl -L https://prdownloads.sourceforge.net/tcl/tk8.6.6-src.tar.gz | tar zxvf -
+pushd ../tk8.6.6/unix/
+./configure --prefix=$HOME/Downloads/tk8.6.6_install --with-tcl=$HOME/Downloads/tcl8.6.6/unix && make -j && make install
+
 wget https://www.python.org/ftp/python/2.7.12/Python-2.7.12.tgz
 tar zxvf Python-2.7.12.tgz 
 pushd Python-2.7.12/
