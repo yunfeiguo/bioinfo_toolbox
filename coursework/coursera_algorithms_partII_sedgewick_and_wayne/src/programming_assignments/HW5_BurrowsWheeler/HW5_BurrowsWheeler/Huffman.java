@@ -1,14 +1,14 @@
-package HW5_BurrowsWheeler;
+package programming_assignments.HW5_BurrowsWheeler.HW5_BurrowsWheeler;
 
 
-import java.util.Queue;
+import edu.princeton.cs.algs4.BinaryIn;
+import edu.princeton.cs.algs4.BinaryOut;
+
 import java.nio.channels.IllegalSelectorException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.PriorityQueue;
-
-import edu.princeton.cs.algs4.BinaryIn;
-import edu.princeton.cs.algs4.BinaryOut;
+import java.util.Queue;
 
 /******************************************************************************
  *  Compilation:  javac Huffman.java
