@@ -61,9 +61,9 @@ public class MoveToFront {
     BinaryIn in = new BinaryIn(args[1]);
     BinaryOut out = new BinaryOut(args[2]);
     if (args[0].compareTo("-") == 0) {
-      decode(in, out);
-    } else if (args[0].compareTo("+") == 0) {
       encode(in, out);
+    } else if (args[0].compareTo("+") == 0) {
+      decode(in, out);
     } else {
       throw new IllegalArgumentException("only - or + allowed");
     }

@@ -1,7 +1,5 @@
 package programming_assignments.HW5_BurrowsWheeler.HW5_BurrowsWheeler;
 
-import javax.smartcardio.ATR;
-
 /**
  * Created by guoy28 on 5/7/17.
  */
@@ -47,10 +45,6 @@ public class CircularSuffixArray {
       int[] leftBoundaryCounts = new int[n];
       //keep track of new boundaries relative to s/2 prefix boundaries
       int[] leftNewRelativeBoundary = new int[n];
-      //boundaries of suffix i - s/2
-      int currentLeftBoundary = -1;
-      //boundaries of suffix i
-      int currentRightBoundary = -1;
       for (int i = 0; i < n; i++) {
         /*
         traverse indices in sequential order
@@ -60,8 +54,10 @@ public class CircularSuffixArray {
          */
         int currentIndex = indices[i];
         int prefixIndex = (n + currentIndex - s/2) % n;
-        currentRightBoundary = boundaries[currentIndex];
-        currentLeftBoundary = boundaries[prefixIndex];
+        //boundaries of suffix i
+        int currentRightBoundary = boundaries[currentIndex];
+        //boundaries of suffix i - s/2
+        int currentLeftBoundary = boundaries[prefixIndex];
         int currentBoundaryCount = leftBoundaryCounts[currentLeftBoundary] - leftNewRelativeBoundary[currentLeftBoundary];
         /*
         assume prefixIndex is in the same bucket as previous element with same prefix
