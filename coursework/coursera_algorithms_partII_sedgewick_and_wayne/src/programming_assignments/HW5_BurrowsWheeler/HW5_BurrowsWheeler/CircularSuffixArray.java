@@ -1,159 +1,138 @@
-package HW5_BurrowsWheeler;
-/* this implementation uses Manber and Myer's method
- * to sort N circular suffix arrays in O(NlgN) time.
- * the speedup is a result of utilizing information
- * gained during sorting prefixes
+package programming_assignments.HW5_BurrowsWheeler.HW5_BurrowsWheeler;
+
+import javax.smartcardio.ATR;
+
+/**
+ * Created by guoy28 on 5/7/17.
  */
 public class CircularSuffixArray {
-    private final String s;  
-    private final int alphabetSize = 256;
-    private final int N;
-    private int[] array;
-    /**
-     * sort N circular suffixes in linear space
-     * and O(NlgN) time
-     * @param s
-     */
-    public CircularSuffixArray(String s) {
-        // circular suffix array of s
-        if (s == null) {
-            throw new java.lang.NullPointerException();
-        }
-        this.s = s;
-        this.N = s.length();
-        this.array = new int[s.length()];
-        for (int i = 0; i < s.length(); i++) {
-            this.array[i] = i;
-        }
-        sort();
+  private static int R = 256;
+  private int[] indices;
+  // circular suffix array of s
+  public CircularSuffixArray(String in) {
+    if (in == null) {
+      throw new NullPointerException();
     }
-    public int length() {
-        // length of s
-        return s.length();
+    int n = in.length();
+    /*sort by stages
+    first stage, sort by 1st char
+    second stage, sort by first 2 chars
+    third stage, sort by first 4 chars
+    ...
+    in total, finish sorting in lgN stages
+    */
+    char[] a = in.toCharArray();
+    int[] indices = new int[n];
+    this.indices = indices;
+    for (int i = 0; i < n; i++) {
+      indices[i] = i;
     }
-    public int index(int i) {
-        // returns index of ith sorted suffix
-        if (i < 0 || i >= length()) {
-            throw new java.lang.IndexOutOfBoundsException();
-        }
-        return this.array[i];
-    }
-    /***************************************************/
-    /* perform sorting in lg(N+1) stages,
-     * first stage sorts CSA by first char,
-     * second stage sorts CSA by first 2 chars,
-     * 3rd stage sorts CSA by first 4 chars,
-     * ...
-     * 
-     * utilize the fact that ith suffix's first H
-     * chars are same as (i-H)th suffix's 2nd H chars
-     * 
-     * first round of sorting is done by radix sort
-     */
-    private void sort() {        
-        //count[i] records how many elements in
-        //bucket rank[i] have been moved
-        int[] count = new int[N];
-        //bucket number        
-        int[] rank = radixSort();
-        //inverse of this.array
-        int[] position = new int[N];        
-        //array has been sorted based on first char
-        //by radixSort()     
-        boolean[] isFirstInHBucket = new boolean[N];
-        for (int i = 0; i < N; i++) {
-            position[array[i]] = i;
-        }
-        for (int i = 0; i < N; i++) {
-            isFirstInHBucket[i] = position[i] == rank[i]; 
-        }
-        for (int h = 1; h < N; h += h) {
-            //initialize element position to be bucket position
-            for (int i = 0; i < N; i++) {
-                position[i] = rank[i];
-                count[i] = 0;
-            }
-            //update array[i]'s position based on
-            //array[i] + h's bucket
-            //recall that we are visiting the H+1 to 2H characters            
-            for (int i = 0; i < N; i++) {
-                int leftShiftHIndex = array[i] - h;
-                leftShiftHIndex = leftShiftHIndex < 0? leftShiftHIndex + N : leftShiftHIndex;
-                if (rank[leftShiftHIndex] == -1 || leftShiftHIndex == -1) {
-                    System.out.println(1);
-                }
-                position[leftShiftHIndex] += count[rank[leftShiftHIndex]]++;
-            }
-            //update array and isFirstInHBucket
-            for (int i = 0; i < N; i++) {
-                array[position[i]] = i;                
-            }   
-            //update isFirstInHBucket 
-            //originalIndex + h's rank marks the H+1 to 2H bucket
-            //every time it changes, we mark isFirstInHBucket true
-            int originalIndex = 0;
-            int mostRecentHRank = -1; //make sure it is different from first rank
-            int mostRecent2HRank = -1; //it's possible that first H chars are different, but second H chars are the same, they should still belong to different buckets
-            int currentHRank = -1;
-            int current2HRank = -1;
-            for (int i = 0; i < N; i++) {
-                originalIndex = array[i];
-                current2HRank = rank[(originalIndex + h) % N];
-                currentHRank = rank[originalIndex];
-                if (current2HRank != mostRecent2HRank || currentHRank != mostRecentHRank) {
-                    isFirstInHBucket[originalIndex] = true;
-                } else {
-                    isFirstInHBucket[originalIndex] = false;
-                }
-                mostRecentHRank = currentHRank;
-                mostRecent2HRank = current2HRank;
-            }
-            //update rank i+h based on rank of i
-            //we need to update rank based on sorted
-            //order, otherwise it's hard to track
-            //most recent rank
-            int mostRecentRank = -1;
-            for (int i = 0; i < N; i++) {
-                originalIndex = array[i];                               
-                if (isFirstInHBucket[originalIndex]) {
-                    mostRecentRank = position[originalIndex];
-                }
-                rank[originalIndex] = mostRecentRank;
-            }            
-        }
-    }
+    int[] boundaries = sort(a, indices);
     /*
-     * sort CSA by first char using radix sort
+    AB CXX
+    AB TYY
+    AC CTT
+    AT ABC
+    AT ABT
+    AT ATT
+    AT ACC
+    old boundaries: 0 0 2 3 3 3 3 ...
+    new boundaries: 0 1 2 3 3 5 4 ...
      */
-    private int[] radixSort() {
-        int[] count = new int[alphabetSize + 1];
-        int[] rank = new int[N];
-        //count[i] records count of char(i-1)
-        for (int i = 0; i < N; i++) {
-            count[s.charAt(i) + 1]++;
+    //step size
+    for (int s = 2; s <= n; s += s) {
+      int[] newBoundaries = new int[n];
+      int[] newIndices = new int[n];
+      //counts of elements in each bucket marked by s/2 prefix
+      int[] leftBoundaryCounts = new int[n];
+      //keep track of new boundaries relative to s/2 prefix boundaries
+      int[] leftNewRelativeBoundary = new int[n];
+      //boundaries of suffix i - s/2
+      int currentLeftBoundary = -1;
+      //boundaries of suffix i
+      int currentRightBoundary = -1;
+      for (int i = 0; i < n; i++) {
+        /*
+        traverse indices in sequential order
+        record start of each bucket
+        for each suffix, it determines
+        location of -s/2 suffix
+         */
+        int currentIndex = indices[i];
+        int prefixIndex = (n + currentIndex - s/2) % n;
+        currentRightBoundary = boundaries[currentIndex];
+        currentLeftBoundary = boundaries[prefixIndex];
+        int currentBoundaryCount = leftBoundaryCounts[currentLeftBoundary] - leftNewRelativeBoundary[currentLeftBoundary];
+        /*
+        assume prefixIndex is in the same bucket as previous element with same prefix
+        then their suffices should be the same.
+         */
+        int firstIndex = newIndices[(currentLeftBoundary + leftNewRelativeBoundary[currentLeftBoundary]) % n];
+        if (currentBoundaryCount > 0 && boundaries[(firstIndex + s/2) % n] == currentRightBoundary) {
+          newBoundaries[prefixIndex] = currentLeftBoundary + leftNewRelativeBoundary[currentLeftBoundary];
+        } else {
+          //got new bucket
+          leftNewRelativeBoundary[currentLeftBoundary] = leftBoundaryCounts[currentLeftBoundary];
+          newBoundaries[prefixIndex] = currentLeftBoundary + leftNewRelativeBoundary[currentLeftBoundary];
         }
-        //count[i] records start position of i+1 element
-        for (int i = 1; i <= alphabetSize; i++) {
-            count[i] += count[i - 1];
-        }
-        //get rank for each csa
-        for (int i = 0; i < N; i++) {
-            rank[i] = count[s.charAt(i)];
-        }
-        //convert count to actual indices
-        for (int i = 0; i < N; i++) {
-            array[count[s.charAt(i)]++] = i;            
-        }   
-        return rank;
+        currentBoundaryCount = leftBoundaryCounts[currentLeftBoundary] - leftNewRelativeBoundary[currentLeftBoundary];
+        leftBoundaryCounts[currentLeftBoundary]++;
+        newIndices[(newBoundaries[prefixIndex] + currentBoundaryCount) % n] = prefixIndex;
+      }
+      System.arraycopy(newBoundaries, 0, boundaries, 0, boundaries.length);
+      System.arraycopy(newIndices, 0, indices, 0, indices.length);
     }
-    /***************************************************/
-    public static void main(String[] args) {
-        // unit testing of the methods (optional)
-        CircularSuffixArray test = new CircularSuffixArray("ABRACADABRA!");
-        //check some of the sorted indices
-        System.out.println(test.index(0) == 11 && test.index(1) == 10 && test.index(11) == 2);
-        CircularSuffixArray test2 = new CircularSuffixArray("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-        System.out.println(test2.index(0));
-    }
-}
+  }
 
+  /**
+   * sort indices based on array of chars
+   * @param a
+   * @param indices
+   */
+  private int[] sort(char[] a, int[] indices) {
+    //time: O(n)
+    int n = a.length;
+    int[] count = new int[R + 1];
+    int[] boundaries = new int[n];
+    //count each char
+    for (char c : a) {
+      count[c + 1]++;
+    }
+    //calc boundaries
+    for (int i = 1; i < count.length; i++) {
+      count[i] += count[i - 1];
+    }
+
+    for (int i = 0; i < n; i++) {
+      boundaries[indices[i]] = count[a[i]];
+    }
+    int[] newIndices = new int[n];
+    for (int i = 0; i < n; i++) {
+      newIndices[count[a[i]]++] = indices[i];
+    }
+    System.arraycopy(newIndices, 0, indices, 0, n);
+    return boundaries;
+  }
+
+   // length of s
+  public int length() {
+    return indices.length;
+  }
+              // returns index of ith sorted suffix
+  public int index(int i) {
+    if (i < 0 || i >= length())
+      throw new IndexOutOfBoundsException();
+    return indices[i];
+  }
+  public static void main(String[] args) {
+    String s = "ABRACADABRA!";
+    CircularSuffixArray a = new CircularSuffixArray(s);
+    for (int i = 0; i < a.length(); i++) {
+      System.out.print(a.index(i));
+      System.out.print(" ");
+    }
+    System.out.println("");
+    System.out.println("expect: ");
+    System.out.println("11 10 7 0 3 5 8 1 4 6 9 2");
+  }// unit testing of the methods (optional)
+}
