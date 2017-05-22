@@ -14,6 +14,13 @@ make
 cd ..
 ln -sf $PWD/bin/bamtools ~/bin/
 #samtools
+mkdir -p samtools-1.3.1
+curl -L https://github.com/samtools/samtools/releases/download/1.3.1/samtools-1.3.1.tar.bz2 | tar jxvf -
+pushd samtools-1.3.1
+./configure --prefix $PWD
+make -j
+popd
+
 #bedtools
 wget -O - https://github.com/arq5x/bedtools2/releases/download/v2.25.0/bedtools-2.25.0.tar.gz | tar zxv
 pushd bedtools2/
@@ -55,5 +62,15 @@ popd
 mkdir -p $HOME/Downloads/UCSC_util/
 pushd $HOME/Downloads/UCSC_util/
 wget http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/twoBitToFa
+wget http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/liftOver
+chmod +x *
+
+mkdir -p chains
+pushd chains
+wget http://hgdownload.cse.ucsc.edu/goldenPath/hg19/liftOver/hg19ToHg38.over.chain.gz
+wget http://hgdownload.cse.ucsc.edu/goldenPath/hg38/liftOver/hg38ToHg19.over.chain.gz
+gunzip *.gz
+popd
+
 ln -sf $HOME/Downloads/UCSC_util/* $HOME/bin
 popd
