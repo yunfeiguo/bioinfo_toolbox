@@ -79,12 +79,22 @@ make PREFIX=$HOME/Downloads/OpenBLAS-0.2.19_install install
 popd
 
 #python +setuptools+pip
-wget https://www.python.org/ftp/python/2.7.12/Python-2.7.12.tgz
-tar zxvf Python-2.7.12.tgz 
+
+#curl -L https://prdownloads.sourceforge.net/tcl/tcl8.6.6-src.tar.gz | tar zxvf -
+#pushd tcl8.6.6/unix/
+#./configure --prefix=$HOME/Downloads/tcl8.6.6_install
+#make -j && make install
+#popd
+#curl -L https://prdownloads.sourceforge.net/tcl/tk8.6.6-src.tar.gz | tar zxvf -
+#pushd ../tk8.6.6/unix/
+#./configure --prefix=$HOME/Downloads/tk8.6.6_install --with-tcl=$HOME/Downloads/tcl8.6.6/unix && make -j && make install
+#popd
+
+curl -L https://www.python.org/ftp/python/2.7.12/Python-2.7.12.tgz | tar zxvf -
 pushd Python-2.7.12/
-./configure  --prefix=$HOME/Downloads/python-2.7.12_install
-make -j 6 && make install
+./configure  --prefix=$HOME/Downloads/python-2.7.12_install && make -j && make install
 ln -sf $HOME/Downloads/python-2.7.12_install/bin/python $HOME/bin/
+export PATH=$HOME/Downloads/python-2.7.12_install/bin:$PATH
 
 wget https://github.com/pypa/setuptools/archive/v29.0.1.zip
 unzip v29.0.1.zip 
@@ -93,12 +103,13 @@ python bootstrap.py
 python setup.py install
 popd
 
-wget https://pypi.python.org/packages/11/b6/abcb525026a4be042b486df43905d6893fb04f05aac21c32c638e939e447/pip-9.0.1.tar.gz#md5=35f01da33009719497f01a4ba69d63c9
-tar zxvf pip-9.0.1.tar.gz 
+curl -L https://pypi.python.org/packages/11/b6/abcb525026a4be042b486df43905d6893fb04f05aac21c32c638e939e447/pip-9.0.1.tar.gz | tar zxvf - 
 pushd pip-9.0.1/
 python setup.py install
 ln -sf $HOME/Downloads/python-2.7.12_install/bin/pip ~/bin/
 popd
+
+pip install numpy scipy matplotlib pysam pyvcf biopython
 
 popd
 
