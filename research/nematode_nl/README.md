@@ -112,3 +112,6 @@ it seems the intermediate file is very large, exceeding the remaining 1.x TB spa
 # racon
 ## installation
 I did fresh installation of gcc-6.3.0 to overcome issue of `cannot find -lstdc++`.
+
+## polishing
+as evaluated by BUSCO, iterative polishing can gradually improve assembly consensus quality. At least 5 iterations can be done.
