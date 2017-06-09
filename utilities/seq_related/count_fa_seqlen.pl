@@ -19,7 +19,7 @@ if( ( $#ARGV + 1 ) < 1 ) {
 
 # Read in sequences from one or more fasta files
 my @data_files = @ARGV;
-my $debug = 1;
+my $debug = 0;
 my $Id;
 # Count the number of sequences in the file and create a histogram of the distribution
 my $n = 0;
