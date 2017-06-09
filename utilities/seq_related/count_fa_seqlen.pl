@@ -31,8 +31,12 @@ my %len= ();
 my @seqLengths;
 foreach my $file (@data_files){
     warn "NOTICE: reading $file...\n";
-    if($file =~ /\.gz$/) {
+    if($file =~ /\.(fasta|fa)\.gz$/) {
 	open(FASTA, "gunzip -c $file |") or die"Can't open file $file\n";
+    } elsif ($file =~ /\.(fq|fastq)$/) {
+        open(FASTA, "cat $file |paste - - - - | cut -f1,2 | perl -ane '\$F[0]=~s/^@/>/;print join(\"\\n\",\@F),\"\\n\"' ") or die "can't open file $file\n";
+    } elsif ($file =~ /\.(fq|fastq)\.gz$/) {
+        open(FASTA, "gunzip -c $file |paste - - - - | cut -f1,2 | perl -ane '\$F[0]=~s/^@/>/;print join(\"\\n\",\@F),\"\\n\"' ") or die "can't open file $file\n";
     } else {
 	open(FASTA, $file) or die"Can't open file $file\n";
     }
