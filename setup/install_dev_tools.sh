@@ -215,3 +215,11 @@ make -j && make check && make install
 ln -sf $HOME/Downloads/datamash-1.1.0_install/bin/datamash $HOME/bin
 popd
 echo 'export LIBRARY_PATH=$LD_LIBRARY_PATH:$LIBRARY_PATH' >> $HOME/.bashrc
+
+
+#GNU parallel
+curl https://ftp.gnu.org/gnu/parallel/parallel-20170522.tar.bz2 | tar jxvf -
+pushd parallel-20170522
+./configure --prefix=$HOME/Downloads/parallel-20170522_install
+ln -sf $HOME/Downloads/parallel-20170522_install/bin/parallel ~/bin
+popd
