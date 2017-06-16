@@ -19,7 +19,7 @@ if( ( $#ARGV + 1 ) < 1 ) {
 
 # Read in sequences from one or more fasta files
 my @data_files = @ARGV;
-my $debug = 1;
+my $debug = 0;
 my $Id;
 # Count the number of sequences in the file and create a histogram of the distribution
 my $n = 0;
@@ -101,23 +101,22 @@ while ($frac_covered > $totalLength/4) {
 }
 
 # Print out the results
-print "\n";
 my @ints = sort { $a <=> $b } keys(%len);
 for my $i(@ints) {
     print "$i\t$len{$i}\n" if $len{$i};
 }
-print "\n";
-print "Total length of sequences:\t$totalLength bp\n";
-print "Total number of sequences:\t$n\n";
-printf "Average length:\t\t\t%.2f\n",($n==0? 0:$totalLength/$n);
-printf "Median length:\t\t\t%.2f\n",(&getMedian(@allSortedLen));
+print "#\n";
+print "#Total length of sequences:\t$totalLength bp\n";
+print "#Total number of sequences:\t$n\n";
+printf "#Average length:\t\t\t%.2f\n",($n==0? 0:$totalLength/$n);
+printf "#Median length:\t\t\t%.2f\n",(&getMedian(@allSortedLen));
 # not sure if these right wrt N25 and N75 ..
-print "N25 stats:\t\t\t25% of total sequence length is contained in the ".$N25count." sequences >= ".$N25." bp\n" if defined $N25count && defined $N25;
-print "N50 stats:\t\t\t50% of total sequence length is contained in the ".$N50count." sequences >= ".$N50." bp\n" if defined $N50count && defined $N50;
-print "N75 stats:\t\t\t75% of total sequence length is contained in the ".$N75count." sequences >= ".$N75." bp\n" if defined $N75count && defined $N75;
-print "Total GC count:\t\t\t$gcCount bp\n" if defined $gcCount;
-printf "GC %%:\t\t\t\t%.2f %%\n", ($gcCount/$totalLength * 100) if $totalLength != 0;
-print "\n";
+print "#N25 stats:\t\t\t25% of total sequence length is contained in the ".$N25count." sequences >= ".$N25." bp\n" if defined $N25count && defined $N25;
+print "#N50 stats:\t\t\t50% of total sequence length is contained in the ".$N50count." sequences >= ".$N50." bp\n" if defined $N50count && defined $N50;
+print "#N75 stats:\t\t\t75% of total sequence length is contained in the ".$N75count." sequences >= ".$N75." bp\n" if defined $N75count && defined $N75;
+print "#Total GC count:\t\t\t$gcCount bp\n" if defined $gcCount;
+printf "#GC %%:\t\t\t\t%.2f %%\n", ($gcCount/$totalLength * 100) if $totalLength != 0;
+print "#\n";
 
 sub getMedian {
     return if @_ == 0;
