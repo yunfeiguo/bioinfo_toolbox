@@ -19,7 +19,7 @@ open IN,'<',$fa or croak "Failed to read $fa: $!\n";
 
 for my $i(@regions)
 {
-    croak "1:1-1000 format expected: $i\n" unless $i=~/(.*?):(\d+)-(\d+)/;
+    croak "1:1-1000 format expected: $i\n" unless $i=~/(.*):(\d+)-(\d+)/;
     my ($id,$start,$end)= ($1,$2,$3);
     my $len;
     my $offset;
