@@ -49,6 +49,9 @@
 #
 # ===========================================================================
 
+BEGIN {
+    $ENV{PERL_LWP_SSL_VERIFY_HOSTNAME} = 0;
+}
 use URI::Escape;
 use LWP::UserAgent;
 use HTTP::Request::Common qw(POST);
@@ -102,6 +105,7 @@ $req->content($args);
 $response = $ua->request($req);
 
 # parse out the request id
+#print $response->content;
 $response->content =~ /^    RID = (.*$)/m;
 $rid=$1;
 
@@ -122,7 +126,7 @@ while (true)
 
     if ($response->content =~ /\s+Status=WAITING/m)
         {
-        # print STDERR "Searching...\n";
+        print STDERR "Searching...\n";
         next;
         }
 
@@ -142,7 +146,7 @@ while (true)
         {
         if ($response->content =~ /\s+ThereAreHits=yes/m)
             {
-            #  print STDERR "Search complete, retrieving results...\n";
+            print STDERR "Search complete, retrieving results...\n";
             last;
             }
         else
@@ -153,6 +157,7 @@ while (true)
         }
 
     # if we get here, something unexpected happened.
+    print STDERR "unexpected result\n";
     exit 5;
     } # end poll loop
 
