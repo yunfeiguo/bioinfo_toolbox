@@ -85,13 +85,18 @@ if ($program eq "rpsblast")
     }
 
 # read and encode the queries
+    warn "All queries will be concatenated.\n";
 foreach $query (@ARGV)
     {
-    open(QUERY,$query);
-    while(<QUERY>)
-        {
-        $encoded_query = $encoded_query . uri_escape($_);
-        }
+	if (-f $query) {
+	    open(QUERY,$query);
+	    while(<QUERY>)
+	    {
+		$encoded_query = $encoded_query . uri_escape($_);
+	    }
+	} else {
+	    $encoded_query = $encoded_query . uri_escape($query);
+	}
     }
 
 # build the request
@@ -132,13 +137,13 @@ while (true)
 
     if ($response->content =~ /\s+Status=FAILED/m)
         {
-        print STDERR "Search $rid failed; please report to blast-help\@ncbi.nlm.nih.gov.\n";
+        print STDOUT "Search $rid failed; please report to blast-help\@ncbi.nlm.nih.gov.\n";
         exit 4;
         }
 
     if ($response->content =~ /\s+Status=UNKNOWN/m)
         {
-        print STDERR "Search $rid expired.\n";
+        print STDOUT "Search $rid expired.\n";
         exit 3;
         }
 
@@ -151,13 +156,13 @@ while (true)
             }
         else
             {
-            print STDERR "No hits found.\n";
+            print STDOUT "No hits found.\n";
             exit 2;
             }
         }
 
     # if we get here, something unexpected happened.
-    print STDERR "unexpected result\n";
+    print STDOUT "unexpected result\n";
     exit 5;
     } # end poll loop
 
