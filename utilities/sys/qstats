@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ -z "$@" ]; then
+if [ -z "$1" ]; then
     echo "check job execution status by qstat or ps"
     echo "Usage: [node1 node2 ...]"
 fi
