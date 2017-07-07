@@ -11,7 +11,8 @@ die "ERROR: INT expected, got $n\n" unless $n=~/^\d+$/;
 
 for my $i(@fa)
 {
-    my $out = $i.".wrapped";
+    my $out = $i;
+    $out =~ s/\.fa|\.fasta/.wrapped.fa/ or die "suffix .fa or .fasta expected: $i\n";
     open IN,'<',$i or die "ERROR: failed to open $i ($!)\n";
     open OUT,'>',$out or die "ERROR: failed to write to $out ($!)\n";
 
