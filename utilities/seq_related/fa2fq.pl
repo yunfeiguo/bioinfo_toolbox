@@ -16,8 +16,9 @@
 #
 use strict;
 
+die "Usage: $0 <mean error rate> <fa>\n" unless @ARGV == 2;
 my $pError = shift @ARGV;
-my $offset = -10 * log($pError) + 33;
+my $offset = int(-10 * log($pError) / log(10) + 33);
 my $file = $ARGV[0];
 open FILE, $file;
 
