@@ -14,9 +14,8 @@ make
 cd ..
 ln -sf $PWD/bin/bamtools ~/bin/
 #samtools
-mkdir -p samtools-1.3.1
-curl -L https://github.com/samtools/samtools/releases/download/1.3.1/samtools-1.3.1.tar.bz2 | tar jxvf -
-pushd samtools-1.3.1
+curl -L https://github.com/samtools/samtools/releases/download/1.4.1/samtools-1.4.1.tar.bz2 | tar jxvf -
+pushd samtools-1.4.1
 ./configure --prefix $PWD
 make -j
 popd
