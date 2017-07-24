@@ -33,13 +33,14 @@ cd seqtk; make
 ln -s $PWD/seqtk $HOME/bin
 cd ..
 #freebayes
-#tabix
-git clone git@github.com:samtools/tabix.git
-cd tabix/
-make
-ln -s $PWD/tabix ~/bin/
-ln -s $PWD/bgzip ~/bin/
-
+#htslib (contains tabix, bgzip)
+git clone https://github.com/samtools/htslib.git
+pushd htslib/
+./configure --disable-lzma --disable-bz2
+make -j
+ln -sf $PWD/tabix ~/bin/
+ln -sf $PWD/bgzip ~/bin
+popd
 
 
 #ngmlr, make sure to have at least gcc 5.3
