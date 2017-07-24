@@ -15,3 +15,10 @@ ln -sf $HOME/Downloads/gcc-5.4.0_install/bin/gcc $HOME/bin
 ln -sf $HOME/Downloads/gcc-5.4.0_install/bin/g++ $HOME/bin
 popd
 
+#when need to run or compile programs dependent on gcc-5.4, just load this file by `source load_gcc-5.4.sh`
+echo 'GCC_5_4_ROOT=$HOME/Downloads/gcc-5.4.0_install
+export PATH=$GCC_5_4_ROOT/bin:$PATH
+export CPPFLAGS="-I$GCC_5_4_ROOT/include $CPPFLAGS"
+export LDFLAGS="-L$GCC_5_4_ROOT/lib $LDFLAGS"
+export LD_LIBRARY_PATH=$GCC_5_4_ROOT/lib:$LD_LIBRARY_PATH' \
+> $HOME/env/load_gcc-5.4.0.sh
