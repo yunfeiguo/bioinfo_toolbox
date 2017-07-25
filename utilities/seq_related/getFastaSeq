@@ -3,11 +3,17 @@
 use strict;
 use warnings;
 
-die "Usage: $0 <FASTA> <1:1-1000 2:3-999 ...>\n" unless @ARGV>=2;
+die "Usage: $0 <FASTA> <region_list_file | 1:1-1000 2:3-199 contig4 contig5 ...>\n" unless @ARGV>=2;
 
 my $fa=shift @ARGV;
 my $idx="$fa.fai";
 my @regions=@ARGV;
+
+if (-f $ARGV[0]) {
+	warn "extracting regions from file: $ARGV[0]\n";
+	@regions = `cat $ARGV[0]`;
+	chomp @regions;
+}
 
 die "ERROR: index file missing or empty\n" unless -s $idx;
 
@@ -18,8 +24,14 @@ open IN,'<',$fa or die "Failed to read $fa: $!\n";
 
 for my $i(@regions)
 {
-    die "1:1-1000 format expected: $i\n" unless $i=~/(.*?):(\d+)-(\d+)/;
-    my ($id,$start,$end)= ($1,$2,$3);
+    #allow contig names
+    #die "1:1-1000 format expected: $i\n" unless $i=~/(.*?):(\d+)-(\d+)/;
+    my ($id,$start,$end);
+    if ($i=~/(.*?):(\d+)-(\d+)/) {
+	    ($id,$start,$end)= ($1,$2,$3);
+    } else {
+	    $id = $i;
+    }
     my $len;
     my $offset;
     my $return;
@@ -28,6 +40,10 @@ for my $i(@regions)
 
     #check if contig exists
     die "$id doesn't exist\n" unless exists $contig{$id};
+    if (not (defined $start and defined $end)) {
+	$start = 1;
+	$end = $contig{$id}{length};
+    }
     #check if the region is out of bound
     die "Region out of bound or end smaller than start: $i\nContig length: $contig{$id}{length}\n" 
     unless ($end>=1 && 
@@ -52,6 +68,7 @@ for my $i(@regions)
     read IN,$return,$len;
 
     $return=~s/[\r\n]+//g;
+    warn "outputing $id:$start-$end\n";
     print ">$i\n";
     print "$return\n";
 }
