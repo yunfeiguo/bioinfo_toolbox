@@ -17,6 +17,18 @@ make -j
 make install
 popd
 
+#gcc5.4
+
+enter the following into `load_gcc-5.4.sh`
+####
+#GCC_5_4_ROOT=$HOME/Downloads/gcc-5.4.0_install
+#export PATH=$GCC_5_4_ROOT/bin:$PATH
+#export CPPFLAGS="-I$GCC_5_4_ROOT/include $CPPFLAGS"
+#export LDFLAGS="-L$GCC_5_4_ROOT/lib $LDFLAGS"
+#export LD_LIBRARY_PATH=$GCC_5_4_ROOT/lib:$LD_LIBRARY_PATH
+###
+#when need to run or compile programs dependent on gcc-5.4, just load this file by `source load_gcc-5.4.sh`
+
 #gcc, may a a few hours
 wget http://www.netgull.com/gcc/releases/gcc-6.3.0/gcc-6.3.0.tar.gz
 tar zxf gcc-6.3.0.tar.gz
