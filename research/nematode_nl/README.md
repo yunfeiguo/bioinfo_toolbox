@@ -109,9 +109,13 @@ gfa2fa.sh out.gfa > out.fa
 ### disk quota exceeded
 it seems the intermediate file is very large, exceeding the remaining 1.x TB space.
 
+### contamination
+found that a few contigs can be well aligned to bacterial genomes, suggesting contaminated samples. one solution is map raw reads to bacterial genomes and remove contaminated reads, another is assemble first, then remove suspicious contigs. we chose to attempt the first one hoping that assembly continuity may improve.
+
 # racon
 ## installation
 I did fresh installation of gcc-6.3.0 to overcome issue of `cannot find -lstdc++`.
 
 ## polishing
 as evaluated by BUSCO, iterative polishing can gradually improve assembly consensus quality. At least 5 iterations can be done.
+
