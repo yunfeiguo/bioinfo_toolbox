@@ -3,6 +3,24 @@ use Carp;
 use strict;
 use warnings;
 
+sub parse_cigar_str {
+    croak "Usage: &parse_cigar_str('3S11M5S')" unless @_ == 1;
+    my $cigar_str = shift;
+    my @cigars = $cigar_str =~m/(\d+)([MIDNSHP=X])/g;
+    my %tabulation;
+    my $i = 0;
+    my $len = 0;
+    while($i <= $#cigars) {
+	$tabulation{$cigars[$i+1]} += $cigars[$i];
+	$len += $cigars[$i];
+	$i += 2;
+    }
+    my %parsed_cigar;
+    $parsed_cigar{array} = \@cigars;
+    $parsed_cigar{len} = $len;
+    $parsed_cigar{tabulation} = \%tabulation;
+    return \%parsed_cigar;
+}
 sub get_fasta_seq{
 croak "Usage: $0 <FASTA> <1:1-1000 2:3-999 ...>\n" unless @ARGV>=2;
 
