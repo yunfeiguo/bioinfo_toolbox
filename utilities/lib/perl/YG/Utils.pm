@@ -79,6 +79,33 @@ close IN;
 }
 
 ###################SUBROUTINES##########################
+sub read_fasta {
+    croak "usage: &read_fasta('fasta')" unless @_ == 1;
+    #read entire fasta in memory
+    my $fa = shift;
+    my @seqs;
+
+    my $seq;
+    my $id;
+    open IN,'<',$fa or die "$!";
+    while(<IN>) {
+	s/\s+$//;
+	if(/^>(.*)/) {
+	    if (defined $seq) {
+		push @seqs, [$id, $seq] if (defined $id) ;
+		$seq = undef;
+	    }
+	    $id = $1;
+	} else {
+	    $seq .= $_;
+	}
+    }
+    if (defined $seq) {
+	push @seqs, [$id, $seq] if (defined $id) ;
+    }
+    close IN;
+    return \@seqs;
+}
 sub readIdx
 {
     my $fai=shift;
