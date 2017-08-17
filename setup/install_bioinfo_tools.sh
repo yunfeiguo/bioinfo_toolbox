@@ -79,3 +79,7 @@ popd
 #blast
 wget -O- ftp://ftp.ncbi.nlm.nih.gov/blast/executables/LATEST/ncbi-blast-2.6.0+-x64-linux.tar.gz | tar zxvf -
 ln -sf $PWD/ncbi-blast-2.6.0+/bin/*blast* $HOME/bin
+
+#sra-toolkit
+wget -O- https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/current/sratoolkit.current-centos_linux64.tar.gz | tar zxvf -
+ln -s $PWD/sratoolkit*-centos_linux64/bin/fastq-dump $HOME/bin
