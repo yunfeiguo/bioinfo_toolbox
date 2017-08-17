@@ -17,7 +17,8 @@ if (defined $opts{o} and $opts{o}=~/-R|-t/) {
 }
 $ref = shift @ARGV;
 $prefix = shift @ARGV;
-@fq = grep {/\.(fastq|fq|fa|fasta|fa\.gz|fasta\.gz)$/} @ARGV;
+@fq = grep {/\.(fastq|fq|fa|fasta)$/} @ARGV;
+@fqgz = grep {/\.(fa\.gz|fasta\.gz|fastq\.gz|fq\.gz)$/} @ARGV;
 @bam = grep {/\.bam$/} @ARGV;
 chomp(my $cpu_count = `grep -c -P '^processor\\s+:' /proc/cpuinfo`);
 #$cpu_count *= 0.5; #use only 50% of CPU cores available
@@ -32,6 +33,13 @@ warn "Running: $cmd\n";
 open ALIGN,"|-", $cmd or die "bwa or samtools failed: $!\n";
 if (@fq) {
     open FQ,"-|","cat @fq" or die "failed to read fastqs: $!\n";
+    while(<FQ>) {
+	print ALIGN;
+    }
+    close FQ;
+}
+if (@fqgz) {
+    open FQ,"-|","zcat @fqgz" or die "failed to read gzipped fastqs: $!\n";
     while(<FQ>) {
 	print ALIGN;
     }
