@@ -4,10 +4,10 @@ use lib File::Spec->catdir($RealBin,"..","lib","perl");
 use YG::Utils;
 use Getopt::Std;
 my %opts;
-getopts('m:', \%opts);
 
 die "Usage: $0 [-m INT] <fa> <min length INT>\n".
     "	-m INT	optional max length\n" unless @ARGV>=2;
+getopts('m:', \%opts);
 $fa = $ARGV[0];
 $fai="$fa.fai";
 $l=$ARGV[1];
@@ -23,7 +23,7 @@ while(<IN>) {
     $total++;
     my $pass = $f[1]>$l;
     if (defined $opts{m}) {
-	$pass = $pass and $f[1]<=$opts{m};
+	$pass = ($pass and $f[1]<=$opts{m});
     }
     if ($pass) {
 	push @filtered_regions,"$f[0]:1-$f[1]";
