@@ -2,15 +2,25 @@
 use File::Basename;
 use Getopt::Std;
 #get coverage plot for whole genome (optionally for a region)
-my $usage = "Usage: $0 [-r <BED>] <bam1> [bam2...]\n".
-"          -r BED bed file for specifying region\n";
+my $usage = "Usage: $0 [options] <bam1> [bam2...]\n".
+"	   -i <GENOME> treat reads as continuous intervals (CIGAR ignored, non-primary considered). requires GENOME file for bedtools\n".
+"          -r <BED> bed file for specifying region\n";
 die $usage unless @ARGV >= 1;
 
 my %opts;
-getopts('r:', \%opts);
-my $cmd = "samtools depth -m 9999999 -aa ".($opts{r}? " -b $opts{r}" : "")." @ARGV";
+getopts('i:r:', \%opts);
+my $cmd;
+if ($opts{i}) {
+    $cmd = "samtools view @ARGV | "."perl -ane '".'@n=$F[5]=~/(\d+)[M=D]/g;$l=0;map{$l+=$_}@n;print join("\t",$F[2],$F[3]-1,$F[3]-1+$l),"\n"'."'";
+    if ($opts{r}) {
+	$cmd .= " | bedtools intersect -a - -b $opts{r} ";
+    }
+    $cmd .= " | bedtools genomecov -i - -g $opts{i} -d ";
+} else {
+    $cmd = "samtools depth -m 9999999 -aa ".($opts{r}? " -b $opts{r}" : "")." @ARGV";
+}
 
-open DEPTH,"-|", $cmd or die "failed to read fastqs: $!\n";
+open DEPTH,"-|", $cmd or die "failed to read from samtools or bedtools: $!\n";
 my %len;
 while (<DEPTH>) {
     s/\s+$//;
