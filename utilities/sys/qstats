@@ -1,0 +1,17 @@
+#!/bin/bash
+
+if [ -z "$1" ]; then
+    echo "check job execution status by qstat or ps"
+    echo "Usage: [node1 node2 ...]"
+fi
+
+if ! [ -z "`command -v qstat`" ]; then
+	qstat -u $USER
+else
+	for i in $@; do
+	        echo ""
+	        echo "<<$i>>"
+	        echo ""
+		ssh $i ps -fu $USER
+	done
+fi

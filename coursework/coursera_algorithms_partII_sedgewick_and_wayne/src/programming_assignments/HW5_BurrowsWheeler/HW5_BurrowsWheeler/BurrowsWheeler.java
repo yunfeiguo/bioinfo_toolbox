@@ -2,8 +2,6 @@ package programming_assignments.HW5_BurrowsWheeler.HW5_BurrowsWheeler;
 
 import edu.princeton.cs.algs4.BinaryIn;
 import edu.princeton.cs.algs4.BinaryOut;
-import edu.princeton.cs.algs4.In;
-import edu.princeton.cs.algs4.Out;
 
 /**
  * Created by guoy28 on 5/7/17.
@@ -14,13 +12,15 @@ public class BurrowsWheeler {
   public static void encode(BinaryIn in, BinaryOut out) {
     String s = in.readString();
     CircularSuffixArray sa = new CircularSuffixArray(s);
+    int n = sa.length();
     for (int i = 0; i < s.length(); i++) {
       if (sa.index(i) == 0) {
         out.write(i);
+        break;
       }
     }
     for (int i = 0; i < s.length(); i++) {
-      out.write(s.charAt(sa.index(i)));
+      out.write(s.charAt((n - 1 + sa.index(i)) % n));
     }
   }
 
@@ -59,9 +59,9 @@ public class BurrowsWheeler {
     BinaryIn in = new BinaryIn(args[1]);
     BinaryOut out = new BinaryOut(args[2]);
     if (args[0].compareTo("-") == 0) {
-      decode(in, out);
-    } else if (args[0].compareTo("+") == 0) {
       encode(in, out);
+    } else if (args[0].compareTo("+") == 0) {
+      decode(in, out);
     } else {
       throw new IllegalArgumentException("only - or + allowed");
     }

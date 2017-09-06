@@ -14,9 +14,8 @@ make
 cd ..
 ln -sf $PWD/bin/bamtools ~/bin/
 #samtools
-mkdir -p samtools-1.3.1
-curl -L https://github.com/samtools/samtools/releases/download/1.3.1/samtools-1.3.1.tar.bz2 | tar jxvf -
-pushd samtools-1.3.1
+curl -L https://github.com/samtools/samtools/releases/download/1.4.1/samtools-1.4.1.tar.bz2 | tar jxvf -
+pushd samtools-1.4.1
 ./configure --prefix $PWD
 make -j
 popd
@@ -33,13 +32,14 @@ cd seqtk; make
 ln -s $PWD/seqtk $HOME/bin
 cd ..
 #freebayes
-#tabix
-git clone git@github.com:samtools/tabix.git
-cd tabix/
-make
-ln -s $PWD/tabix ~/bin/
-ln -s $PWD/bgzip ~/bin/
-
+#htslib (contains tabix, bgzip)
+git clone https://github.com/samtools/htslib.git
+pushd htslib/
+./configure --disable-lzma --disable-bz2
+make -j
+ln -sf $PWD/tabix ~/bin/
+ln -sf $PWD/bgzip ~/bin
+popd
 
 
 #ngmlr, make sure to have at least gcc 5.3
@@ -74,3 +74,13 @@ popd
 
 ln -sf $HOME/Downloads/UCSC_util/* $HOME/bin
 popd
+
+
+#blast
+wget -O- ftp://ftp.ncbi.nlm.nih.gov/blast/executables/LATEST/ncbi-blast-2.6.0+-x64-linux.tar.gz | tar zxvf -
+ln -sf $PWD/ncbi-blast-2.6.0+/bin/*blast* $HOME/bin
+ln -sf $PWD/ncbi-blast-2.6.0+/bin/makembindex $HOME/bin
+
+#sra-toolkit
+wget -O- https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/current/sratoolkit.current-centos_linux64.tar.gz | tar zxvf -
+ln -s $PWD/sratoolkit*-centos_linux64/bin/fastq-dump $HOME/bin

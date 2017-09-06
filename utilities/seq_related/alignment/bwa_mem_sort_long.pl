@@ -5,7 +5,7 @@ die "Usage: $0 <ref prefix> <output prefix> <fq1> [fq2...]\n" unless @ARGV >= 3;
 
 $ref = shift @ARGV;
 $prefix = shift @ARGV;
-@fq = grep {/\.(fastq|fq)$/} @ARGV;
+@fq = grep {/\.(fastq|fq|fa|fasta|fa\.gz|fasta\.gz)$/} @ARGV;
 @bam = grep {/\.bam$/} @ARGV;
 chomp(my $cpu_count = `grep -c -P '^processor\\s+:' /proc/cpuinfo`);
 #$cpu_count *= 0.5; #use only 50% of CPU cores available
