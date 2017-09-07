@@ -44,7 +44,9 @@ while(<FILE>) {
     }
 }
 close FILE;
+if ($header ne "") {
 print "\@".$header."\n";
 print $sequence."\n";
 print "+"."\n";
 print $sequence_quality."\n";
+}
