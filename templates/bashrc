@@ -24,6 +24,7 @@ export EDITOR=vi
 #prevent loss of command history in case of disconnection
 export HISTCONTROL=ignoredups
 export PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
+export LESSOPEN="|$HOME/Downloads/bioinfo_toolbox/templates/lesspipe.sh %s"
 
 
 #alias
