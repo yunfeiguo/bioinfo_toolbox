@@ -108,4 +108,5 @@ inoremap (<cr> (<cr>)<c-o>O
 let mapleader=","
 :map <F9> :n<CR>
 :map <F8> :N<CR>
+:map <F7> :set paste
 set background=dark
