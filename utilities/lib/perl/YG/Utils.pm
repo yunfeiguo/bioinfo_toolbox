@@ -3,6 +3,20 @@ use Carp;
 use strict;
 use warnings;
 
+sub get_idt {
+    croak "Usage: &get_idt(SAM_RECORD)" unless @_ == 1;
+    #percent identity definition: #matches/total_bp
+    my @f = split /\t/, $_[0];
+    my $cigar = &parse_cigar_str($f[5]);
+    my ($nm) = $_[0] =~ /NM:i:(\d+)/;
+    $nm = $nm ? $nm : 0;
+    my $ins = defined $cigar->{tabulation}->{I} ? $cigar->{tabulation}->{I} : 0;
+    my $del = defined $cigar->{tabulation}->{D} ? $cigar->{tabulation}->{D} : 0;
+    my $m = defined $cigar->{tabulation}->{'='} ? $cigar->{tabulation}->{'='} : 0;
+    my $s = defined $cigar->{tabulation}->{'M'} ? $cigar->{tabulation}->{'M'} : 0;
+    return $cigar->{len} == 0 ? 0 : 
+        ($m + $s - ($nm - $ins - $del))/ $cigar->{len};
+}
 sub parse_cigar_str {
     croak "Usage: &parse_cigar_str('3S11M5S')" unless @_ == 1;
     my $cigar_str = shift;
