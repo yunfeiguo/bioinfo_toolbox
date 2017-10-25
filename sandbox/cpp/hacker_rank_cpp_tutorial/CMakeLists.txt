@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.6)
 project(hacker_rank_cpp_tutorial)
 enable_testing()
 include(CTest)
-find_package(Boost 1.61.0 COMPONENTS unit_test_framework REQUIRED)
+find_package(Boost 1.61.0 COMPONENTS unit_test_framework filesystem REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
 file(GLOB TEST_SRCS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} test/*.cpp)
 #run through each source
