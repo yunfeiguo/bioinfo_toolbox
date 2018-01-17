@@ -235,3 +235,10 @@ pushd parallel-20170522
 ./configure --prefix=$HOME/Downloads/parallel-20170522_install
 ln -sf $HOME/Downloads/parallel-20170522_install/bin/parallel ~/bin
 popd
+
+#bzip
+wget -O- http://www.bzip.org/1.0.6/bzip2-1.0.6.tar.gz | tar zxvf -
+pushd bzip2-1.0.6/
+make
+make install PREFIX=$HOME/Downloads/bzip2-1.0.6_install
+popd
