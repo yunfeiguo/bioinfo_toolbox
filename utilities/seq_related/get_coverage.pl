@@ -23,6 +23,8 @@ if ($opts{i}) {
 
 open DEPTH,"-|", $cmd or die "failed to read from samtools or bedtools: $!\n";
 my %len;
+my $total_coverage;
+my $count;
 while (<DEPTH>) {
     print STDERR if $opts{v};
     s/\s+$//;
@@ -32,6 +34,8 @@ while (<DEPTH>) {
     } else {
 	$len{$F[2]}++;
     }
+    $total_coverage += $F[2];
+    $count++;
 }
 close DEPTH;
 my @ints = sort { $a <=> $b } keys(%len);
@@ -48,3 +52,4 @@ for my $i(@ints) {
 for my $i(sort {$a <=> $b} keys %bp_count) {
     print "#bp covered <= $i reads: $bp_count{$i}\n";
 }
+print "#mean coverage: ",$total_coverage/$count,"\n";
