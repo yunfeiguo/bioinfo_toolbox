@@ -2,14 +2,16 @@
 use File::Basename;
 use Getopt::Std;
 #simple wrapper for bwa mem 0.7.15 and SAMtools 1.3.1
-my $usage = "Usage: $0 [-ol] <ref prefix> <output prefix> <fq1> [fq2...]\n".
+my $usage = "Usage: $0 [-olfF] <ref prefix> <output prefix> <fq1> [fq2...]\n".
     "          -o STRING additional parameters to bwa mem (other than -R, -t)\n".
+    " 	       -f flag required\n".
+    "	       -F flag unset\n".
     "	       -n use ngmlr instead of bwa-mem\n".
     "          -l use '-x pacbio', mutually exclusive with -o\n";
 die $usage unless @ARGV >= 3;
 
 my %opts;
-getopts('o:ln', \%opts);
+getopts('o:lnf:F:', \%opts);
 if (defined $opts{o} and defined $opts{l}) {
     die $usage;
 }
@@ -24,6 +26,7 @@ $prefix = shift @ARGV;
 @fq = grep {/\.(fastq|fq|fa|fasta)$/} @ARGV;
 @fqgz = grep {/\.(fa\.gz|fasta\.gz|fastq\.gz|fq\.gz)$/} @ARGV;
 @bam = grep {/\.bam$/} @ARGV;
+$flag = (defined $opts{f}? " -f $opts{f} " : "").(defined $opts{F}? " -F $opts{F} ":"");
 chomp(my $cpu_count = $^O == "darwin" ? `sysctl -n hw.ncpu` : `grep -c -P '^processor\\s+:' /proc/cpuinfo`);
 #$cpu_count *= 0.5; #use only 50% of CPU cores available
 #$cpu_count++; #at least 1 CPU core
@@ -34,12 +37,12 @@ if ($opts{n}) {
     $cmd = "ngmlr ".
     (defined $opts{l}? " -x pacbio ":"").
     (defined $opts{o}? $opts{o}:"").
-    " -t $cpu_count -r $ref -q /dev/stdin | samtools sort -o $prefix.sort.bam --output-fmt BAM -" or die "bwa or ngmlr or samtools failed: $!\n";
+    " -t $cpu_count -r $ref -q /dev/stdin | samtools view -O BAM $flag - | samtools sort -o $prefix.sort.bam --output-fmt BAM -" or die "bwa or ngmlr or samtools failed: $!\n";
 } else {
     $cmd = "bwa mem -R '\@RG\\tID:$sample.ID\\tSM:$sample.SM' ".
     (defined $opts{l}? " -x pacbio ":"").
     (defined $opts{o}? $opts{o}:"").
-    " -t $cpu_count $ref /dev/stdin | samtools sort -o $prefix.sort.bam --output-fmt BAM -" or die "bwa or ngmlr or samtools failed: $!\n";
+    " -t $cpu_count $ref /dev/stdin | samtools view -O BAM $flag - | samtools sort -o $prefix.sort.bam --output-fmt BAM -" or die "bwa or ngmlr or samtools failed: $!\n";
 }
 warn "Running: $cmd\n";		
 open ALIGN,"|-", $cmd or die "bwa or ngmlr or samtools failed: $!\n";
