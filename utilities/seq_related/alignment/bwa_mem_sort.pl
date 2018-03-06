@@ -27,7 +27,7 @@ $prefix = shift @ARGV;
 @fqgz = grep {/\.(fa\.gz|fasta\.gz|fastq\.gz|fq\.gz)$/} @ARGV;
 @bam = grep {/\.bam$/} @ARGV;
 $flag = (defined $opts{f}? " -f $opts{f} " : "").(defined $opts{F}? " -F $opts{F} ":"");
-chomp(my $cpu_count = $^O == "darwin" ? `sysctl -n hw.ncpu` : `grep -c -P '^processor\\s+:' /proc/cpuinfo`);
+chomp(my $cpu_count = $^O eq "darwin" ? `sysctl -n hw.ncpu` : `grep -c -P '^processor\\s+:' /proc/cpuinfo`);
 #$cpu_count *= 0.5; #use only 50% of CPU cores available
 #$cpu_count++; #at least 1 CPU core
 
