@@ -45,11 +45,8 @@ alias Rscript="Rscript --vanilla"
 alias dh='du -h'
 alias ll='ls -l'
 alias wl='wc -l'
-alias socks='ssh -D 7777 -f -C -q -N t-rex'
-alias w0='ssh t-rex'
-alias w1='ssh PLS'
+alias rp='readlink -f'
 alias vd='vimdiff'
-alias oc='octave-cli'
 
 #startup scripts
 source $HOME/Downloads/git-completion.bash
