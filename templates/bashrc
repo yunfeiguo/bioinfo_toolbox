@@ -42,6 +42,7 @@ alias dudir="du -d 1 -h | sort -k 1g"
 #h does not work on OSX
 #alias dudir="du --max-depth=1 -h | sort -k 1h"
 alias Rscript="Rscript --vanilla"
+alias chx='chmod +x'
 alias dh='du -h'
 alias ll='ls -l'
 alias wl='wc -l'
