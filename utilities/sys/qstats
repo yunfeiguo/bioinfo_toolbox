@@ -1,17 +1,16 @@
-#!/bin/bash
+# qstats.sh - qstat simplified (showing all users)
+# C: 2013
+# M: Jun 22, 2018, Yunfei Guo
+# A: Leandro Lima <llima@ime.usp.br>
 
-if [ -z "$1" ]; then
-    echo "check job execution status by qstat or ps"
-    echo "Usage: [node1 node2 ...]"
-fi
-
-if ! [ -z "`command -v qstat`" ]; then
-	qstat -u $USER
-else
-	for i in $@; do
-	        echo ""
-	        echo "<<$i>>"
-	        echo ""
-		ssh $i ps -fu $USER
-	done
-fi
+date +'%H:%M - %h %d, %Y';
+echo;
+echo -e "\e[32mRunning\e[0m";
+qstat -u "*" | awk 'NR > 2 && $5 == "r" {print $4,$9}' | sort | uniq -c
+echo;
+echo -e "\e[33mWaiting\e[0m";
+qstat -u "*" | awk 'NR > 2 && $5 == "qw" {print $4,$9}' | sort | uniq -c
+echo;
+echo -e "\e[33mOn hold\e[0m";
+qstat -u "*" | awk 'NR > 2 && $5 == "hqw" {print $4,$9}' | sort | uniq -c
+echo;
