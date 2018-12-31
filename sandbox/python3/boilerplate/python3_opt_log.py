@@ -28,6 +28,6 @@ if __name__ == "__main__":
         logging.basicConfig(level=logging.INFO, format= INFO_FORMAT)
     logger = logging.getLogger(__name__)
 
-    logger.info("working hard ...")
+    logger.info("running {}".format(" ".join(sys.argv)))
     process_args(args)
     logger.info("Done.")
