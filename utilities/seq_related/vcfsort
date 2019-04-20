@@ -1,3 +1,16 @@
 #!/bin/bash
+set -e
 
-cat $1 | grep "^#"; cat $@ | grep -v "^#" | sort -k1,1d -k2,2n
+if [[ $1 == *.vcf.gz ]]; then
+    zcat $1 | grep "^#" || true
+else
+    cat $1 | grep "^#" || true
+fi
+
+for vcf in $@;do
+    if [[ $vcf == *.vcf.gz ]]; then
+        zcat $vcf
+    else
+        cat $vcf
+    fi
+done | grep -v "^#" | sort -k1,1V -k2,2n -k4,4d -k5,5d || true

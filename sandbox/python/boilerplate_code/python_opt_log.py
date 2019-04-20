@@ -21,6 +21,7 @@ if __name__ == "__main__":
     parser.add_argument("--cutoff", type = int, default = 1, help = 'cutoff score')
     parser.add_argument("--variable_args", type = float, action = 'append', nargs = 3, 
 	                default = [1.0,2.0,1.2], help = '3 scores')
+    parser.add_argument("--variable_args_but_no_need_for_multiple_option_name", type = float, nargs = '+', help = '3 scores')
     parser.add_argument("--log_to_console", action = 'store_true', help = 'log to console instead of a file')
     parser.add_argument("--verbose","-v", action = 'count',  help='increase verbosity')
     args = parser.parse_args()

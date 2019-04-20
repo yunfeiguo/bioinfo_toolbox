@@ -24,6 +24,7 @@ export EDITOR=vi
 #prevent loss of command history in case of disconnection
 export HISTCONTROL=ignoredups
 export PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
+export LESSOPEN="|$HOME/Downloads/bioinfo_toolbox/templates/lesspipe.sh %s"
 
 
 #alias
@@ -41,14 +42,12 @@ alias dudir="du -d 1 -h | sort -k 1g"
 #h does not work on OSX
 #alias dudir="du --max-depth=1 -h | sort -k 1h"
 alias Rscript="Rscript --vanilla"
+alias chx='chmod +x'
 alias dh='du -h'
 alias ll='ls -l'
 alias wl='wc -l'
-alias socks='ssh -D 7777 -f -C -q -N t-rex'
-alias w0='ssh t-rex'
-alias w1='ssh PLS'
+alias rp='readlink -f'
 alias vd='vimdiff'
-alias oc='octave-cli'
 
 #startup scripts
 source $HOME/Downloads/git-completion.bash

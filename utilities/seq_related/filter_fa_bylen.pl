@@ -2,8 +2,12 @@
 use FindBin qw/$RealBin/;
 use lib File::Spec->catdir($RealBin,"..","lib","perl");
 use YG::Utils;
+use Getopt::Std;
+my %opts;
 
-die "Usage: $0 <fa> <min length INT>" unless @ARGV==2;
+die "Usage: $0 [-m INT] <fa> <min length INT>\n".
+    "	-m INT	optional max length\n" unless @ARGV>=2;
+getopts('m:', \%opts);
 $fa = $ARGV[0];
 $fai="$fa.fai";
 $l=$ARGV[1];
@@ -17,7 +21,11 @@ my $filtered_count = 0;
 while(<IN>) {
     @f=split;
     $total++;
-    if($f[1]>$l){
+    my $pass = $f[1]>$l;
+    if (defined $opts{m}) {
+	$pass = ($pass and $f[1]<=$opts{m});
+    }
+    if ($pass) {
 	push @filtered_regions,"$f[0]:1-$f[1]";
     } else {
 	$filtered_count++;
@@ -25,4 +33,6 @@ while(<IN>) {
 }
 close IN;
 &YG::Utils::get_fasta_seq($fa, @filtered_regions);
-warn "NOTICE: total reads: $total, filtered reads (<= $l bp): $filtered_count\n";
+warn "NOTICE: total reads: $total, filtered reads (<= $l bp".
+     (defined $opts{m}? ", > $opts{m} bp":"").
+     "): $filtered_count\n";

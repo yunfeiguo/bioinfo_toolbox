@@ -7,7 +7,7 @@ use strict;
 use POSIX;
 use Getopt::Std;
 
-my $usage = "\n\nusage: $0 <[gzipped] fasta|fastq file(s)>\n";
+my $usage = "\n\nusage: $0 <[gzipped] fasta|fastq file(s)|BAM>\n";
 our($opt_i);# histogram interval
 $opt_i = 1;
 getopts('i:') or die $usage;
@@ -29,6 +29,8 @@ my $totalLength = 0;
 my $gcCount = 0;
 my %len= ();
 my @seqLengths;
+my %read_count_breakdown_by_len;
+my @len_of_interest = (2000, 3000, 4000,5000, 6000,7000,8000);
 foreach my $file (@data_files){
     warn "NOTICE: reading $file...\n";
     if($file =~ /\.(fasta|fa)\.gz$/) {
@@ -37,6 +39,8 @@ foreach my $file (@data_files){
         open(FASTA, "cat $file |paste - - - - | cut -f1,2 | perl -ne '\@F=split /\\t/;\$F[0]=~s/^\@/>/;print join(\"\\n\",\@F);' |") or die "can't open file $file:$!\n";
     } elsif ($file =~ /\.(fq|fastq)\.gz$/) {
         open(FASTA, "gunzip -c $file |paste - - - - | cut -f1,2 | perl -ne '\@F=split /\\t/;\$F[0]=~s/^\@/>/;print join(\"\\n\",\@F)' |") or die "can't open file $file:$!\n";
+    } elsif ($file =~ /\.bam$/) {
+        open(FASTA, "samtools fasta $file |") or die "can't open file $file:$!\n";
     } else {
 	open(FASTA, $file) or die"Can't open file $file:$!\n";
     }
@@ -79,6 +83,14 @@ if(defined $Id) {
 	$individual_len = 0;
 }
 
+#record read counts by length
+for my $l(@seqLengths) {
+    for my $c(@len_of_interest) {
+	if ($l >= $c) {
+	    $read_count_breakdown_by_len{$c}++;
+	}
+    }
+}
 # Calculate N25, N50, and N75 and counts
 my $N25; my $N50; my $N75;
 my $N25count=0; my $N50count=0; my $N75count=0;
@@ -108,6 +120,12 @@ while ($frac_covered > $totalLength/4) {
 my @ints = sort { $a <=> $b } keys(%len);
 for my $i(@ints) {
     print "$i\t$len{$i}\n" if $len{$i};
+}
+
+for my $c(@len_of_interest) {
+    if ($read_count_breakdown_by_len{$c}) {
+	print "#reads >= $c bp:\t\t\t$read_count_breakdown_by_len{$c}\n";
+    }
 }
 print "#\n";
 print "#Total length of sequences:\t$totalLength bp\n";

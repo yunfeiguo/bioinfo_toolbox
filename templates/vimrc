@@ -99,6 +99,7 @@ set tw=0
 filetype indent on " per-filetype config
 set tabstop=8
 set shiftwidth=4 " or 2 or whatever
+au Filetype python setl et ts=4 sw=4 " convert tab to space only for python files
 set shiftround
 set autoindent
 inoremap {<cr> {<cr>}<c-o>O
@@ -108,4 +109,5 @@ inoremap (<cr> (<cr>)<c-o>O
 let mapleader=","
 :map <F9> :n<CR>
 :map <F8> :N<CR>
+:map <F7> :set paste
 set background=dark
