@@ -3,14 +3,21 @@
 # M: Jun 22, 2018, Yunfei Guo
 # A: Leandro Lima <llima@ime.usp.br>
 
+qstat_output=$(qstat -u "*")
 date +'%H:%M - %h %d, %Y';
 echo;
 echo -e "\e[32mRunning\e[0m";
-qstat -u "*" | awk 'NR > 2 && $5 == "r" {print $4,$9}' | sort | uniq -c
+echo "${qstat_output}" | awk 'NR > 2 && $5 == "r" {print $4,$9}' | sort | uniq -c
 echo;
 echo -e "\e[33mWaiting\e[0m";
-qstat -u "*" | awk 'NR > 2 && $5 == "qw" {print $4,$9}' | sort | uniq -c
+echo "${qstat_output}" | awk 'NR > 2 && $5 == "qw" {print $4,$8}' | sort | uniq -c
 echo;
 echo -e "\e[33mOn hold\e[0m";
-qstat -u "*" | awk 'NR > 2 && $5 == "hqw" {print $4,$9}' | sort | uniq -c
+echo "${qstat_output}" | awk 'NR > 2 && $5 == "hqw" {print $4,$8}' | sort | uniq -c
+echo;
+echo -e "\e[33mTransferring\e[0m";
+echo "${qstat_output}" | awk 'NR > 2 && $5 == "t" {print $4,$9}' | sort | uniq -c
+echo;
+echo -e "\e[31mError\e[0m";
+echo "${qstat_output}" | awk 'NR > 2 && $5 == "Eqw" {print $4,$9}' | sort | uniq -c
 echo;
