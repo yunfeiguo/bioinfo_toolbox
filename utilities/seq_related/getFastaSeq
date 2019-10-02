@@ -26,8 +26,9 @@ for my $i(@regions)
 {
     #allow contig names
     #die "1:1-1000 format expected: $i\n" unless $i=~/(.*?):(\d+)-(\d+)/;
+    chomp $i;
     my ($id,$start,$end);
-    if ($i=~/(.*?):(\d+)-(\d+)/) {
+    if ($i=~/^(.*?):(\d+)-(\d+)$/) {
 	    ($id,$start,$end)= ($1,$2,$3);
     } else {
 	    $id = $i;
