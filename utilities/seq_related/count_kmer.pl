@@ -22,7 +22,7 @@ for my $j(0..$#{$fa_records}) {
 }
 
 print "KMER\tcount\n";
-for my $kmer(keys %kmers) {
+for my $kmer(sort keys %kmers) {
     print uc($kmer),"\t$kmers{$kmer}\n";
 }
 warn "all done.\n";
