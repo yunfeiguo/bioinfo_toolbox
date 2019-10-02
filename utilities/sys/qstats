@@ -9,6 +9,9 @@ echo;
 echo -e "\e[32mRunning\e[0m";
 echo "${qstat_output}" | awk 'NR > 2 && $5 == "r" {print $4,$9}' | sort | uniq -c
 echo;
+echo -e "\e[32mDeleting\e[0m";
+echo "${qstat_output}" | awk 'NR > 2 && $5 == "dr" {print $4,$9}' | sort | uniq -c
+echo;
 echo -e "\e[33mWaiting\e[0m";
 echo "${qstat_output}" | awk 'NR > 2 && $5 == "qw" {print $4,$8}' | sort | uniq -c
 echo;
