@@ -132,6 +132,7 @@ print "#Total length of sequences:\t$totalLength bp\n";
 print "#Total number of sequences:\t$n\n";
 printf "#Average length:\t\t%.2f\n",($n==0? 0:$totalLength/$n);
 printf "#Median length:\t\t\t%.2f\n",(&getMedian(@allSortedLen));
+printf "#Mode:\t\t\t%.2f\n",(&getMode(@allSortedLen));
 # not sure if these right wrt N25 and N75 ..
 print "#N25 stats:\t\t\t25% of total sequence length is contained in the ".$N25count." sequences >= ".$N25." bp\n" if defined $N25count && defined $N25;
 print "#N50 stats:\t\t\t50% of total sequence length is contained in the ".$N50count." sequences >= ".$N50." bp\n" if defined $N50count && defined $N50;
@@ -149,4 +150,18 @@ sub getMedian {
 	my $middle = (@_-1)/2;
 	return($_[$middle]);
     }
+}
+sub getMode {
+    return if @_ == 0;
+    my %count;
+    my $max_count = 0;
+    my $mode;
+    for my $i(@_) {
+	$count{$i}++;
+	if ($count{$i} > $max_count) {
+	    $max_count = $count{$i};
+	    $mode = $i;
+	}
+    }
+    return $mode;
 }
