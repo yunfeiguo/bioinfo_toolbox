@@ -27,6 +27,8 @@
 #include "seqan_fa.h"
 #include <fcntl.h>
 #include <exception>
+#include "fileio.h"
+#include "streamPointer.h"
 
 int main() {
     if (0) {
@@ -98,6 +100,8 @@ int main() {
         testTemplateSpecialization();
         testMyException();
         seqan_fa_example();
+        tryCasting();
+        fileioExample();
     }
-    tryCasting();
+    streamPointerExample();
 }
