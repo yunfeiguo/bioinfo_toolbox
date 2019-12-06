@@ -1,0 +1,21 @@
+Start testing: Oct 25 08:15 PDT
+----------------------------------------------------------
+1/1 Testing: test_string
+1/1 Test: test_string
+Command: "/Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/hacker_rank_cpp_tutorial/test_bin/test_string"
+Directory: /Users/guoy28/Downloads/bioinfo_toolbox/sandbox/cpp/hacker_rank_cpp_tutorial/test_bin
+"test_string" start time: Oct 25 08:15 PDT
+Output:
+----------------------------------------------------------
+Running 1 test case...
+
+*** No errors detected
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"test_string" end time: Oct 25 08:15 PDT
+"test_string" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Oct 25 08:15 PDT
