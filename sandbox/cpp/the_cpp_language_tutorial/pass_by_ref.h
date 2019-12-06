@@ -1,9 +1,0 @@
-//
-// Created by guoy28 on 1/13/17.
-//
-
-#ifndef THE_CPP_LANGUAGE_TUTORIAL_PASSBYREF_H
-#define THE_CPP_LANGUAGE_TUTORIAL_PASSBYREF_H
-
-#endif //THE_CPP_LANGUAGE_TUTORIAL_PASSBYREF_H
-int passByRef();
