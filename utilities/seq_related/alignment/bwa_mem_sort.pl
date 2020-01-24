@@ -37,37 +37,46 @@ if ($opts{n}) {
     $cmd = "ngmlr ".
     (defined $opts{l}? " -x pacbio ":"").
     (defined $opts{o}? $opts{o}:"").
-    " -t $cpu_count -r $ref -q /dev/stdin | samtools view -O BAM $flag - | samtools sort -o $prefix.sort.bam --output-fmt BAM -" or die "bwa or ngmlr or samtools failed: $!\n";
+    " -t $cpu_count -r $ref -q /dev/stdin | samtools view -O BAM $flag - | samtools sort -o $prefix.sort.bam --output-fmt BAM -";
 } else {
     $cmd = "bwa mem -R '\@RG\\tID:$sample.ID\\tSM:$sample.SM' ".
     (defined $opts{l}? " -x pacbio ":"").
-    (defined $opts{o}? $opts{o}:"").
-    " -t $cpu_count $ref /dev/stdin | samtools view -O BAM $flag - | samtools sort -o $prefix.sort.bam --output-fmt BAM -" or die "bwa or ngmlr or samtools failed: $!\n";
+    (defined $opts{o}? $opts{o}:"");
+    if (scalar(@fq) + scalar(@fqgz) <= 2) {
+    	$cmd .= " -t $cpu_count $ref @fq @fqgz ";
+    } else {
+    	$cmd .= " -t $cpu_count $ref /dev/stdin ";
+    }
+    $cmd .= " | samtools view -O BAM $flag - | samtools sort -o $prefix.sort.bam --output-fmt BAM -";
 }
 warn "Running: $cmd\n";		
-open ALIGN,"|-", $cmd or die "bwa or ngmlr or samtools failed: $!\n";
-if (@fq) {
-    open FQ,"-|","cat @fq" or die "failed to read fastqs: $!\n";
-    while(<FQ>) {
-	print ALIGN;
+if ($cmd =~ /\/dev\/stdin/) {
+    open ALIGN,"|-", $cmd or die "bwa or ngmlr or samtools failed: $!\n";
+    if (@fq) {
+	open FQ,"-|","cat @fq" or die "failed to read fastqs: $!\n";
+	while(<FQ>) {
+	    print ALIGN;
+	}
+	close FQ;
     }
-    close FQ;
-}
-if (@fqgz) {
-    open FQ,"-|","zcat @fqgz" or die "failed to read gzipped fastqs: $!\n";
-    while(<FQ>) {
-	print ALIGN;
+    if (@fqgz) {
+	open FQ,"-|","zcat @fqgz" or die "failed to read gzipped fastqs: $!\n";
+	while(<FQ>) {
+	    print ALIGN;
+	}
+	close FQ;
     }
-    close FQ;
-}
-for my $bam(@bam) {
-    open BAM,"-|","bamToFastq -i $bam -fq /dev/stdout" or die "failed to read fastqs: $!\n";
-    while(<BAM>) {
-	print ALIGN;
+    for my $bam(@bam) {
+	open BAM,"-|","bamToFastq -i $bam -fq /dev/stdout" or die "failed to read fastqs: $!\n";
+	while(<BAM>) {
+	    print ALIGN;
+	}
+	close BAM;
     }
-    close BAM;
+    close ALIGN;
+} else {
+    !system("$cmd") or die "$cmd failed";
 }
-close ALIGN;
 
 !system("samtools index $prefix.sort.bam") or die "samtools index: $!";
 

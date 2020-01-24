@@ -32,7 +32,7 @@ my @seqLengths;
 my %read_count_breakdown_by_len;
 my @len_of_interest = (2000, 3000, 4000,5000, 6000,7000,8000);
 foreach my $file (@data_files){
-    warn "NOTICE: reading $file...\n";
+    warn "NOTICE: reading $file ...\n";
     if($file =~ /\.(fasta|fa)\.gz$/) {
 	open(FASTA, "gunzip -c $file |") or die"Can't open file $file:$!\n";
     } elsif ($file =~ /\.(fq|fastq)$/) {

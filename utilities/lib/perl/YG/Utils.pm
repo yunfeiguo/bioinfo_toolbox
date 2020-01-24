@@ -3,6 +3,32 @@ use Carp;
 use strict;
 use warnings;
 
+sub parse_sam_record {
+    #parse a line of SAM record
+    croak "Usage: &parse_sam_record(SAM_RECORD)" unless @_ == 1;
+    my @f = split /\t/,$_[0];
+    return {	query_name => $f[0],
+    	    	flag => $f[1],
+		reference_name => $f[2],
+		position => $f[3],
+		mapping_quality => $f[4],
+		cigar => &parse_cigar_str($f[5]),
+		next_reference_name => $f[6],
+		next_position => $f[7],
+		template_length => $f[8],
+		sequence => $f[9],
+		quality => $f[10],
+		tags => &parse_sam_tags(@f[11..$#f]),
+	  	};
+}
+sub parse_sam_tags {
+    my $tag = {};
+    for my $tag_field(@_) {
+	my @f = split /:/,$tag_field or next;
+	$tag->{$f[0]} = $f[2];
+    }
+    return $tag;
+}
 sub get_idt {
     croak "Usage: &get_idt(SAM_RECORD)" unless @_ == 1;
     #percent identity definition: #matches/total_bp
@@ -12,10 +38,20 @@ sub get_idt {
     $nm = $nm ? $nm : 0;
     my $ins = defined $cigar->{tabulation}->{I} ? $cigar->{tabulation}->{I} : 0;
     my $del = defined $cigar->{tabulation}->{D} ? $cigar->{tabulation}->{D} : 0;
-    my $m = defined $cigar->{tabulation}->{'='} ? $cigar->{tabulation}->{'='} : 0;
-    my $s = defined $cigar->{tabulation}->{'M'} ? $cigar->{tabulation}->{'M'} : 0;
-    return $cigar->{len} == 0 ? 0 : 
-        ($m + $s - ($nm - $ins - $del))/ $cigar->{len};
+    my $s = (defined $cigar->{tabulation}->{'M'} ? $cigar->{tabulation}->{'M'} : 0) + 
+            (defined $cigar->{tabulation}->{'='} ? $cigar->{tabulation}->{'='} : 0);
+    my $clip = (defined $cigar->{tabulation}->{'H'} ? $cigar->{tabulation}->{'H'} : 0) + (defined $cigar->{tabulation}->{'S'} ? $cigar->{tabulation}->{'S'} : 0);
+    my $match_len = $s - ($nm - $ins - $del);
+    my $aligned_length = $cigar->{len} - $clip;
+
+    #calculate idt only on aligned portion of the read
+    return $aligned_length == 0 ? (0,$match_len,$aligned_length) : 
+        ($match_len / $aligned_length, $match_len, $aligned_length);
+}
+sub get_clip {
+    my $cigar = shift;
+    my $parsed_cigar = &parse_cigar_str($cigar);
+    return (defined $parsed_cigar->{tabulation}->{'H'} ? $parsed_cigar->{tabulation}->{'H'} : 0) + (defined $parsed_cigar->{tabulation}->{'S'} ? $parsed_cigar->{tabulation}->{'S'} : 0);
 }
 sub parse_cigar_str {
     croak "Usage: &parse_cigar_str('3S11M5S')" unless @_ == 1;
